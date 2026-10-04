@@ -1,8 +1,6 @@
 # StudyBuddy: AI Study and Learning Agent
 
-EECS 3311 Software Design, Fall 2026 course project.
-
-StudyBuddy helps a student study from their own course materials: it ingests PDFs and notes, answers questions with citations, generates summaries, flashcards and quizzes, grades attempts, tracks weak topics, builds a study plan, and offers a multi-step Study Coach agent.
+StudyBuddy helps a student study from their own course materials: it ingests PDFs and notes, answers questions with citations, generates summaries, flashcards and quizzes, grades attempts, tracks weak topics, and builds a study plan, all powered by a multi-step Study Coach agent.
 
 ## Repository layout
 
