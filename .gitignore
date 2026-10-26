@@ -1,6 +1,8 @@
 .env
 *.env
 .env.*
+!.env.example
+config.local.json
 config.local.properties
 secrets/
 *.key
@@ -38,3 +40,8 @@ Thumbs.db
 desktop.ini
 .vscode/
 .idea/
+
+docs/
+
+# local assistant instructions
+CLAUDE.md
