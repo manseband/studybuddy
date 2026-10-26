@@ -9,5 +9,5 @@ StudyBuddy helps a student study from their own course materials: it ingests PDF
 |`report/`|Stage 1 design report|
 |`uml/`|UMLet diagrams (.uxf): class diagram, use-case diagram, sequence diagrams|
 
-Open the `.uxf` files with [UMLet](https://www.umlet.com/).
+`.uxf` files are compatible with [UMLet](https://www.umlet.com/).
 
