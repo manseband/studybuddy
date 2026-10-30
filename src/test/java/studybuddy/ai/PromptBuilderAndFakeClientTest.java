@@ -40,6 +40,12 @@ class PromptBuilderAndFakeClientTest {
     }
 
     @Test
+    void multiPageExcerptsShowTheirPageRange() {
+        String text = PromptBuilder.formatExcerpts(List.of(new Chunk(1, 1, 1, 0, "Slides on Observer.", 4, 6)));
+        assertTrue(text.contains("[1] (pages 4-6)\nSlides on Observer."));
+    }
+
+    @Test
     void historyComesBeforeTheNewMessageAndToolsArePassedOn() {
         ToolSpec spec = new ToolSpec("get_weak_topics", "Lists weak topics", "{\"type\":\"object\"}");
         LLMRequest request = new PromptBuilder()

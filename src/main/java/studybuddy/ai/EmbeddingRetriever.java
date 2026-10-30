@@ -77,6 +77,16 @@ public class EmbeddingRetriever implements RetrievalStrategy {
         }
     }
 
+    /**
+     * Indexes stored chunks with the vectors they already have. Chunks without a vector stay
+     * keyword-searchable until {@link #index} is called for them again (e.g. by a reindex command).
+     */
+    @Override
+    public synchronized void load(List<Chunk> storedChunks) {
+        fallback.index(storedChunks);
+        storedChunks.forEach(c -> chunks.put(c.getId(), c));
+    }
+
     @Override
     public synchronized List<Chunk> retrieve(long courseId, String query, int k) {
         List<Chunk> candidates = chunks.values().stream()

@@ -58,6 +58,12 @@ public class KeywordRetriever implements RetrievalStrategy {
         }
     }
 
+    /** Keyword indexing needs no external service, so loading is the same as indexing. */
+    @Override
+    public void load(List<Chunk> storedChunks) {
+        index(storedChunks);
+    }
+
     @Override
     public synchronized List<Chunk> retrieve(long courseId, String query, int k) {
         Set<String> queryTerms = new HashSet<>(tokenize(query));

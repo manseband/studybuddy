@@ -105,12 +105,15 @@ public class PromptBuilder {
         return sb.toString();
     }
 
-    /** "[1] (page 3)\ntext" blocks separated by blank lines. */
+    /** "[1] (page 3)\ntext" or "[2] (pages 4-6)\ntext" blocks separated by blank lines. */
     public static String formatExcerpts(List<Chunk> chunks) {
         StringBuilder sb = new StringBuilder("Excerpts from the course materials:");
         for (int i = 0; i < chunks.size(); i++) {
             Chunk chunk = chunks.get(i);
-            sb.append("\n\n[").append(i + 1).append("] (page ").append(chunk.getPageNumber()).append(")\n")
+            String pages = chunk.getEndPage() > chunk.getPageNumber()
+                    ? "pages " + chunk.getPageNumber() + "-" + chunk.getEndPage()
+                    : "page " + chunk.getPageNumber();
+            sb.append("\n\n[").append(i + 1).append("] (").append(pages).append(")\n")
               .append(chunk.getText().strip());
         }
         return sb.toString();

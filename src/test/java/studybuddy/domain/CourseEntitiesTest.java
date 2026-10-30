@@ -81,7 +81,7 @@ class CourseEntitiesTest {
     }
 
     @Test
-    void materialFiltersChunksByPageRange() {
+    void materialGivesItsIdToItsChunks() {
         Material material = new Material(0, 1, "notes.pdf", "PDF", MaterialStatus.INDEXED, "abc", 5, 900,
                 LocalDateTime.of(2026, 10, 26, 9, 0));
         material.setChunks(List.of(new Chunk(0, 0, 1, 0, "first chunk", 1),
@@ -90,9 +90,18 @@ class CourseEntitiesTest {
         material.setId(42);
 
         assertEquals("pdf", material.getFileType());
-        assertEquals(2, material.chunksInPages(2, 5).size());
         assertEquals(42, material.getChunks().get(0).getMaterialId());
         assertTrue(material.hasText());
+    }
+
+    @Test
+    void chunkPageRangesAreLabelled() {
+        Chunk slides = new Chunk(0, 1, 1, 0, "three slides", 3, 5);
+
+        assertEquals("pp. 3-5", slides.pageLabel());
+        assertEquals("p. 2", new Chunk(0, 1, 1, 0, "one page", 2).pageLabel());
+        assertThrows(IllegalArgumentException.class, () -> new Chunk(0, 1, 1, 0, "x", 4, 3));
+        assertEquals("pp. 3-5", new Citation(1, 0, 0, "t", 3, 5, "e").pageLabel());
     }
 
     @Test

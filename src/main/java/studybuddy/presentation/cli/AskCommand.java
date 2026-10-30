@@ -78,7 +78,7 @@ public class AskCommand implements Callable<Integer> {
         if (excerpt.length() > PREVIEW_CHARS) {
             excerpt = excerpt.substring(0, PREVIEW_CHARS) + "...";
         }
-        return " [" + c.excerptNumber() + "] " + c.materialTitle() + ", p. " + c.page() + ": \"" + excerpt + "\"";
+        return " [" + c.excerptNumber() + "] " + c.materialTitle() + ", " + c.pageLabel() + ": \"" + excerpt + "\"";
     }
 
     private static Map<String, Object> toJson(String question, Answer answer) {
@@ -98,6 +98,7 @@ public class AskCommand implements Callable<Integer> {
         json.put("materialId", c.materialId());
         json.put("material", c.materialTitle());
         json.put("page", c.page());
+        json.put("endPage", c.endPage());
         json.put("excerpt", c.excerpt());
         return json;
     }

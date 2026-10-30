@@ -1,8 +1,9 @@
 package studybuddy.domain;
 
 /**
- * A searchable piece of a material's text (F01), about 400 words with a 50-word overlap.
- * pageNumber is the page the chunk starts on and is used for citations.
+ * A searchable piece of a material's text (F01), up to about 400 words.
+ * A chunk covers the pages pageNumber..endPage (one page or a few consecutive short pages), which
+ * are used for citations.
  * The embedding is cached together with the name of the model that produced it, so a model change
  * can be detected and the chunk re-embedded.
  */
@@ -14,15 +15,22 @@ public class Chunk {
     private int position;
     private String text;
     private int pageNumber;
+    private int endPage;
     private float[] embedding;
     private String embeddingModel;
 
+    /** A chunk from a single page. */
     public Chunk(long id, long materialId, long courseId, int position, String text, int pageNumber) {
+        this(id, materialId, courseId, position, text, pageNumber, pageNumber);
+    }
+
+    /** A chunk covering pages pageNumber..endPage. */
+    public Chunk(long id, long materialId, long courseId, int position, String text, int pageNumber, int endPage) {
         if (text == null || text.isBlank()) {
             throw new IllegalArgumentException("Chunk text must not be empty");
         }
-        if (pageNumber < 1) {
-            throw new IllegalArgumentException("Page numbers start at 1");
+        if (pageNumber < 1 || endPage < pageNumber) {
+            throw new IllegalArgumentException("Page numbers start at 1 and the end page cannot come first");
         }
         this.id = id;
         this.materialId = materialId;
@@ -30,6 +38,21 @@ public class Chunk {
         this.position = position;
         this.text = text;
         this.pageNumber = pageNumber;
+        this.endPage = endPage;
+    }
+
+    /** Last page this chunk covers (equal to {@link #getPageNumber()} for a single-page chunk). */
+    public int getEndPage() {
+        return endPage;
+    }
+
+    /** "p. 3" or "pp. 3-5". */
+    public String pageLabel() {
+        return pageLabel(pageNumber, endPage);
+    }
+
+    public static String pageLabel(int from, int to) {
+        return to > from ? "pp. " + from + "-" + to : "p. " + from;
     }
 
     public long getId() {

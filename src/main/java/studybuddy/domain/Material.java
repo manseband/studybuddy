@@ -103,14 +103,6 @@ public class Material {
         return status != MaterialStatus.NO_TEXT && !chunks.isEmpty();
     }
 
-    /** Chunks starting inside the given page range (inclusive); null bounds mean open-ended. */
-    public List<Chunk> chunksInPages(Integer fromPage, Integer toPage) {
-        return chunks.stream()
-                .filter(c -> fromPage == null || c.getPageNumber() >= fromPage)
-                .filter(c -> toPage == null || c.getPageNumber() <= toPage)
-                .toList();
-    }
-
     @Override
     public String toString() {
         return title;

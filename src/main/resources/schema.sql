@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS chunks (
     position        INTEGER NOT NULL,
     text            TEXT NOT NULL,
     page_number     INTEGER NOT NULL,
+    end_page        INTEGER NOT NULL,
     embedding       BLOB,
     embedding_model TEXT
 );
@@ -56,18 +57,6 @@ CREATE TABLE IF NOT EXISTS concept_materials (
     concept_id  INTEGER NOT NULL REFERENCES concepts(id) ON DELETE CASCADE,
     material_id INTEGER NOT NULL REFERENCES materials(id) ON DELETE CASCADE,
     PRIMARY KEY (concept_id, material_id)
-);
-
-CREATE TABLE IF NOT EXISTS summaries (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    material_id INTEGER NOT NULL REFERENCES materials(id) ON DELETE CASCADE,
-    length      TEXT NOT NULL,
-    from_page   INTEGER,
-    to_page     INTEGER,
-    overview    TEXT NOT NULL,
-    key_points  TEXT NOT NULL,
-    key_terms   TEXT NOT NULL,
-    created_at  TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS qa_history (

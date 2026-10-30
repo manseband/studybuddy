@@ -23,7 +23,7 @@ public class MaterialRepository implements Repository<Material> {
     private static final String MATERIAL_COLUMNS =
             "id, course_id, title, file_type, status, content_hash, page_count, word_count, added_at";
     private static final String CHUNK_COLUMNS =
-            "id, material_id, course_id, position, text, page_number, embedding, embedding_model";
+            "id, material_id, course_id, position, text, page_number, end_page, embedding, embedding_model";
 
     private final Database db;
 
@@ -151,8 +151,8 @@ public class MaterialRepository implements Repository<Material> {
             material.setId(SqlUtil.generatedId(ps));
         }
         try (PreparedStatement ps = c.prepareStatement(
-                "INSERT INTO chunks(material_id, course_id, position, text, page_number, embedding, embedding_model)"
-                        + " VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                "INSERT INTO chunks(material_id, course_id, position, text, page_number, end_page, embedding,"
+                        + " embedding_model) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
             for (Chunk chunk : material.getChunks()) {
                 chunk.setCourseId(material.getCourseId());
                 ps.setLong(1, material.getId());
@@ -160,8 +160,9 @@ public class MaterialRepository implements Repository<Material> {
                 ps.setInt(3, chunk.getPosition());
                 ps.setString(4, chunk.getText());
                 ps.setInt(5, chunk.getPageNumber());
-                ps.setBytes(6, SqlUtil.toBytes(chunk.getEmbedding()));
-                ps.setString(7, chunk.getEmbeddingModel());
+                ps.setInt(6, chunk.getEndPage());
+                ps.setBytes(7, SqlUtil.toBytes(chunk.getEmbedding()));
+                ps.setString(8, chunk.getEmbeddingModel());
                 ps.executeUpdate();
                 chunk.setId(SqlUtil.generatedId(ps));
             }
@@ -176,7 +177,8 @@ public class MaterialRepository implements Repository<Material> {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Chunk chunk = new Chunk(rs.getLong("id"), rs.getLong("material_id"), rs.getLong("course_id"),
-                            rs.getInt("position"), rs.getString("text"), rs.getInt("page_number"));
+                            rs.getInt("position"), rs.getString("text"), rs.getInt("page_number"),
+                            rs.getInt("end_page"));
                     chunk.setEmbedding(SqlUtil.toFloats(rs.getBytes("embedding")), rs.getString("embedding_model"));
                     chunks.add(chunk);
                 }

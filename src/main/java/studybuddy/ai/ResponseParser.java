@@ -20,7 +20,7 @@ import studybuddy.domain.Citation;
 /**
  * Turns model replies into Java objects and checks them deterministically.
  * Models sometimes wrap JSON in ```json fences or add a sentence before it, so the JSON part is
- * extracted first. Malformed JSON gets exactly one repair request (F02 error policy).
+ * extracted first. Malformed JSON gets exactly one repair request (the standard policy for all AI features).
  */
 public class ResponseParser {
 
@@ -115,7 +115,7 @@ public class ResponseParser {
             }
             Chunk chunk = excerpts.get(n - 1);
             valid.add(new Citation(n, chunk.getId(), chunk.getMaterialId(), citation.materialTitle(),
-                    chunk.getPageNumber(), preview(chunk.getText())));
+                    chunk.getPageNumber(), chunk.getEndPage(), preview(chunk.getText())));
         }
         return answer.withCitations(valid, removed);
     }

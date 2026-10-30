@@ -13,12 +13,18 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.model.output.Response;
 import studybuddy.ai.DocumentParseException;
 import studybuddy.ai.DocumentParser;
+import studybuddy.ai.EmbeddingRetriever;
 import studybuddy.ai.KeywordRetriever;
 import studybuddy.domain.Chunk;
 import studybuddy.domain.Course;
@@ -38,6 +44,11 @@ class MaterialServiceTest {
     private List<StudyEvent> events;
     private MaterialService service;
     private long courseId;
+
+    @BeforeAll
+    static void quietLogs() {
+        java.util.logging.Logger.getLogger(EmbeddingRetriever.class.getName()).setLevel(java.util.logging.Level.OFF);
+    }
 
     @BeforeEach
     void setUp() {
@@ -63,7 +74,7 @@ class MaterialServiceTest {
     }
 
     @Test
-    void uploadSplitsIntoOverlappingChunksWithPageNumbers() throws IOException {
+    void uploadSplitsEachPageIntoOverlappingChunks() throws IOException {
         // page 1: w1..w12, page 2: w13..w20
         Path file = Files.writeString(dir.resolve("notes.txt"), words(1, 12) + "\f" + words(13, 20));
 
@@ -72,16 +83,80 @@ class MaterialServiceTest {
         assertEquals(MaterialStatus.INDEXED, material.getStatus());
         assertEquals(2, material.getPageCount());
         assertEquals(20, material.getWordCount());
+        // page 1 (12 words) -> w1..w10 and w8..w12 (3-word overlap); page 2 starts a new chunk
         List<Chunk> chunks = material.getChunks();
         assertEquals(3, chunks.size());
         assertEquals(words(1, 10), chunks.get(0).getText());
-        assertEquals(words(8, 17), chunks.get(1).getText());
+        assertEquals(words(8, 12), chunks.get(1).getText());
         assertEquals(1, chunks.get(1).getPageNumber());
-        assertEquals(words(15, 20), chunks.get(2).getText());
+        assertEquals(words(13, 20), chunks.get(2).getText());
         assertEquals(2, chunks.get(2).getPageNumber());
         assertTrue(chunks.stream().allMatch(c -> c.getId() > 0 && c.getCourseId() == courseId));
         assertEquals(3, retriever.size());
         assertEquals(StudyEvent.Type.MATERIAL_ADDED, events.get(events.size() - 1).type());
+    }
+
+    @Test
+    void shortPagesAreGroupedWithAPageRange() throws IOException {
+        // pages of 3, 4, 2 and 6 words with 10-word chunks: pages 1-3 fit together (9 words), page 4 does not
+        Path slides = Files.writeString(dir.resolve("slides.txt"),
+                words(1, 3) + "\f" + words(4, 7) + "\f\f" + words(8, 9) + "\f" + words(10, 15));
+
+        List<Chunk> chunks = service.uploadMaterial(courseId, slides).getChunks();
+
+        assertEquals(2, chunks.size());
+        assertEquals(words(1, 9), chunks.get(0).getText());
+        assertEquals(1, chunks.get(0).getPageNumber());
+        assertEquals(4, chunks.get(0).getEndPage(), "the empty page 3 is inside the range");
+        assertEquals("pp. 1-4", chunks.get(0).pageLabel());
+        assertEquals(words(10, 15), chunks.get(1).getText());
+        assertEquals("p. 5", chunks.get(1).pageLabel());
+        assertEquals(5, new MaterialRepository(db).findChunksByCourse(courseId).get(1).getEndPage());
+    }
+
+    @Test
+    void refreshEmbeddingsRetriesChunksThatFailedDuringUpload() throws IOException {
+        ToggleEmbeddingModel model = new ToggleEmbeddingModel();
+        model.failing = true;
+        EmbeddingRetriever embeddings = new EmbeddingRetriever(model, "toy", 0.1);
+        MaterialService withEmbeddings = new MaterialService(new CourseRepository(db), new MaterialRepository(db),
+                new DocumentParser(), embeddings, new EventBus(), 1024, 10, 3);
+        withEmbeddings.uploadMaterial(courseId, Files.writeString(dir.resolve("a.txt"), "Facade pattern"));
+        assertEquals(new MaterialService.EmbeddingRefresh(1, 1, 1), withEmbeddings.refreshEmbeddings(courseId));
+
+        model.failing = false;
+        MaterialService.EmbeddingRefresh result = withEmbeddings.refreshEmbeddings(courseId);
+
+        assertEquals(1, result.created());
+        assertTrue(new MaterialRepository(db).findChunksByCourse(courseId).get(0).hasEmbeddingFrom("toy"));
+        assertEquals(0, withEmbeddings.refreshEmbeddings(courseId).missingBefore());
+    }
+
+    @Test
+    void startupLoadMakesNoEmbeddingCalls() throws IOException {
+        service.uploadMaterial(courseId, Files.writeString(dir.resolve("a.txt"), "Facade pattern"));
+        ToggleEmbeddingModel model = new ToggleEmbeddingModel();
+        MaterialService restarted = new MaterialService(new CourseRepository(db), new MaterialRepository(db),
+                new DocumentParser(), new EmbeddingRetriever(model, "toy", 0.1), new EventBus(), 1024, 10, 3);
+
+        restarted.loadIndex();
+
+        assertEquals(0, model.calls, "chunks without embeddings are not re-embedded at startup");
+    }
+
+    /** Embedding model stand-in: one dimension, can be switched to fail like a rate-limited service. */
+    static class ToggleEmbeddingModel implements EmbeddingModel {
+        boolean failing;
+        int calls;
+
+        @Override
+        public Response<List<Embedding>> embedAll(List<TextSegment> segments) {
+            calls++;
+            if (failing) {
+                throw new RuntimeException("rate limited");
+            }
+            return Response.from(segments.stream().map(s -> Embedding.from(new float[] {1f})).toList());
+        }
     }
 
     @Test

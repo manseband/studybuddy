@@ -37,7 +37,7 @@ import dev.langchain4j.model.output.TokenUsage;
  * It converts {@link LLMRequest}/{@link LLMResponse} to and from LangChain4j's ChatRequest/ChatResponse,
  * so no other package depends on LangChain4j.
  *
- * Retry policy (F02): timeouts, rate limits and server errors are retried up to maxRetries times with
+ * Retry policy (shared by all AI features): timeouts, rate limits and server errors are retried up to maxRetries times with
  * exponential backoff; other errors (e.g. an invalid API key) fail immediately.
  */
 public class GeminiClient implements LLMClient {

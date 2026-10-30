@@ -174,45 +174,98 @@ public class MaterialService {
     }
 
     /**
-     * Rebuilds the in-memory search index from the database at startup. Chunks that are missing
-     * embeddings get them now if the retriever can create them (F01: "requested again later").
+     * Rebuilds the in-memory search index from the database at startup. No API calls are made here;
+     * chunks whose embeddings failed earlier are retried by {@link #refreshEmbeddings}.
      */
     public void loadIndex() {
         for (Course course : courseRepo.findAll()) {
             List<Chunk> chunks = materialRepo.findChunksByCourse(course.getId());
             if (!chunks.isEmpty()) {
-                retriever.index(chunks);
-                saveNewEmbeddings(chunks);
+                retriever.load(chunks);
             }
         }
     }
 
+    /** Result of {@link #refreshEmbeddings}: how many chunks had no embedding before and after. */
+    public record EmbeddingRefresh(int chunks, int missingBefore, int missingAfter) {
+
+        public int created() {
+            return missingBefore - missingAfter;
+        }
+    }
+
     /**
-     * Splits page texts into chunks of about chunkWords words, each overlapping the previous one by
-     * chunkOverlap words. A chunk's page number is the page its first word comes from.
+     * Requests embeddings again for the course's chunks that do not have one yet, e.g. after the
+     * embedding service was unavailable or rate-limited during upload (F01). Without an API key nothing
+     * changes and search stays keyword-based.
+     */
+    public EmbeddingRefresh refreshEmbeddings(long courseId) {
+        getCourse(courseId);
+        List<Chunk> chunks = materialRepo.findChunksByCourse(courseId);
+        List<Chunk> missing = chunks.stream().filter(c -> c.getEmbedding() == null).toList();
+        if (!missing.isEmpty()) {
+            retriever.index(missing);
+            saveNewEmbeddings(missing);
+        }
+        int stillMissing = (int) missing.stream().filter(c -> c.getEmbedding() == null).count();
+        return new EmbeddingRefresh(chunks.size(), missing.size(), stillMissing);
+    }
+
+    /**
+     * Splits the pages into chunks of at most chunkWords words, keeping exact page ranges for citations:
+     * <ul>
+     *   <li>consecutive whole pages are grouped while they fit (e.g. several short slides in one chunk);</li>
+     *   <li>a page longer than chunkWords is split on its own into chunks that overlap by chunkOverlap words.</li>
+     * </ul>
+     * A chunk never contains part of a page together with another page, so its page range is exact.
      */
     private List<Chunk> splitIntoChunks(List<String> pages) {
-        List<String> words = new ArrayList<>();
-        List<Integer> wordPages = new ArrayList<>();
-        for (int p = 0; p < pages.size(); p++) {
-            for (String word : pages.get(p).split("\\s+")) {
-                if (!word.isEmpty()) {
-                    words.add(word);
-                    wordPages.add(p + 1);
-                }
-            }
-        }
         List<Chunk> chunks = new ArrayList<>();
+        List<String> group = new ArrayList<>();
+        int groupStart = 0;
+        int groupEnd = 0;
+        for (int p = 1; p <= pages.size(); p++) {
+            String pageText = pages.get(p - 1).strip();
+            if (pageText.isEmpty()) {
+                continue;
+            }
+            List<String> words = List.of(pageText.split("\\s+"));
+            if (words.size() > chunkWords) {
+                addChunk(chunks, group, groupStart, groupEnd);
+                group.clear();
+                splitLongPage(chunks, words, p);
+                continue;
+            }
+            if (group.size() + words.size() > chunkWords) {
+                addChunk(chunks, group, groupStart, groupEnd);
+                group.clear();
+            }
+            if (group.isEmpty()) {
+                groupStart = p;
+            }
+            group.addAll(words);
+            groupEnd = p;
+        }
+        addChunk(chunks, group, groupStart, groupEnd);
+        return chunks;
+    }
+
+    /** Splits one long page into overlapping windows of chunkWords words. */
+    private void splitLongPage(List<Chunk> chunks, List<String> words, int page) {
         int step = chunkWords - chunkOverlap;
         for (int start = 0; start < words.size(); start += step) {
             int end = Math.min(start + chunkWords, words.size());
-            String text = String.join(" ", words.subList(start, end));
-            chunks.add(new Chunk(0, 0, 0, chunks.size(), text, wordPages.get(start)));
+            addChunk(chunks, words.subList(start, end), page, page);
             if (end == words.size()) {
                 break;
             }
         }
-        return chunks;
+    }
+
+    private static void addChunk(List<Chunk> chunks, List<String> words, int fromPage, int toPage) {
+        if (!words.isEmpty()) {
+            chunks.add(new Chunk(0, 0, 0, chunks.size(), String.join(" ", words), fromPage, toPage));
+        }
     }
 
     /** Persists vectors the retriever just computed, so they are not requested again. */

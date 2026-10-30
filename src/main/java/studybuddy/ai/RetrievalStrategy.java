@@ -11,8 +11,17 @@ import studybuddy.domain.Chunk;
  */
 public interface RetrievalStrategy {
 
-    /** Adds chunks to the index. Chunks must already have their database ids. */
+    /**
+     * Adds new chunks to the index, computing whatever the strategy needs (e.g. embeddings).
+     * Chunks must already have their database ids.
+     */
     void index(List<Chunk> chunks);
+
+    /**
+     * Adds chunks already stored in the database to the index without computing anything new
+     * (no API calls). Used at startup to rebuild the in-memory index.
+     */
+    void load(List<Chunk> storedChunks);
 
     /**
      * Returns at most k chunks of the course, most relevant first. Chunks below the strategy's
