@@ -4,17 +4,22 @@ import java.time.Duration;
 
 import studybuddy.ai.DocumentParser;
 import studybuddy.ai.EmbeddingRetriever;
+import studybuddy.ai.GeminiClient;
 import studybuddy.ai.KeywordRetriever;
+import studybuddy.ai.LLMClient;
+import studybuddy.ai.NoKeyLLMClient;
+import studybuddy.ai.ResponseParser;
 import studybuddy.ai.RetrievalStrategy;
 import studybuddy.config.AppConfig;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
 import studybuddy.persistence.MaterialRepository;
+import studybuddy.persistence.QaHistoryRepository;
 
 /**
  * Builds the object graph behind the {@link StudyAgentFacade} from the configuration.
- * This is the only place that chooses concrete strategies: the Gemini embedding retriever when an
- * API key is configured, the keyword retriever otherwise.
+ * This is the only place that chooses concrete strategies: with an API key, the Gemini chat client and
+ * embedding retriever; without one, NoKeyLLMClient (explains how to add a key) and the keyword retriever.
  */
 public final class ApplicationFactory {
 
@@ -26,11 +31,15 @@ public final class ApplicationFactory {
         try {
             EventBus eventBus = new EventBus();
             RetrievalStrategy retriever = createRetriever(config);
-            MaterialService materialService = new MaterialService(new CourseRepository(db), new MaterialRepository(db),
+            MaterialRepository materialRepo = new MaterialRepository(db);
+            MaterialService materialService = new MaterialService(new CourseRepository(db), materialRepo,
                     new DocumentParser(), retriever, eventBus, config.maxFileBytes(), config.chunkWords(),
                     config.chunkOverlap());
             materialService.loadIndex();
-            return new StudyAgentFacade(materialService, eventBus, config.hasApiKey(), db);
+            LearningContentService contentService = new LearningContentService(createRoutineClient(config),
+                    retriever, new ResponseParser(), materialRepo, new QaHistoryRepository(db), eventBus,
+                    config.retrievalTopK());
+            return new StudyAgentFacade(materialService, contentService, eventBus, config.hasApiKey(), db);
         } catch (RuntimeException e) {
             db.close();
             throw e;
@@ -42,5 +51,13 @@ public final class ApplicationFactory {
                 .<RetrievalStrategy>map(key -> EmbeddingRetriever.create(key, config.embeddingModel(),
                         Duration.ofSeconds(config.llmTimeoutSeconds()), config.minSimilarity()))
                 .orElseGet(KeywordRetriever::new);
+    }
+
+    /** Client for routine generation and grading (Flash-Lite in the default configuration). */
+    static LLMClient createRoutineClient(AppConfig config) {
+        return config.apiKey()
+                .<LLMClient>map(key -> GeminiClient.create(key, config.routineModel(),
+                        Duration.ofSeconds(config.llmTimeoutSeconds()), config.llmMaxRetries()))
+                .orElseGet(NoKeyLLMClient::new);
     }
 }

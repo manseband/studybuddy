@@ -24,7 +24,7 @@ import studybuddy.config.AppConfig;
  */
 @Command(name = "studyagent", mixinStandardHelpOptions = true, version = "StudyBuddy 0.1",
         description = "StudyBuddy: an AI study and learning agent for your course materials.",
-        subcommands = {CourseCommand.class, MaterialCommand.class})
+        subcommands = {CourseCommand.class, MaterialCommand.class, AskCommand.class})
 public class StudyAgentCli implements Runnable {
 
     @Option(names = "--json", scope = CommandLine.ScopeType.INHERIT,

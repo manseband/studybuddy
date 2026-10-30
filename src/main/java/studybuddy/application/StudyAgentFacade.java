@@ -4,8 +4,10 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
 
+import studybuddy.domain.Answer;
 import studybuddy.domain.Course;
 import studybuddy.domain.Material;
+import studybuddy.domain.QaEntry;
 
 /**
  * Facade: the single entry point used by the GUI and the CLI. It hides the services, repositories,
@@ -15,6 +17,7 @@ import studybuddy.domain.Material;
 public class StudyAgentFacade implements AutoCloseable {
 
     private final MaterialService materialService;
+    private final LearningContentService contentService;
     private final EventBus eventBus;
     private final boolean aiAvailable;
     private final AutoCloseable resources;
@@ -23,9 +26,10 @@ public class StudyAgentFacade implements AutoCloseable {
      * @param aiAvailable true when a Gemini API key is configured
      * @param resources   closed by {@link #close()} (the database)
      */
-    public StudyAgentFacade(MaterialService materialService, EventBus eventBus, boolean aiAvailable,
-                            AutoCloseable resources) {
+    public StudyAgentFacade(MaterialService materialService, LearningContentService contentService, EventBus eventBus,
+                            boolean aiAvailable, AutoCloseable resources) {
         this.materialService = materialService;
+        this.contentService = contentService;
         this.eventBus = eventBus;
         this.aiAvailable = aiAvailable;
         this.resources = resources;
@@ -67,6 +71,20 @@ public class StudyAgentFacade implements AutoCloseable {
 
     public void removeMaterial(long materialId) {
         materialService.removeMaterial(materialId);
+    }
+
+    // ----- F04 questions -----
+
+    public Answer askQuestion(long courseId, String question) {
+        return contentService.answerQuestion(courseId, question);
+    }
+
+    public Answer askQuestion(long courseId, String question, boolean allowGeneralKnowledge) {
+        return contentService.answerQuestion(courseId, question, allowGeneralKnowledge);
+    }
+
+    public List<QaEntry> getQuestionHistory(long courseId) {
+        return contentService.getQuestionHistory(courseId);
     }
 
     // ----- general -----
