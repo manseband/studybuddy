@@ -11,13 +11,14 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParentCommand;
 import studybuddy.application.DuplicateMaterialException;
+import studybuddy.application.MaterialService;
 import studybuddy.domain.Course;
 import studybuddy.domain.Material;
 
 /** {@code studyagent material add|list|rename|remove} (F01). */
 @Command(name = "material", description = "Upload and manage course materials (PDF, TXT, MD).",
         subcommands = {MaterialCommand.Add.class, MaterialCommand.ListMaterials.class, MaterialCommand.Rename.class,
-                MaterialCommand.Remove.class})
+                MaterialCommand.Remove.class, MaterialCommand.Reindex.class})
 public class MaterialCommand {
 
     @ParentCommand
@@ -140,6 +141,41 @@ public class MaterialCommand {
             json.put("id", id);
             json.put("removed", true);
             parent.root.printResult(json, "Removed material #" + id);
+            return 0;
+        }
+    }
+
+    @Command(name = "reindex", description = "Retry embeddings for chunks that have none (e.g. after a rate limit).")
+    static class Reindex implements Callable<Integer> {
+        @ParentCommand
+        MaterialCommand parent;
+
+        @Option(names = "--course", required = true, description = "Course name or id.")
+        String course;
+
+        @Override
+        public Integer call() {
+            StudyAgentCli root = parent.root;
+            Course c = root.facade().findCourse(course);
+            if (!root.facade().isAiAvailable()) {
+                root.printResult(Map.of("courseId", c.getId(), "error", "No API key configured"),
+                        "No Gemini API key is configured, so search uses keywords only. Nothing to reindex.");
+                return 1;
+            }
+            MaterialService.EmbeddingRefresh result = root.facade().refreshEmbeddings(c.getId());
+            Map<String, Object> json = new LinkedHashMap<>();
+            json.put("courseId", c.getId());
+            json.put("chunks", result.chunks());
+            json.put("created", result.created());
+            json.put("stillMissing", result.missingAfter());
+            String text = result.missingBefore() == 0
+                    ? "All " + result.chunks() + " chunks of " + c.getName() + " already have embeddings."
+                    : "Created embeddings for " + result.created() + " of " + result.missingBefore() + " chunk(s).";
+            if (result.missingAfter() > 0) {
+                text += "\n" + result.missingAfter() + " chunk(s) still have none (the embedding quota may be used up). "
+                        + "They remain searchable by keyword; try again in a minute.";
+            }
+            root.printResult(json, text);
             return 0;
         }
     }

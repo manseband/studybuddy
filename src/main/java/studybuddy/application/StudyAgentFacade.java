@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import studybuddy.domain.Answer;
+import studybuddy.domain.Concept;
 import studybuddy.domain.Course;
 import studybuddy.domain.Material;
 import studybuddy.domain.QaEntry;
@@ -73,6 +74,11 @@ public class StudyAgentFacade implements AutoCloseable {
         materialService.removeMaterial(materialId);
     }
 
+    /** Retries embeddings for chunks that have none (e.g. after a rate limit during upload). */
+    public MaterialService.EmbeddingRefresh refreshEmbeddings(long courseId) {
+        return materialService.refreshEmbeddings(courseId);
+    }
+
     // ----- F04 questions -----
 
     public Answer askQuestion(long courseId, String question) {
@@ -85,6 +91,41 @@ public class StudyAgentFacade implements AutoCloseable {
 
     public List<QaEntry> getQuestionHistory(long courseId) {
         return contentService.getQuestionHistory(courseId);
+    }
+
+    // ----- F03 concepts -----
+
+    /** Candidate concepts for review; nothing is saved until {@link #saveConcepts}. */
+    public List<Concept> extractConcepts(long materialId) {
+        return contentService.extractConcepts(materialId);
+    }
+
+    public List<Concept> saveConcepts(long materialId, List<Concept> concepts) {
+        return contentService.saveConcepts(materialId, concepts);
+    }
+
+    public List<Concept> listConcepts(long courseId) {
+        return contentService.listConcepts(courseId);
+    }
+
+    public Concept getConcept(long conceptId) {
+        return contentService.getConcept(conceptId);
+    }
+
+    public List<Material> getConceptMaterials(long conceptId) {
+        return contentService.getConceptMaterials(conceptId);
+    }
+
+    public Concept updateConcept(long conceptId, String name, String definition, Integer importance) {
+        return contentService.updateConcept(conceptId, name, definition, importance);
+    }
+
+    public Concept mergeConcepts(long fromId, long intoId) {
+        return contentService.mergeConcepts(fromId, intoId);
+    }
+
+    public void deleteConcept(long conceptId) {
+        contentService.deleteConcept(conceptId);
     }
 
     // ----- general -----
