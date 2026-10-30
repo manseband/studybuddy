@@ -68,7 +68,7 @@ class ResponseParserTest {
         Answer answer = new Answer("Adapter converts [2]; Facade simplifies [1] [4].",
                 List.of(new Citation(2, 0, 0, "notes.pdf", 0, ""), new Citation(1, 0, 0, "notes.pdf", 0, ""),
                         new Citation(4, 0, 0, "notes.pdf", 0, ""), new Citation(2, 0, 0, "notes.pdf", 0, "")),
-                true, false);
+                true, false, false);
 
         Answer checked = parser.validateCitations(answer, excerpts);
 
@@ -82,7 +82,7 @@ class ResponseParserTest {
 
     @Test
     void validCitationsKeepAnswerVerified() {
-        Answer answer = new Answer("x [1]", List.of(new Citation(1, 0, 0, "t", 0, "")), true, false);
+        Answer answer = new Answer("x [1]", List.of(new Citation(1, 0, 0, "t", 0, "")), true, false, false);
         assertFalse(parser.validateCitations(answer, List.of(new Chunk(1, 1, 1, 0, "text", 1))).partiallyUnverified());
     }
 

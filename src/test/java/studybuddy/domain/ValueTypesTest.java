@@ -69,7 +69,7 @@ class ValueTypesTest {
 
     @Test
     void answerTracksRemovedCitations() {
-        Answer answer = new Answer("text", List.of(), true, false)
+        Answer answer = new Answer("text", List.of(), true, false, false)
                 .withCitations(List.of(new Citation(1, 10, 2, "notes.pdf", 4, "excerpt")), true);
 
         assertEquals(1, answer.citations().size());
