@@ -58,6 +58,15 @@
             <artifactId>langchain4j-google-ai-gemini</artifactId>
         </dependency>
 
+        <!-- LangChain4j logs through the SLF4J API; without a provider SLF4J prints a warning on every run.
+             slf4j-nop is a provider that discards those library log messages. -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>2.0.18</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- Document parsing -->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
