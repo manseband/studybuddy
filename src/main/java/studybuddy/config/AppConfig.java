@@ -97,6 +97,10 @@ public final class AppConfig {
         return getInt("retrieval.top.k");
     }
 
+    public double minSimilarity() {
+        return getDouble("retrieval.min.similarity");
+    }
+
     public double weakThreshold() {
         return getDouble("mastery.weak.threshold");
     }
