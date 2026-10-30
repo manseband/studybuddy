@@ -34,6 +34,7 @@ import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QaHistoryRepository;
+import studybuddy.persistence.ConceptRepository;
 
 class AskCommandTest {
 
@@ -68,7 +69,7 @@ class AskCommandTest {
                 retriever, bus, 1_000_000, 400, 50);
         materials.loadIndex();
         LearningContentService content = new LearningContentService(llm, retriever, new ResponseParser(), materialRepo,
-                new QaHistoryRepository(db), bus, 6);
+                new QaHistoryRepository(db), new ConceptRepository(db), bus, 6, 6000);
         return new StudyAgentFacade(materials, content, bus, true, () -> { });
     }
 

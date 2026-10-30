@@ -26,6 +26,7 @@ import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QaHistoryRepository;
+import studybuddy.persistence.ConceptRepository;
 
 class LearningContentServiceTest {
 
@@ -48,7 +49,7 @@ class LearningContentServiceTest {
         materials = new MaterialService(new CourseRepository(db), materialRepo, new DocumentParser(), retriever, bus,
                 1_000_000, 12, 2);
         service = new LearningContentService(llm, retriever, new ResponseParser(), materialRepo,
-                new QaHistoryRepository(db), bus, 6);
+                new QaHistoryRepository(db), new ConceptRepository(db), bus, 6, 6000);
         courseId = materials.createCourse("EECS3311", "", null).getId();
         // two pages -> two chunks: Facade on page 1, Adapter on page 2
         materials.uploadMaterial(courseId, Files.writeString(dir.resolve("patterns.txt"),
@@ -136,7 +137,8 @@ class LearningContentServiceTest {
         KeywordRetriever retriever = new KeywordRetriever();
         retriever.index(materialRepo.findChunksByCourse(courseId));
         LearningContentService noKey = new LearningContentService(new NoKeyLLMClient(), retriever,
-                new ResponseParser(), materialRepo, new QaHistoryRepository(db), new EventBus(), 6);
+                new ResponseParser(), materialRepo, new QaHistoryRepository(db),
+                new ConceptRepository(db), new EventBus(), 6, 6000);
 
         ContentGenerationException e = assertThrows(ContentGenerationException.class,
                 () -> noKey.answerQuestion(courseId, "Explain the Facade pattern"));

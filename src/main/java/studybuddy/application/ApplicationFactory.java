@@ -11,6 +11,7 @@ import studybuddy.ai.NoKeyLLMClient;
 import studybuddy.ai.ResponseParser;
 import studybuddy.ai.RetrievalStrategy;
 import studybuddy.config.AppConfig;
+import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
 import studybuddy.persistence.MaterialRepository;
@@ -37,8 +38,9 @@ public final class ApplicationFactory {
                     config.chunkOverlap());
             materialService.loadIndex();
             LearningContentService contentService = new LearningContentService(createRoutineClient(config),
-                    retriever, new ResponseParser(), materialRepo, new QaHistoryRepository(db), eventBus,
-                    config.retrievalTopK());
+                    retriever, new ResponseParser(), materialRepo, new QaHistoryRepository(db),
+                    new ConceptRepository(db), eventBus, config.retrievalTopK(),
+                    config.promptWordBudget());
             return new StudyAgentFacade(materialService, contentService, eventBus, config.hasApiKey(), db);
         } catch (RuntimeException e) {
             db.close();
