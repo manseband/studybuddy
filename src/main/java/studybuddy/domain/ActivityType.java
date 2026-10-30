@@ -5,7 +5,6 @@ import java.util.Locale;
 /** Kinds of entries in the study history (F13), used by the --type filter. */
 public enum ActivityType {
     MATERIAL,
-    SUMMARY,
     CONCEPTS,
     QUESTION,
     QUIZ,

@@ -15,7 +15,6 @@ public record StudyEvent(Type type, long courseId, String message, LocalDateTime
         COURSE_CHANGED,
         MATERIAL_ADDED,
         MATERIAL_REMOVED,
-        SUMMARY_CREATED,
         CONCEPTS_CHANGED,
         QUESTION_ANSWERED,
         QUIZ_CREATED,

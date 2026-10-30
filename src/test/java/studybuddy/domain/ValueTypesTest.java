@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,20 +73,5 @@ class ValueTypesTest {
 
         assertEquals(1, answer.citations().size());
         assertTrue(answer.partiallyUnverified());
-    }
-
-    @Test
-    void summaryMarkdownMarksUnverifiedPoints() {
-        Summary summary = new Summary(0, 3, SummaryLength.BRIEF, 1, 12, "Overview text",
-                List.of(new KeyPoint("Facade hides subsystems", List.of(2, 3), true),
-                        new KeyPoint("Unsupported claim", List.of(), false)),
-                List.of("Facade"), LocalDateTime.of(2026, 10, 26, 12, 0));
-
-        String md = summary.toMarkdown("Patterns.pdf");
-
-        assertTrue(md.contains("# Summary: Patterns.pdf"));
-        assertTrue(md.contains("- Facade hides subsystems (p. 2, 3)"));
-        assertTrue(md.contains("Unsupported claim _[source unverified]_"));
-        assertTrue(md.contains("## Key terms"));
     }
 }
