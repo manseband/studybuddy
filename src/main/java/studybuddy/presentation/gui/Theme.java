@@ -23,6 +23,11 @@ final class Theme {
     static final Color ANSWER_WRONG = new Color(192, 57, 43);
     static final Color ANSWER_PENDING = new Color(176, 128, 0);
 
+    /** Colours of the bars in the mastery table. */
+    static final Color MASTERY_STRONG = new Color(46, 139, 87);
+    static final Color MASTERY_WEAK = new Color(192, 57, 43);
+    static final Color MASTERY_BAR_BACKGROUND = new Color(225, 225, 225);
+
     private Theme() {
     }
 
