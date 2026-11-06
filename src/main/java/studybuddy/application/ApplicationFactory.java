@@ -50,10 +50,15 @@ public final class ApplicationFactory {
             LearningContentService contentService = new LearningContentService(routineClient, retriever,
                     responseParser, materialRepo, new QaHistoryRepository(db), conceptRepo, eventBus,
                     config.retrievalTopK(), config.promptWordBudget());
+            QuizRepository quizRepo = new QuizRepository(db);
+            AttemptRepository attemptRepo = new AttemptRepository(db);
             QuizService quizService = new QuizService(routineClient, retriever, responseParser, new QuestionFactory(),
-                    createGraders(routineClient, responseParser), new QuizRepository(db), new AttemptRepository(db),
+                    createGraders(routineClient, responseParser), quizRepo, attemptRepo,
                     materialRepo, conceptRepo, eventBus, config.retrievalTopK(), config.promptWordBudget());
-            return new StudyAgentFacade(materialService, contentService, quizService, eventBus, config.hasApiKey(), db);
+            MasteryService masteryService = new MasteryService(attemptRepo, quizRepo, conceptRepo, routineClient,
+                    responseParser, config.weakThreshold());
+            return new StudyAgentFacade(materialService, contentService, quizService, masteryService, eventBus,
+                    config.hasApiKey(), db);
         } catch (RuntimeException e) {
             db.close();
             throw e;

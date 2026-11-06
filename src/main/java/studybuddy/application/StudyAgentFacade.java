@@ -6,6 +6,7 @@ import java.util.List;
 
 import studybuddy.domain.Answer;
 import studybuddy.domain.Concept;
+import studybuddy.domain.ConceptMastery;
 import studybuddy.domain.Course;
 import studybuddy.domain.Material;
 import studybuddy.domain.QaEntry;
@@ -23,6 +24,7 @@ public class StudyAgentFacade implements AutoCloseable {
     private final MaterialService materialService;
     private final LearningContentService contentService;
     private final QuizService quizService;
+    private final MasteryService masteryService;
     private final EventBus eventBus;
     private final boolean aiAvailable;
     private final AutoCloseable resources;
@@ -32,10 +34,12 @@ public class StudyAgentFacade implements AutoCloseable {
      * @param resources   closed by {@link #close()} (the database)
      */
     public StudyAgentFacade(MaterialService materialService, LearningContentService contentService,
-                            QuizService quizService, EventBus eventBus, boolean aiAvailable, AutoCloseable resources) {
+                            QuizService quizService, MasteryService masteryService, EventBus eventBus,
+                            boolean aiAvailable, AutoCloseable resources) {
         this.materialService = materialService;
         this.contentService = contentService;
         this.quizService = quizService;
+        this.masteryService = masteryService;
         this.eventBus = eventBus;
         this.aiAvailable = aiAvailable;
         this.resources = resources;
@@ -170,6 +174,21 @@ public class StudyAgentFacade implements AutoCloseable {
 
     public QuizAttempt overrideGrade(long attemptId, long questionId, double score) {
         return quizService.overrideGrade(attemptId, questionId, score);
+    }
+
+    // ----- F09 weak concepts -----
+
+    /** The mastery of every concept in the course, weakest first. */
+    public List<ConceptMastery> getMastery(long courseId) {
+        return masteryService.computeMastery(courseId);
+    }
+
+    public List<ConceptMastery> getWeakConcepts(long courseId) {
+        return masteryService.getWeakConcepts(courseId);
+    }
+
+    public String diagnoseWeakConcepts(long courseId) {
+        return masteryService.diagnose(courseId);
     }
 
     // ----- general -----

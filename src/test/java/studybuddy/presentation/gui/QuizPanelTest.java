@@ -22,16 +22,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import studybuddy.ai.DocumentParser;
 import studybuddy.ai.FakeLLMClient;
-import studybuddy.ai.KeywordRetriever;
-import studybuddy.ai.ResponseParser;
-import studybuddy.application.ApplicationFactory;
-import studybuddy.application.EventBus;
-import studybuddy.application.LearningContentService;
-import studybuddy.application.MaterialService;
-import studybuddy.application.QuestionFactory;
-import studybuddy.application.QuizService;
 import studybuddy.application.StudyAgentFacade;
 import studybuddy.domain.Course;
 import studybuddy.domain.Difficulty;
@@ -39,13 +30,7 @@ import studybuddy.domain.QuestionType;
 import studybuddy.domain.Quiz;
 import studybuddy.domain.QuizAttempt;
 import studybuddy.domain.QuizRequest;
-import studybuddy.persistence.AttemptRepository;
-import studybuddy.persistence.ConceptRepository;
-import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
-import studybuddy.persistence.MaterialRepository;
-import studybuddy.persistence.QaHistoryRepository;
-import studybuddy.persistence.QuizRepository;
 
 /** Drives the Quizzes tab without showing a window; the panel must not open a dialog here. */
 class QuizPanelTest {
@@ -64,20 +49,7 @@ class QuizPanelTest {
 
     private StudyAgentFacade facade(FakeLLMClient llm) {
         db = Database.inMemory();
-        KeywordRetriever retriever = new KeywordRetriever();
-        MaterialRepository materials = new MaterialRepository(db);
-        EventBus bus = new EventBus();
-        ResponseParser parser = new ResponseParser();
-        ConceptRepository concepts = new ConceptRepository(db);
-        return new StudyAgentFacade(
-                new MaterialService(new CourseRepository(db), materials, new DocumentParser(), retriever, bus,
-                        1_000_000, 400, 50),
-                new LearningContentService(llm, retriever, parser, materials, new QaHistoryRepository(db), concepts,
-                        bus, 6, 6000),
-                new QuizService(llm, retriever, parser, new QuestionFactory(),
-                        ApplicationFactory.createGraders(llm, parser), new QuizRepository(db),
-                        new AttemptRepository(db), materials, concepts, bus, 6, 6000),
-                bus, true, () -> { });
+        return GuiTestFacade.create(db, llm);
     }
 
     private boolean onEdt(BooleanSupplier check) throws InterruptedException, InvocationTargetException {

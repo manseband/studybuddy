@@ -11,6 +11,7 @@ import studybuddy.ai.ResponseParser;
 import studybuddy.application.ApplicationFactory;
 import studybuddy.application.EventBus;
 import studybuddy.application.LearningContentService;
+import studybuddy.application.MasteryService;
 import studybuddy.application.MaterialService;
 import studybuddy.application.QuestionFactory;
 import studybuddy.application.QuizService;
@@ -49,10 +50,13 @@ class CliTestApp implements AutoCloseable {
         ConceptRepository conceptRepo = new ConceptRepository(db);
         LearningContentService content = new LearningContentService(llm, retriever, parser, materialRepo,
                 new QaHistoryRepository(db), conceptRepo, bus, 6, 6000);
+        QuizRepository quizRepo = new QuizRepository(db);
+        AttemptRepository attemptRepo = new AttemptRepository(db);
         QuizService quizzes = new QuizService(llm, retriever, parser, new QuestionFactory(),
-                ApplicationFactory.createGraders(llm, parser), new QuizRepository(db), new AttemptRepository(db),
+                ApplicationFactory.createGraders(llm, parser), quizRepo, attemptRepo,
                 materialRepo, conceptRepo, bus, 6, 6000);
-        return new StudyAgentFacade(materials, content, quizzes, bus, true, () -> { });
+        MasteryService mastery = new MasteryService(attemptRepo, quizRepo, conceptRepo, llm, parser, 60);
+        return new StudyAgentFacade(materials, content, quizzes, mastery, bus, true, () -> { });
     }
 
     /** Runs one command line; the output is kept in {@link #output}. */
