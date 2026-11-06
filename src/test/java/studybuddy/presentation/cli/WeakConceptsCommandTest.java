@@ -105,7 +105,7 @@ class WeakConceptsCommandTest {
 
         assertEquals(0, app.run("weak-concepts", "--course", "EECS3311"));
         assertTrue(app.output.contains("Weak"), app.output);
-        assertTrue(app.output.contains("3 answer(s)"), app.output);
+        assertTrue(app.output.contains("evidence 3"), app.output);
 
         assertEquals(0, app.run("weak-concepts", "--course", "EECS3311", "--json"));
         JsonNode concept = mapper.readTree(app.output).get("concepts").get(0);

@@ -53,13 +53,13 @@ public class WeakConceptsCommand implements Callable<Integer> {
                     + "studyagent concepts extract --material ID";
         }
         if (mastery.stream().allMatch(m -> m.evidenceCount() == 0)) {
-            return "No evidence yet. Take a quiz on this course. Questions from quizzes created before the concepts "
-                    + "were extracted do not count.";
+            return "No evidence yet. Take a quiz or review flashcards on this course. Quizzes and decks created before "
+                    + "the concepts were extracted do not count.";
         }
         StringBuilder text = new StringBuilder();
         for (ConceptMastery m : mastery) {
             String score = m.evidenceCount() == 0 ? "-" : String.format("%.0f", m.score());
-            text.append(String.format("%-16s %3s  %-30s %d answer(s), trend %s%n", m.statusLabel(), score,
+            text.append(String.format("%-16s %3s  %-30s evidence %d, trend %s%n", m.statusLabel(), score,
                     m.conceptName(), m.evidenceCount(), m.trend().name().toLowerCase()));
         }
         return text.toString().stripTrailing();
