@@ -8,15 +8,20 @@ import studybuddy.ai.DocumentParser;
 import studybuddy.ai.FakeLLMClient;
 import studybuddy.ai.KeywordRetriever;
 import studybuddy.ai.ResponseParser;
+import studybuddy.application.ApplicationFactory;
 import studybuddy.application.EventBus;
 import studybuddy.application.LearningContentService;
 import studybuddy.application.MaterialService;
+import studybuddy.application.QuestionFactory;
+import studybuddy.application.QuizService;
 import studybuddy.application.StudyAgentFacade;
+import studybuddy.persistence.AttemptRepository;
+import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QaHistoryRepository;
-import studybuddy.persistence.ConceptRepository;
+import studybuddy.persistence.QuizRepository;
 
 /**
  * Test helper: runs CLI commands against a facade backed by a real SQLite file and a scripted
@@ -40,9 +45,14 @@ class CliTestApp implements AutoCloseable {
         MaterialService materials = new MaterialService(new CourseRepository(db), materialRepo, new DocumentParser(),
                 retriever, bus, 1_000_000, 400, 50);
         materials.loadIndex();
-        LearningContentService content = new LearningContentService(llm, retriever, new ResponseParser(), materialRepo,
-                new QaHistoryRepository(db), new ConceptRepository(db), bus, 6, 6000);
-        return new StudyAgentFacade(materials, content, bus, true, () -> { });
+        ResponseParser parser = new ResponseParser();
+        ConceptRepository conceptRepo = new ConceptRepository(db);
+        LearningContentService content = new LearningContentService(llm, retriever, parser, materialRepo,
+                new QaHistoryRepository(db), conceptRepo, bus, 6, 6000);
+        QuizService quizzes = new QuizService(llm, retriever, parser, new QuestionFactory(),
+                ApplicationFactory.createGraders(llm, parser), new QuizRepository(db), new AttemptRepository(db),
+                materialRepo, conceptRepo, bus, 6, 6000);
+        return new StudyAgentFacade(materials, content, quizzes, bus, true, () -> { });
     }
 
     /** Runs one command line; the output is kept in {@link #output}. */

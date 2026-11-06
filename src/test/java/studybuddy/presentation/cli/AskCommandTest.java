@@ -20,35 +20,24 @@ import org.junit.jupiter.api.io.TempDir;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import studybuddy.ai.DocumentParser;
 import studybuddy.ai.FakeLLMClient;
-import studybuddy.ai.KeywordRetriever;
-import studybuddy.ai.ResponseParser;
 import studybuddy.application.ApplicationFactory;
-import studybuddy.application.EventBus;
-import studybuddy.application.LearningContentService;
-import studybuddy.application.MaterialService;
 import studybuddy.application.StudyAgentFacade;
 import studybuddy.config.AppConfig;
-import studybuddy.persistence.CourseRepository;
-import studybuddy.persistence.Database;
-import studybuddy.persistence.MaterialRepository;
-import studybuddy.persistence.QaHistoryRepository;
-import studybuddy.persistence.ConceptRepository;
 
 class AskCommandTest {
 
     @TempDir
     Path dir;
 
-    private Database db;
+    private CliTestApp app;
     private FakeLLMClient llm;
     private String output;
 
     @BeforeEach
     void setUp() throws IOException {
-        db = Database.open(dir.resolve("ask.db"));
-        llm = new FakeLLMClient();
+        app = new CliTestApp(dir.resolve("ask.db"));
+        llm = app.llm;
         StudyAgentFacade facade = facade();
         long courseId = facade.createCourse("EECS3311", "", null).getId();
         facade.uploadMaterial(courseId, Files.writeString(dir.resolve("patterns.txt"),
@@ -57,20 +46,12 @@ class AskCommandTest {
 
     @AfterEach
     void tearDown() {
-        db.close();
+        app.close();
     }
 
     /** Facade over the shared test database with the scripted LLM (closing it leaves the database open). */
     private StudyAgentFacade facade() {
-        KeywordRetriever retriever = new KeywordRetriever();
-        MaterialRepository materialRepo = new MaterialRepository(db);
-        EventBus bus = new EventBus();
-        MaterialService materials = new MaterialService(new CourseRepository(db), materialRepo, new DocumentParser(),
-                retriever, bus, 1_000_000, 400, 50);
-        materials.loadIndex();
-        LearningContentService content = new LearningContentService(llm, retriever, new ResponseParser(), materialRepo,
-                new QaHistoryRepository(db), new ConceptRepository(db), bus, 6, 6000);
-        return new StudyAgentFacade(materials, content, bus, true, () -> { });
+        return app.facade();
     }
 
     private int run(Supplier<StudyAgentFacade> factory, String... args) {
@@ -110,7 +91,7 @@ class AskCommandTest {
 
     @Test
     void withoutKeyExplainsHowToAddOneAndShowsExcerpts() {
-        db.close();
+        app.close();
         AppConfig noKey = AppConfig.load(dir.resolve("no.env"),
                 Map.of("STUDYBUDDY_DB_PATH", dir.resolve("ask.db").toString()));
 
@@ -118,6 +99,6 @@ class AskCommandTest {
 
         assertTrue(output.contains("GEMINI_API_KEY"), output);
         assertTrue(output.contains("Relevant excerpts from your materials:"), output);
-        db = Database.inMemory();
+        app = new CliTestApp(dir.resolve("other.db"));
     }
 }

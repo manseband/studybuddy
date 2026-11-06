@@ -9,6 +9,9 @@ import studybuddy.domain.Concept;
 import studybuddy.domain.Course;
 import studybuddy.domain.Material;
 import studybuddy.domain.QaEntry;
+import studybuddy.domain.Quiz;
+import studybuddy.domain.QuizAttempt;
+import studybuddy.domain.QuizRequest;
 
 /**
  * Facade: the single entry point used by the GUI and the CLI. It hides the services, repositories,
@@ -19,6 +22,7 @@ public class StudyAgentFacade implements AutoCloseable {
 
     private final MaterialService materialService;
     private final LearningContentService contentService;
+    private final QuizService quizService;
     private final EventBus eventBus;
     private final boolean aiAvailable;
     private final AutoCloseable resources;
@@ -27,10 +31,11 @@ public class StudyAgentFacade implements AutoCloseable {
      * @param aiAvailable true when a Gemini API key is configured
      * @param resources   closed by {@link #close()} (the database)
      */
-    public StudyAgentFacade(MaterialService materialService, LearningContentService contentService, EventBus eventBus,
-                            boolean aiAvailable, AutoCloseable resources) {
+    public StudyAgentFacade(MaterialService materialService, LearningContentService contentService,
+                            QuizService quizService, EventBus eventBus, boolean aiAvailable, AutoCloseable resources) {
         this.materialService = materialService;
         this.contentService = contentService;
+        this.quizService = quizService;
         this.eventBus = eventBus;
         this.aiAvailable = aiAvailable;
         this.resources = resources;
@@ -126,6 +131,45 @@ public class StudyAgentFacade implements AutoCloseable {
 
     public void deleteConcept(long conceptId) {
         contentService.deleteConcept(conceptId);
+    }
+
+    // ----- F06, F07 quizzes -----
+
+    /** The quiz can be shorter than requested if there is too little material; compare its size. */
+    public Quiz generateQuiz(QuizRequest request) {
+        return quizService.generateQuiz(request);
+    }
+
+    public Quiz getQuiz(long quizId) {
+        return quizService.getQuiz(quizId);
+    }
+
+    public List<Quiz> listQuizzes(long courseId) {
+        return quizService.listQuizzes(courseId);
+    }
+
+    public QuizAttempt startAttempt(long quizId) {
+        return quizService.startAttempt(quizId);
+    }
+
+    public QuizAttempt submitQuiz(QuizAttempt attempt) {
+        return quizService.submitAttempt(attempt);
+    }
+
+    public QuizAttempt getAttempt(long attemptId) {
+        return quizService.getAttempt(attemptId);
+    }
+
+    public List<QuizAttempt> listAttempts(long courseId) {
+        return quizService.listAttempts(courseId);
+    }
+
+    public QuizAttempt regradePending(long attemptId) {
+        return quizService.regradePending(attemptId);
+    }
+
+    public QuizAttempt overrideGrade(long attemptId, long questionId, double score) {
+        return quizService.overrideGrade(attemptId, questionId, score);
     }
 
     // ----- general -----
