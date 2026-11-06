@@ -164,18 +164,13 @@ public class QuizRepository implements Repository<Quiz> {
         }
     }
 
-    private static Long nullableLong(ResultSet rs, String column) throws SQLException {
-        long value = rs.getLong(column);
-        return rs.wasNull() ? null : value;
-    }
-
     private Question toQuestion(ResultSet rs) throws SQLException {
         long id = rs.getLong("id");
         String stem = rs.getString("stem");
         Difficulty difficulty = Difficulty.valueOf(rs.getString("difficulty"));
         int page = rs.getInt("source_page");
-        Long conceptId = nullableLong(rs, "concept_id");
-        Long chunkId = nullableLong(rs, "source_chunk_id");
+        Long conceptId = SqlUtil.nullableLong(rs, "concept_id");
+        Long chunkId = SqlUtil.nullableLong(rs, "source_chunk_id");
         JsonNode key;
         try {
             key = mapper.readTree(rs.getString("answer_key"));

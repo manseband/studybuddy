@@ -12,6 +12,11 @@ public class Flashcard {
 
     public static final int MIN_BOX = 1;
     public static final int MAX_BOX = 5;
+    /** How many cards can be requested for one deck (F05). */
+    public static final int MIN_DECK_SIZE = 5;
+    public static final int MAX_DECK_SIZE = 20;
+    public static final int MAX_FRONT_LENGTH = 300;
+    public static final int MAX_BACK_LENGTH = 1000;
 
     private long id;
     private long courseId;

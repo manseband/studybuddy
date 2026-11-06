@@ -22,6 +22,12 @@ final class SqlUtil {
         }
     }
 
+    /** The column's value, or null for SQL NULL. */
+    static Long nullableLong(ResultSet rs, String column) throws SQLException {
+        long value = rs.getLong(column);
+        return rs.wasNull() ? null : value;
+    }
+
     /** Stores an embedding vector as little-endian 32-bit floats. */
     static byte[] toBytes(float[] vector) {
         if (vector == null) {
