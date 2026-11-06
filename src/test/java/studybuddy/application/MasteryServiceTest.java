@@ -51,7 +51,7 @@ class MasteryServiceTest {
         quizzes = new QuizRepository(db);
         attempts = new AttemptRepository(db);
         concepts = new ConceptRepository(db);
-        courseId = new CourseRepository(db).save(new Course(0, "EECS3311", "", null)).getId();
+        courseId = new CourseRepository(db).save(new Course(0, "EECS3311", "")).getId();
         facade = concepts.save(new Concept(0, courseId, "Facade", "", 3)).getId();
         observer = concepts.save(new Concept(0, courseId, "Observer", "", 3)).getId();
         service = new MasteryService(attempts, quizzes, concepts, llm, new ResponseParser(), 60);
@@ -211,7 +211,7 @@ class MasteryServiceTest {
     @Test
     void masteryIsPerCourse() {
         answerSeparately(facade, Difficulty.EASY, 0, 0, 0);
-        long other = new CourseRepository(db).save(new Course(0, "Other", "", null)).getId();
+        long other = new CourseRepository(db).save(new Course(0, "Other", "")).getId();
 
         assertTrue(service.computeMastery(other).isEmpty());
     }

@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ class StudyAgentFacadeTest {
         try (StudyAgentFacade facade = ApplicationFactory.create(config())) {
             assertFalse(facade.isAiAvailable());
             facade.addListener(events::add);
-            Course course = facade.createCourse("EECS3311", "Software Design", LocalDate.of(2026, 12, 10));
+            Course course = facade.createCourse("EECS3311", "Software Design");
             Material material = facade.uploadMaterial(course.getId(), notes);
             assertEquals(1, material.getChunkCount());
         }
@@ -48,7 +47,7 @@ class StudyAgentFacadeTest {
 
         try (StudyAgentFacade reopened = ApplicationFactory.create(config())) {
             Course course = reopened.findCourse("eecs3311");
-            assertEquals(LocalDate.of(2026, 12, 10), course.getExamDate());
+            assertEquals("Software Design", course.getCode());
             assertEquals("notes.md", reopened.listMaterials(course.getId()).get(0).getTitle());
         }
         assertTrue(Files.exists(dir.resolve("db/test.db")));

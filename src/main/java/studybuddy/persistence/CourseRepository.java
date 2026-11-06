@@ -5,17 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import studybuddy.domain.Course;
 
-/** SQLite storage for courses. Deleting a course also removes its materials, quizzes, cards and plans. */
+/** SQLite storage for courses. Deleting a course also removes its materials, quizzes and cards. */
 public class CourseRepository implements Repository<Course> {
 
-    private static final String COLUMNS = "id, name, code, exam_date";
+    private static final String COLUMNS = "id, name, code";
 
     private final Database db;
 
@@ -28,7 +27,7 @@ public class CourseRepository implements Repository<Course> {
         return db.withConnection(c -> {
             if (course.getId() == 0) {
                 try (PreparedStatement ps = c.prepareStatement(
-                        "INSERT INTO courses(name, code, exam_date) VALUES (?, ?, ?)",
+                        "INSERT INTO courses(name, code) VALUES (?, ?)",
                         Statement.RETURN_GENERATED_KEYS)) {
                     bind(ps, course);
                     ps.executeUpdate();
@@ -36,9 +35,9 @@ public class CourseRepository implements Repository<Course> {
                 }
             } else {
                 try (PreparedStatement ps = c.prepareStatement(
-                        "UPDATE courses SET name = ?, code = ?, exam_date = ? WHERE id = ?")) {
+                        "UPDATE courses SET name = ?, code = ? WHERE id = ?")) {
                     bind(ps, course);
-                    ps.setLong(4, course.getId());
+                    ps.setLong(3, course.getId());
                     ps.executeUpdate();
                 }
             }
@@ -98,12 +97,9 @@ public class CourseRepository implements Repository<Course> {
     private static void bind(PreparedStatement ps, Course course) throws SQLException {
         ps.setString(1, course.getName());
         ps.setString(2, course.getCode());
-        ps.setString(3, course.getExamDate() == null ? null : course.getExamDate().toString());
     }
 
     private static Course map(ResultSet rs) throws SQLException {
-        String exam = rs.getString("exam_date");
-        return new Course(rs.getLong("id"), rs.getString("name"), rs.getString("code"),
-                exam == null ? null : LocalDate.parse(exam));
+        return new Course(rs.getLong("id"), rs.getString("name"), rs.getString("code"));
     }
 }

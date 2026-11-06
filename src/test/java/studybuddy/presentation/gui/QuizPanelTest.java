@@ -70,7 +70,7 @@ class QuizPanelTest {
         assumeFalse(GraphicsEnvironment.isHeadless());
         FakeLLMClient llm = new FakeLLMClient();
         StudyAgentFacade facade = facade(llm);
-        Course course = facade.createCourse("EECS3311", "", null);
+        Course course = facade.createCourse("EECS3311", "");
         facade.uploadMaterial(course.getId(), Files.writeString(dir.resolve("notes.txt"),
                 "The Facade pattern gives one simple interface to a whole subsystem. ".repeat(5)));
         llm.enqueueText("""

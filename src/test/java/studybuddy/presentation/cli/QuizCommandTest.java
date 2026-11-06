@@ -51,7 +51,7 @@ class QuizCommandTest {
     void setUp() throws IOException {
         app = new CliTestApp(dir.resolve("quiz.db"));
         StudyAgentFacade facade = app.facade();
-        long courseId = facade.createCourse("EECS3311", "", null).getId();
+        long courseId = facade.createCourse("EECS3311", "").getId();
         facade.uploadMaterial(courseId, Files.writeString(dir.resolve("patterns.txt"),
                 "The Facade pattern gives one simple interface to a whole subsystem. ".repeat(20)));
     }

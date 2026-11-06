@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HexFormat;
@@ -57,8 +56,8 @@ public class MaterialService {
 
     // ----- courses -----
 
-    public Course createCourse(String name, String code, LocalDate examDate) {
-        Course course = Course.create(name, code, examDate);
+    public Course createCourse(String name, String code) {
+        Course course = Course.create(name, code);
         if (courseRepo.findByName(course.getName()).isPresent()) {
             throw new IllegalArgumentException("A course named \"" + course.getName() + "\" already exists");
         }
@@ -90,7 +89,7 @@ public class MaterialService {
                 .orElseThrow(() -> new NoSuchElementException("No course named or numbered \"" + key + "\""));
     }
 
-    /** Deletes the course with all of its materials, quizzes, cards and plans. */
+    /** Deletes the course with all of its materials, quizzes and cards. */
     public void deleteCourse(long courseId) {
         Course course = getCourse(courseId);
         for (Material material : materialRepo.findByCourse(courseId)) {

@@ -5,8 +5,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -190,24 +188,18 @@ public class MainWindow implements StudyEventListener {
     private void newCourse() {
         JTextField name = new JTextField();
         JTextField code = new JTextField();
-        JTextField exam = new JTextField();
         JPanel form = new JPanel(new GridLayout(0, 1, 0, 2));
         form.add(new JLabel("Course name (required):"));
         form.add(name);
         form.add(new JLabel("Course code:"));
         form.add(code);
-        form.add(new JLabel("Exam date, yyyy-mm-dd (optional):"));
-        form.add(exam);
         int choice = JOptionPane.showConfirmDialog(frame, form, "New Course", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE);
         if (choice != JOptionPane.OK_OPTION) {
             return;
         }
         try {
-            LocalDate examDate = exam.getText().isBlank() ? null : LocalDate.parse(exam.getText().strip());
-            facade.createCourse(name.getText(), code.getText(), examDate);
-        } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(frame, "The exam date must look like 2026-12-10.");
+            facade.createCourse(name.getText(), code.getText());
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(frame, e.getMessage());
         }
@@ -220,7 +212,7 @@ public class MainWindow implements StudyEventListener {
         }
         int materials = facade.listMaterials(selected.getId()).size();
         int choice = JOptionPane.showConfirmDialog(frame, "Permanently delete " + selected.getName() + " with "
-                + materials + " material(s) and all its concepts, quizzes, flashcards, plans and history?",
+                + materials + " material(s) and all its concepts, quizzes, flashcards and history?",
                 "Delete Course", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
         if (choice == JOptionPane.OK_OPTION) {
             facade.deleteCourse(selected.getId());

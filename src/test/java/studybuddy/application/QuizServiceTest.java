@@ -87,7 +87,7 @@ class QuizServiceTest {
         MaterialRepository materials = new MaterialRepository(db);
         MaterialService materialService = new MaterialService(new CourseRepository(db), materials,
                 new DocumentParser(), retriever, bus, 1_000_000, 400, 50);
-        courseId = materialService.createCourse("EECS3311", "", null).getId();
+        courseId = materialService.createCourse("EECS3311", "").getId();
         material = materialService.uploadMaterial(courseId, Files.writeString(dir.resolve("notes.txt"),
                 "The Facade pattern gives one simple interface to a whole subsystem. ".repeat(20)));
         concepts = new ConceptRepository(db);
@@ -321,7 +321,7 @@ class QuizServiceTest {
         MaterialRepository materials = new MaterialRepository(db);
         MaterialService small = new MaterialService(new CourseRepository(db), materials, new DocumentParser(),
                 retriever, new EventBus(), 1_000_000, 10, 0);
-        long course = small.createCourse("Big", "", null).getId();
+        long course = small.createCourse("Big", "").getId();
         small.uploadMaterial(course, Files.writeString(dir.resolve("big.txt"), "word ".repeat(100)));
         ResponseParser parser = new ResponseParser();
         QuizService budgeted = new QuizService(llm, retriever, parser, new QuestionFactory(),

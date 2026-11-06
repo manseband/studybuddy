@@ -19,7 +19,7 @@ class QaHistoryRepositoryTest {
     @Test
     void storesAnswersWithCitationsNewestFirst() {
         try (Database db = Database.inMemory()) {
-            long courseId = new CourseRepository(db).save(Course.create("EECS3311", "", null)).getId();
+            long courseId = new CourseRepository(db).save(Course.create("EECS3311", "")).getId();
             QaHistoryRepository repo = new QaHistoryRepository(db);
             Answer answer = new Answer("Facade simplifies [1].",
                     List.of(new Citation(1, 10, 2, "notes.pdf", 3, "Facade text")), true, false, false);

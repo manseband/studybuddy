@@ -32,7 +32,7 @@ class ConceptRepositoryTest {
     void setUp() {
         db = Database.inMemory();
         repo = new ConceptRepository(db);
-        courseId = new CourseRepository(db).save(Course.create("EECS3311", "", null)).getId();
+        courseId = new CourseRepository(db).save(Course.create("EECS3311", "")).getId();
         Material material = new Material(0, courseId, "notes.pdf", "pdf", MaterialStatus.INDEXED, "h", 3, 30,
                 LocalDateTime.of(2026, 10, 30, 9, 0));
         material.setChunks(List.of(new Chunk(0, 0, courseId, 0, "text", 1)));

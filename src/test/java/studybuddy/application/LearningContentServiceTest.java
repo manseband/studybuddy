@@ -50,7 +50,7 @@ class LearningContentServiceTest {
                 1_000_000, 12, 2);
         service = new LearningContentService(llm, retriever, new ResponseParser(), materialRepo,
                 new QaHistoryRepository(db), new ConceptRepository(db), bus, 6, 6000);
-        courseId = materials.createCourse("EECS3311", "", null).getId();
+        courseId = materials.createCourse("EECS3311", "").getId();
         // two pages -> two chunks: Facade on page 1, Adapter on page 2
         materials.uploadMaterial(courseId, Files.writeString(dir.resolve("patterns.txt"),
                 "The Facade pattern gives one simple interface to a whole subsystem.\f"
@@ -127,7 +127,7 @@ class LearningContentServiceTest {
     void invalidQuestionsAndEmptyCoursesAreRejected() {
         assertThrows(IllegalArgumentException.class, () -> service.answerQuestion(courseId, "  "));
         assertThrows(IllegalArgumentException.class, () -> service.answerQuestion(courseId, "x".repeat(1001)));
-        long empty = materials.createCourse("Empty", "", null).getId();
+        long empty = materials.createCourse("Empty", "").getId();
         assertThrows(IllegalStateException.class, () -> service.answerQuestion(empty, "Anything?"));
     }
 

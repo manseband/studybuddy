@@ -1,7 +1,6 @@
 package studybuddy.application;
 
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.List;
 
 import studybuddy.domain.Answer;
@@ -47,8 +46,8 @@ public class StudyAgentFacade implements AutoCloseable {
 
     // ----- F01 courses and materials -----
 
-    public Course createCourse(String name, String code, LocalDate examDate) {
-        return materialService.createCourse(name, code, examDate);
+    public Course createCourse(String name, String code) {
+        return materialService.createCourse(name, code);
     }
 
     public List<Course> listCourses() {

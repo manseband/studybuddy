@@ -44,7 +44,7 @@ class ConceptExtractionTest {
         llm = new FakeLLMClient();
         MaterialService materials = new MaterialService(new CourseRepository(db), new MaterialRepository(db),
                 new DocumentParser(), new KeywordRetriever(), new EventBus(), 1_000_000, 10, 0);
-        long courseId = materials.createCourse("EECS3311", "", null).getId();
+        long courseId = materials.createCourse("EECS3311", "").getId();
         String page = "word ".repeat(10).strip();
         material = materials.uploadMaterial(courseId, Files.writeString(dir.resolve("notes.txt"), page + "\f" + page));
         service = new LearningContentService(llm, new KeywordRetriever(), new ResponseParser(),

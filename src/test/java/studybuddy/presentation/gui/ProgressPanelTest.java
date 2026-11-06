@@ -50,7 +50,7 @@ class ProgressPanelTest {
         db = Database.inMemory();
         llm = new FakeLLMClient();
         facade = GuiTestFacade.create(db, llm);
-        course = facade.createCourse("EECS3311", "", null);
+        course = facade.createCourse("EECS3311", "");
         Material material = facade.uploadMaterial(course.getId(), Files.writeString(dir.resolve("notes.txt"),
                 "The Facade pattern gives one simple interface to a whole subsystem. ".repeat(20)));
         facade.saveConcepts(material.getId(), List.of(new Concept(0, course.getId(), "Facade", "Hides a subsystem.", 3)));

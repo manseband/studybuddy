@@ -17,8 +17,8 @@ class CourseEntitiesTest {
 
     @Test
     void courseRequiresAName() {
-        assertThrows(IllegalArgumentException.class, () -> Course.create("  ", "EECS3311", null));
-        assertEquals("Software Design (EECS3311)", Course.create(" Software Design ", "EECS3311", null).toString());
+        assertThrows(IllegalArgumentException.class, () -> Course.create("  ", "EECS3311"));
+        assertEquals("Software Design (EECS3311)", Course.create(" Software Design ", "EECS3311").toString());
     }
 
     @Test
@@ -112,20 +112,5 @@ class CourseEntitiesTest {
         assertTrue(chunk.hasEmbeddingFrom("gemini-embedding-001"));
         assertFalse(chunk.hasEmbeddingFrom("other-model"));
         assertEquals(3, chunk.wordCount());
-    }
-
-    @Test
-    void planCompletionIsWeightedByMinutes() {
-        StudyPlan plan = new StudyPlan(0, 1, TODAY.plusDays(10), LocalDateTime.of(2026, 10, 26, 9, 0));
-        StudySession first = new StudySession(1, TODAY.plusDays(1), 30, List.of("Observer"), "", false);
-        StudySession second = new StudySession(2, TODAY, 90, List.of("Strategy"), "", false);
-        plan.addSession(first);
-        plan.addSession(second);
-
-        assertEquals(0.0, plan.getCompletion());
-        second.markDone();
-        assertEquals(0.75, plan.getCompletion());
-        assertEquals(TODAY, plan.getSessions().get(0).getDate());
-        assertEquals(List.of(first), plan.remainingFrom(TODAY));
     }
 }

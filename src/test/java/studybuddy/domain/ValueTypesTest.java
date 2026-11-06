@@ -5,10 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -43,20 +40,6 @@ class ValueTypesTest {
                 () -> new QuizRequest(1, List.of(), List.of(), 5, mcq, null, false));
         // adaptive quizzes do not need a fixed difficulty
         new QuizRequest(1, List.of(), List.of(), 5, mcq, null, true);
-    }
-
-    @Test
-    void planRequestCountsHoursAndDaysOff() {
-        LocalDate monday = LocalDate.of(2026, 11, 2);
-        PlanRequest request = new PlanRequest(1, monday.plusDays(30),
-                Map.of(DayOfWeek.MONDAY, 2.0, DayOfWeek.SATURDAY, 3.0), Set.of(monday.plusWeeks(1)), List.of());
-
-        assertEquals(5.0, request.weeklyHours());
-        assertEquals(2.0, request.hoursOn(monday));
-        assertEquals(0.0, request.hoursOn(monday.plusWeeks(1)));
-        assertEquals(0.0, request.hoursOn(monday.plusDays(1)));
-        assertThrows(IllegalArgumentException.class,
-                () -> new PlanRequest(1, monday, Map.of(DayOfWeek.MONDAY, -1.0), Set.of(), List.of()));
     }
 
     @Test

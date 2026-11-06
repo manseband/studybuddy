@@ -38,7 +38,7 @@ class QuizRepositoryTest {
         db = Database.inMemory();
         quizzes = new QuizRepository(db);
         attempts = new AttemptRepository(db);
-        courseId = new CourseRepository(db).save(new Course(0, "EECS3311", "", null)).getId();
+        courseId = new CourseRepository(db).save(new Course(0, "EECS3311", "")).getId();
         conceptId = new ConceptRepository(db).save(new Concept(0, courseId, "Facade", "Hides a subsystem.", 3)).getId();
     }
 

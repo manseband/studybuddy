@@ -60,7 +60,7 @@ class MaterialServiceTest {
         // small chunks (10 words, 3 overlap) keep the test files short
         service = new MaterialService(new CourseRepository(db), new MaterialRepository(db), new DocumentParser(),
                 retriever, bus, 1024, 10, 3);
-        courseId = service.createCourse("EECS3311", "Software Design", null).getId();
+        courseId = service.createCourse("EECS3311", "Software Design").getId();
     }
 
     @AfterEach
@@ -215,7 +215,7 @@ class MaterialServiceTest {
 
     @Test
     void duplicateCourseNamesAreRejected() {
-        assertThrows(IllegalArgumentException.class, () -> service.createCourse("eecs3311", "", null));
+        assertThrows(IllegalArgumentException.class, () -> service.createCourse("eecs3311", ""));
         assertEquals("EECS3311", service.findCourse("eecs3311").getName());
         assertEquals(courseId, service.findCourse(String.valueOf(courseId)).getId());
     }

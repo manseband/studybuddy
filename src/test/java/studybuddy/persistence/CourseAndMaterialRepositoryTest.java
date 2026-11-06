@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -48,7 +47,7 @@ class CourseAndMaterialRepositoryTest {
 
     @Test
     void savesUpdatesAndFindsCourses() {
-        Course course = courses.save(Course.create("Software Design", "EECS3311", LocalDate.of(2026, 12, 10)));
+        Course course = courses.save(Course.create("Software Design", "EECS3311"));
         assertNotEquals(0, course.getId());
 
         course.setName("Software Design F26");
@@ -56,15 +55,15 @@ class CourseAndMaterialRepositoryTest {
 
         Course loaded = courses.findById(course.getId()).orElseThrow();
         assertEquals("Software Design F26", loaded.getName());
-        assertEquals(LocalDate.of(2026, 12, 10), loaded.getExamDate());
+        assertEquals("EECS3311", loaded.getCode());
         assertTrue(courses.findByName("software design f26").isPresent());
         assertEquals(1, courses.findAll().size());
-        assertThrows(PersistenceException.class, () -> courses.save(Course.create("SOFTWARE DESIGN F26", "", null)));
+        assertThrows(PersistenceException.class, () -> courses.save(Course.create("SOFTWARE DESIGN F26", "")));
     }
 
     @Test
     void savesMaterialWithChunksAndEmbeddings() {
-        long courseId = courses.save(Course.create("EECS3311", "", null)).getId();
+        long courseId = courses.save(Course.create("EECS3311", "")).getId();
         Chunk first = new Chunk(0, 0, 0, 0, "Facade gives a simple interface", 1);
         first.setEmbedding(new float[] {0.25f, -1.5f, 3f}, "gemini-embedding-001");
         Chunk second = new Chunk(0, 0, 0, 1, "Observer notifies listeners", 2);
@@ -82,7 +81,7 @@ class CourseAndMaterialRepositoryTest {
 
     @Test
     void updatesEmbeddingsLater() {
-        long courseId = courses.save(Course.create("EECS3311", "", null)).getId();
+        long courseId = courses.save(Course.create("EECS3311", "")).getId();
         materials.save(newMaterial(courseId, "h", new Chunk(0, 0, 0, 0, "text", 1)));
 
         List<Chunk> chunks = materials.findChunksByCourse(courseId);
@@ -94,7 +93,7 @@ class CourseAndMaterialRepositoryTest {
 
     @Test
     void duplicateHashInSameCourseIsRejectedAndNothingIsHalfSaved() {
-        long courseId = courses.save(Course.create("EECS3311", "", null)).getId();
+        long courseId = courses.save(Course.create("EECS3311", "")).getId();
         materials.save(newMaterial(courseId, "same", new Chunk(0, 0, 0, 0, "a", 1)));
 
         assertThrows(PersistenceException.class,
@@ -104,7 +103,7 @@ class CourseAndMaterialRepositoryTest {
 
     @Test
     void deletingCourseRemovesItsMaterials() {
-        long courseId = courses.save(Course.create("EECS3311", "", null)).getId();
+        long courseId = courses.save(Course.create("EECS3311", "")).getId();
         materials.save(newMaterial(courseId, "h", new Chunk(0, 0, 0, 0, "a", 1)));
 
         courses.delete(courseId);

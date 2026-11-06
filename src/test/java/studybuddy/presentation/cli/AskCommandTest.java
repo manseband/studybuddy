@@ -39,7 +39,7 @@ class AskCommandTest {
         app = new CliTestApp(dir.resolve("ask.db"));
         llm = app.llm;
         StudyAgentFacade facade = facade();
-        long courseId = facade.createCourse("EECS3311", "", null).getId();
+        long courseId = facade.createCourse("EECS3311", "").getId();
         facade.uploadMaterial(courseId, Files.writeString(dir.resolve("patterns.txt"),
                 "The Facade pattern gives one simple interface to a whole subsystem."));
     }

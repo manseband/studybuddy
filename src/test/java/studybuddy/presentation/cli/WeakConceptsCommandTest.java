@@ -36,7 +36,7 @@ class WeakConceptsCommandTest {
     void setUp() throws IOException {
         app = new CliTestApp(dir.resolve("mastery.db"));
         StudyAgentFacade facade = app.facade();
-        courseId = facade.createCourse("EECS3311", "", null).getId();
+        courseId = facade.createCourse("EECS3311", "").getId();
         material = facade.uploadMaterial(courseId, Files.writeString(dir.resolve("patterns.txt"),
                 "The Facade pattern gives one simple interface to a whole subsystem. ".repeat(20)));
     }

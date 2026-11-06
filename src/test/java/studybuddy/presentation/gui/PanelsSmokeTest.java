@@ -59,7 +59,7 @@ class PanelsSmokeTest {
             assertNotEquals(Font.MONOSPACED, new JTextArea().getFont().getFamily());
             assertEquals(Theme.TABLE_ROW_HEIGHT, new StudyTable(new DefaultTableModel()).getRowHeight());
 
-            Course course = facade.createCourse("EECS3311", "", null);
+            Course course = facade.createCourse("EECS3311", "");
             uploadSample(facade, course);
 
             waitFor(() -> materials.rowCount() == 1);

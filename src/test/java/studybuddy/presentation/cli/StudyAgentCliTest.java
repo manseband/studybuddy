@@ -38,8 +38,8 @@ class StudyAgentCliTest {
 
     @Test
     void createListAndAddMaterialAsText() throws IOException {
-        assertEquals(0, run("course", "create", "EECS3311", "--code", "Software Design", "--exam", "2026-12-10"));
-        assertTrue(lastOutput.startsWith("Created course #1: EECS3311 (Software Design), exam on 2026-12-10"));
+        assertEquals(0, run("course", "create", "EECS3311", "--code", "Software Design"));
+        assertTrue(lastOutput.startsWith("Created course #1: EECS3311 (Software Design)"));
 
         Path notes = Files.writeString(dir.resolve("notes.md"), "Observer pattern notes");
         assertEquals(0, run("material", "add", "--course", "eecs3311", notes.toString()));
