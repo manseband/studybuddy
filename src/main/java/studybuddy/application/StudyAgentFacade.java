@@ -1,17 +1,21 @@
 package studybuddy.application;
 
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import studybuddy.domain.Answer;
 import studybuddy.domain.Concept;
 import studybuddy.domain.ConceptMastery;
 import studybuddy.domain.Course;
+import studybuddy.domain.Flashcard;
 import studybuddy.domain.Material;
 import studybuddy.domain.QaEntry;
 import studybuddy.domain.Quiz;
 import studybuddy.domain.QuizAttempt;
 import studybuddy.domain.QuizRequest;
+import studybuddy.domain.Rating;
 
 /**
  * Facade: the single entry point used by the GUI and the CLI. It hides the services, repositories,
@@ -24,6 +28,7 @@ public class StudyAgentFacade implements AutoCloseable {
     private final LearningContentService contentService;
     private final QuizService quizService;
     private final MasteryService masteryService;
+    private final FlashcardService flashcardService;
     private final EventBus eventBus;
     private final boolean aiAvailable;
     private final AutoCloseable resources;
@@ -33,12 +38,14 @@ public class StudyAgentFacade implements AutoCloseable {
      * @param resources   closed by {@link #close()} (the database)
      */
     public StudyAgentFacade(MaterialService materialService, LearningContentService contentService,
-                            QuizService quizService, MasteryService masteryService, EventBus eventBus,
-                            boolean aiAvailable, AutoCloseable resources) {
+                            QuizService quizService, MasteryService masteryService,
+                            FlashcardService flashcardService, EventBus eventBus, boolean aiAvailable,
+                            AutoCloseable resources) {
         this.materialService = materialService;
         this.contentService = contentService;
         this.quizService = quizService;
         this.masteryService = masteryService;
+        this.flashcardService = flashcardService;
         this.eventBus = eventBus;
         this.aiAvailable = aiAvailable;
         this.resources = resources;
@@ -173,6 +180,42 @@ public class StudyAgentFacade implements AutoCloseable {
 
     public QuizAttempt overrideGrade(long attemptId, long questionId, double score) {
         return quizService.overrideGrade(attemptId, questionId, score);
+    }
+
+    // ----- F05 flashcards -----
+
+    /** Unsaved cards for the student to review; there can be fewer than requested. Save with {@link #saveFlashcards}. */
+    public List<Flashcard> generateFlashcards(long courseId, List<Long> materialIds, List<Long> conceptIds, int count) {
+        return flashcardService.generateCards(courseId, materialIds, conceptIds, count);
+    }
+
+    public List<Flashcard> saveFlashcards(List<Flashcard> cards) {
+        return flashcardService.saveDeck(cards);
+    }
+
+    public List<Flashcard> listFlashcards(long courseId) {
+        return flashcardService.listCards(courseId);
+    }
+
+    public List<Flashcard> getDeck(long deckId) {
+        return flashcardService.getDeck(deckId);
+    }
+
+    public List<Flashcard> getDueCards(long courseId) {
+        return flashcardService.getDueCards(courseId);
+    }
+
+    public List<Flashcard> getDueCardsInDeck(long deckId) {
+        return flashcardService.getDueCardsInDeck(deckId);
+    }
+
+    /** When the next of these cards is due, or empty if there are no cards. */
+    public Optional<LocalDate> getNextDueDate(List<Flashcard> cards) {
+        return flashcardService.nextDueDate(cards);
+    }
+
+    public Flashcard reviewFlashcard(long cardId, Rating rating) {
+        return flashcardService.recordReview(cardId, rating);
     }
 
     // ----- F09 weak concepts -----

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +21,18 @@ import studybuddy.domain.Concept;
 import studybuddy.domain.ConceptMastery;
 import studybuddy.domain.Course;
 import studybuddy.domain.Difficulty;
+import studybuddy.domain.Flashcard;
 import studybuddy.domain.GradeResult;
 import studybuddy.domain.Quiz;
 import studybuddy.domain.QuizAttempt;
+import studybuddy.domain.Rating;
 import studybuddy.domain.TrueFalseQuestion;
 import studybuddy.domain.Trend;
 import studybuddy.persistence.AttemptRepository;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
+import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.QuizRepository;
 
 /** F09 with real repositories. Attempts are stored directly, so the only scripted model call is the diagnosis. */
@@ -40,6 +44,7 @@ class MasteryServiceTest {
     private QuizRepository quizzes;
     private AttemptRepository attempts;
     private ConceptRepository concepts;
+    private FlashcardRepository cards;
     private long courseId;
     private long facade;
     private long observer;
@@ -54,7 +59,61 @@ class MasteryServiceTest {
         courseId = new CourseRepository(db).save(new Course(0, "EECS3311", "")).getId();
         facade = concepts.save(new Concept(0, courseId, "Facade", "", 3)).getId();
         observer = concepts.save(new Concept(0, courseId, "Observer", "", 3)).getId();
-        service = new MasteryService(attempts, quizzes, concepts, llm, new ResponseParser(), 60);
+        cards = new FlashcardRepository(db);
+        service = new MasteryService(attempts, quizzes, concepts, cards, llm, new ResponseParser(), 60);
+    }
+
+    /** Stores a card on the concept with one rating at the given time. */
+    private void rate(Long conceptId, Rating rating, LocalDateTime at) {
+        Flashcard card = Flashcard.create(courseId, 0, conceptId, "Front", "Back", 1, LocalDate.of(2026, 11, 1));
+        cards.saveDeck(List.of(card));
+        card.review(rating);
+        cards.recordReview(card, rating, at);
+    }
+
+    @Test
+    void flashcardRatingsAreEvidence() {
+        LocalDateTime start = LocalDateTime.of(2026, 11, 1, 9, 0);
+        rate(facade, Rating.AGAIN, start);
+        rate(facade, Rating.AGAIN, start.plusMinutes(1));
+        rate(facade, Rating.AGAIN, start.plusMinutes(2));
+        rate(observer, Rating.EASY, start);
+        rate(observer, Rating.GOOD, start.plusMinutes(1));
+        rate(observer, Rating.EASY, start.plusMinutes(2));
+
+        assertTrue(masteryOf(facade).weak());
+        assertEquals(0.0, masteryOf(facade).score());
+        assertEquals(3, masteryOf(facade).evidenceCount());
+        assertFalse(masteryOf(observer).weak());
+    }
+
+    @Test
+    void untaggedCardsAreExcluded() {
+        rate(null, Rating.AGAIN, LocalDateTime.of(2026, 11, 1, 9, 0));
+
+        assertTrue(service.computeMastery(courseId).stream().allMatch(m -> m.evidenceCount() == 0));
+    }
+
+    @Test
+    void quizAnswersAndRatingsAreOrderedByTime() {
+        // the old rating happened before the quiz, so it counts less: 0.9 for the rating, 1 for the answer
+        rate(facade, Rating.AGAIN, LocalDateTime.of(2020, 1, 1, 9, 0));
+        answer(facade, Difficulty.EASY, 1);
+
+        assertEquals(100 * 1 / 1.9, masteryOf(facade).score(), 0.001);
+        assertEquals(Trend.UP, masteryOf(facade).trend());
+    }
+
+    @Test
+    void weakFromRatingsAloneStillGetsADiagnosis() {
+        LocalDateTime start = LocalDateTime.of(2026, 11, 1, 9, 0);
+        rate(facade, Rating.AGAIN, start);
+        rate(facade, Rating.AGAIN, start.plusMinutes(1));
+        rate(facade, Rating.AGAIN, start.plusMinutes(2));
+        llm.enqueueText("{\"patterns\": [\"You struggle to recall Facade.\"], \"actions\": []}");
+
+        assertTrue(service.diagnose(courseId).contains("You struggle to recall Facade."));
+        assertTrue(prompts().contains("these scores come from low flashcard ratings"));
     }
 
     @AfterEach

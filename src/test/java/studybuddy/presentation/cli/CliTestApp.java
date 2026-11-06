@@ -10,6 +10,7 @@ import studybuddy.ai.KeywordRetriever;
 import studybuddy.ai.ResponseParser;
 import studybuddy.application.ApplicationFactory;
 import studybuddy.application.EventBus;
+import studybuddy.application.FlashcardService;
 import studybuddy.application.LearningContentService;
 import studybuddy.application.MasteryService;
 import studybuddy.application.MaterialService;
@@ -20,6 +21,7 @@ import studybuddy.persistence.AttemptRepository;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
+import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QaHistoryRepository;
 import studybuddy.persistence.QuizRepository;
@@ -55,8 +57,11 @@ class CliTestApp implements AutoCloseable {
         QuizService quizzes = new QuizService(llm, retriever, parser, new QuestionFactory(),
                 ApplicationFactory.createGraders(llm, parser), quizRepo, attemptRepo,
                 materialRepo, conceptRepo, bus, 6, 6000);
-        MasteryService mastery = new MasteryService(attemptRepo, quizRepo, conceptRepo, llm, parser, 60);
-        return new StudyAgentFacade(materials, content, quizzes, mastery, bus, true, () -> { });
+        FlashcardRepository cardRepo = new FlashcardRepository(db);
+        MasteryService mastery = new MasteryService(attemptRepo, quizRepo, conceptRepo, cardRepo, llm, parser, 60);
+        FlashcardService cards = new FlashcardService(llm, retriever, parser, cardRepo, materialRepo, conceptRepo, bus,
+                6, 6000);
+        return new StudyAgentFacade(materials, content, quizzes, mastery, cards, bus, true, () -> { });
     }
 
     /** Runs one command line; the output is kept in {@link #output}. */

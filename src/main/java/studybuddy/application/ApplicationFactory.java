@@ -20,6 +20,7 @@ import studybuddy.persistence.AttemptRepository;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
+import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QaHistoryRepository;
 import studybuddy.persistence.QuizRepository;
@@ -55,10 +56,13 @@ public final class ApplicationFactory {
             QuizService quizService = new QuizService(routineClient, retriever, responseParser, new QuestionFactory(),
                     createGraders(routineClient, responseParser), quizRepo, attemptRepo,
                     materialRepo, conceptRepo, eventBus, config.retrievalTopK(), config.promptWordBudget());
-            MasteryService masteryService = new MasteryService(attemptRepo, quizRepo, conceptRepo, routineClient,
-                    responseParser, config.weakThreshold());
-            return new StudyAgentFacade(materialService, contentService, quizService, masteryService, eventBus,
-                    config.hasApiKey(), db);
+            FlashcardRepository cardRepo = new FlashcardRepository(db);
+            MasteryService masteryService = new MasteryService(attemptRepo, quizRepo, conceptRepo, cardRepo,
+                    routineClient, responseParser, config.weakThreshold());
+            FlashcardService flashcardService = new FlashcardService(routineClient, retriever, responseParser,
+                    cardRepo, materialRepo, conceptRepo, eventBus, config.retrievalTopK(), config.promptWordBudget());
+            return new StudyAgentFacade(materialService, contentService, quizService, masteryService,
+                    flashcardService, eventBus, config.hasApiKey(), db);
         } catch (RuntimeException e) {
             db.close();
             throw e;

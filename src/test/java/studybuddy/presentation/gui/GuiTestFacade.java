@@ -6,6 +6,7 @@ import studybuddy.ai.KeywordRetriever;
 import studybuddy.ai.ResponseParser;
 import studybuddy.application.ApplicationFactory;
 import studybuddy.application.EventBus;
+import studybuddy.application.FlashcardService;
 import studybuddy.application.LearningContentService;
 import studybuddy.application.MasteryService;
 import studybuddy.application.MaterialService;
@@ -16,6 +17,7 @@ import studybuddy.persistence.AttemptRepository;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
+import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QaHistoryRepository;
 import studybuddy.persistence.QuizRepository;
@@ -34,6 +36,7 @@ final class GuiTestFacade {
         ConceptRepository concepts = new ConceptRepository(db);
         QuizRepository quizzes = new QuizRepository(db);
         AttemptRepository attempts = new AttemptRepository(db);
+        FlashcardRepository cards = new FlashcardRepository(db);
         return new StudyAgentFacade(
                 new MaterialService(new CourseRepository(db), materials, new DocumentParser(), retriever, bus,
                         1_000_000, 400, 50),
@@ -42,7 +45,8 @@ final class GuiTestFacade {
                 new QuizService(llm, retriever, parser, new QuestionFactory(),
                         ApplicationFactory.createGraders(llm, parser), quizzes, attempts, materials, concepts, bus,
                         6, 6000),
-                new MasteryService(attempts, quizzes, concepts, llm, parser, 60),
+                new MasteryService(attempts, quizzes, concepts, cards, llm, parser, 60),
+                new FlashcardService(llm, retriever, parser, cards, materials, concepts, bus, 6, 6000),
                 bus, true, () -> { });
     }
 }
