@@ -1,11 +1,20 @@
 package studybuddy.presentation.gui;
 
+import java.awt.BorderLayout;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
 
 import studybuddy.application.StudyAgentFacade;
@@ -67,6 +76,34 @@ public abstract class FeaturePanel extends JPanel {
                 }
             }
         }.execute();
+    }
+
+    /** A list where several items can be chosen. */
+    protected static <T> JList<T> multiSelectList(List<T> items) {
+        DefaultListModel<T> listModel = new DefaultListModel<>();
+        items.forEach(listModel::addElement);
+        JList<T> list = new JList<>(listModel);
+        list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        return list;
+    }
+
+    /** The component with a label above it. */
+    protected static JPanel titled(String title, JComponent content) {
+        JPanel panel = new JPanel(new BorderLayout(0, 2));
+        panel.add(new JLabel(title), BorderLayout.NORTH);
+        panel.add(content, BorderLayout.CENTER);
+        return panel;
+    }
+
+    /** Text that wraps to the available width and looks like a label. */
+    protected static JTextArea wrappedText(String text) {
+        JTextArea area = new JTextArea(text);
+        area.setEditable(false);
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setOpaque(false);
+        area.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
+        return area;
     }
 
     protected void showError(String message) {

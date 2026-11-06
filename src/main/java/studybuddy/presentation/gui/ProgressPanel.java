@@ -25,7 +25,7 @@ import studybuddy.domain.Course;
 
 /**
  * F09: concepts ranked by mastery, weakest first, with an optional AI diagnosis of the mistakes.
- * Scores update on their own: any quiz result triggers an event, which refreshes this panel.
+ * Scores update on their own: any quiz result or flashcard rating triggers an event, which refreshes this panel.
  */
 public class ProgressPanel extends FeaturePanel {
 
@@ -39,7 +39,7 @@ public class ProgressPanel extends FeaturePanel {
         }
     };
     private final JTable table = new StudyTable(model);
-    private final JButton diagnose = new JButton("Diagnose");
+    private final JButton diagnose = new JButton("Diagnose Weak Concepts");
     private final JLabel status = new JLabel(" ");
     private final JTextArea diagnosis = new JTextArea(7, 40);
 
@@ -105,14 +105,13 @@ public class ProgressPanel extends FeaturePanel {
     private void show(List<ConceptMastery> mastery) {
         model.setRowCount(0);
         for (ConceptMastery m : mastery) {
-            model.addRow(new Object[] {m.conceptName(), m, m.evidenceCount() + " answer(s)", m.trend().arrow(),
-                    m.statusLabel()});
+            model.addRow(new Object[] {m.conceptName(), m, m.evidenceCount(), m.trend().arrow(), m.statusLabel()});
         }
         diagnose.setEnabled(mastery.stream().anyMatch(ConceptMastery::weak));
         if (mastery.isEmpty()) {
             status.setText(course == null ? " " : "No concepts yet. Extract them in the Concepts tab first.");
         } else if (mastery.stream().allMatch(m -> m.evidenceCount() == 0)) {
-            status.setText("No evidence yet. Take a quiz on this course.");
+            status.setText("No evidence yet. Take a quiz or review flashcards on this course.");
         } else if (!"Diagnosing...".equals(status.getText())) {
             status.setText(" ");
         }

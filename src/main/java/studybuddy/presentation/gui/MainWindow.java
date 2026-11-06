@@ -54,6 +54,7 @@ public class MainWindow implements StudyEventListener {
         panels.add(new MaterialsPanel(facade));
         panels.add(new ConceptsPanel(facade));
         panels.add(new AskPanel(facade));
+        panels.add(new FlashcardPanel(facade));
         panels.add(new QuizPanel(facade));
         panels.add(new ProgressPanel(facade));
         panels.forEach(panel -> tabs.addTab(panel.title(), panel));

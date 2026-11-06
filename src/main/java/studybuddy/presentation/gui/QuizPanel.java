@@ -22,7 +22,6 @@ import java.util.function.Supplier;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -296,21 +295,6 @@ public class QuizPanel extends FeaturePanel {
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());
         }
-    }
-
-    private static <T> JList<T> multiSelectList(List<T> items) {
-        DefaultListModel<T> listModel = new DefaultListModel<>();
-        items.forEach(listModel::addElement);
-        JList<T> list = new JList<>(listModel);
-        list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        return list;
-    }
-
-    private static JPanel titled(String title, JComponent content) {
-        JPanel panel = new JPanel(new BorderLayout(0, 2));
-        panel.add(new JLabel(title), BorderLayout.NORTH);
-        panel.add(content, BorderLayout.CENTER);
-        return panel;
     }
 
     private void generate(QuizRequest request) {
@@ -606,17 +590,6 @@ public class QuizPanel extends FeaturePanel {
     private static void addToCard(JPanel card, JComponent row) {
         row.setAlignmentX(LEFT_ALIGNMENT);
         card.add(row);
-    }
-
-    /** Text that wraps to the available width and looks like a label. */
-    private static JTextArea wrappedText(String text) {
-        JTextArea area = new JTextArea(text);
-        area.setEditable(false);
-        area.setLineWrap(true);
-        area.setWrapStyleWord(true);
-        area.setOpaque(false);
-        area.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
-        return area;
     }
 
     /** Which view is showing; used by tests. */
