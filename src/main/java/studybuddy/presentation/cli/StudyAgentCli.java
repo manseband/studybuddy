@@ -1,5 +1,8 @@
 package studybuddy.presentation.cli;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,7 +28,7 @@ import studybuddy.config.AppConfig;
 @Command(name = "studyagent", mixinStandardHelpOptions = true, version = "StudyBuddy 0.1",
         description = "StudyBuddy: an AI study and learning agent for your course materials.",
         subcommands = {GuiCommand.class, CourseCommand.class, MaterialCommand.class, AskCommand.class,
-                ConceptsCommand.class})
+                ConceptsCommand.class, QuizCommand.class})
 public class StudyAgentCli implements Runnable {
 
     @Option(names = "--json", scope = CommandLine.ScopeType.INHERIT,
@@ -35,6 +38,7 @@ public class StudyAgentCli implements Runnable {
     private final Supplier<StudyAgentFacade> facadeFactory;
     private StudyAgentFacade facade;
     private PrintWriter out;
+    private BufferedReader in;
     private final ObjectMapper mapper = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
@@ -100,6 +104,22 @@ public class StudyAgentCli implements Runnable {
             out.println(text);
         }
         out.flush();
+    }
+
+    /** Prints text for an interactive command; left out with --json so the output stays valid JSON. */
+    void prompt(String text) {
+        if (!jsonOutput) {
+            out.print(text);
+            out.flush();
+        }
+    }
+
+    /** The next line the student typed, or null at the end of the input. */
+    String readLine() throws IOException {
+        if (in == null) {
+            in = new BufferedReader(new InputStreamReader(System.in));
+        }
+        return in.readLine();
     }
 
     private void printError(Exception e) {
