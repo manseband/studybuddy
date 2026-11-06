@@ -4,12 +4,12 @@ package studybuddy.domain;
  * Mastery of one concept (F09): score 0-100 from quiz and flashcard evidence.
  * A concept with fewer than {@link #MIN_EVIDENCE} evidence events is "insufficient data", never weak.
  */
-public record TopicMastery(long conceptId, String conceptName, double score, int evidenceCount, Trend trend,
-                           boolean weak) {
+public record ConceptMastery(long conceptId, String conceptName, double score, int evidenceCount, Trend trend,
+                             boolean weak) {
 
     public static final int MIN_EVIDENCE = 3;
 
-    public TopicMastery {
+    public ConceptMastery {
         if (score < 0 || score > 100) {
             throw new IllegalArgumentException("Mastery score must be between 0 and 100");
         }
@@ -20,5 +20,13 @@ public record TopicMastery(long conceptId, String conceptName, double score, int
 
     public boolean insufficientData() {
         return evidenceCount < MIN_EVIDENCE;
+    }
+
+    /** "Weak", "Strong" or "Not enough data", as shown to the student. */
+    public String statusLabel() {
+        if (insufficientData()) {
+            return "Not enough data";
+        }
+        return weak ? "Weak" : "Strong";
     }
 }

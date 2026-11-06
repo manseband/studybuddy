@@ -60,10 +60,10 @@ class ValueTypesTest {
     }
 
     @Test
-    void topicMasteryWithFewEventsIsNeverWeak() {
-        assertTrue(new TopicMastery(1, "Observer", 20, 2, Trend.FLAT, false).insufficientData());
+    void conceptMasteryWithFewEventsIsNeverWeak() {
+        assertTrue(new ConceptMastery(1, "Observer", 20, 2, Trend.FLAT, false).insufficientData());
         assertThrows(IllegalArgumentException.class,
-                () -> new TopicMastery(1, "Observer", 20, 2, Trend.FLAT, true));
+                () -> new ConceptMastery(1, "Observer", 20, 2, Trend.FLAT, true));
     }
 
     @Test

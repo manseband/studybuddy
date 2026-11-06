@@ -112,9 +112,9 @@ class GeminiClientTest {
     @Test
     void mapsToolCallsBothWays() {
         ToolExecutionRequest call = ToolExecutionRequest.builder()
-                .id("abc").name("get_weak_topics").arguments("{\"courseId\": 4}").build();
+                .id("abc").name("get_weak_concepts").arguments("{\"courseId\": 4}").build();
         ScriptedChatModel model = new ScriptedChatModel().reply(AiMessage.from(List.of(call)));
-        ToolSpec spec = new ToolSpec("get_weak_topics", "Weak topics of a course",
+        ToolSpec spec = new ToolSpec("get_weak_concepts", "Weak concepts of a course",
                 "{\"type\":\"object\",\"properties\":{\"courseId\":{\"type\":\"integer\",\"description\":\"Course\"}},"
                         + "\"required\":[\"courseId\"]}");
         LLMRequest request = new PromptBuilder().withTools(List.of(spec)).withOutputSchema("{}")
@@ -125,7 +125,7 @@ class GeminiClientTest {
 
         assertTrue(response.hasToolCalls());
         ToolCall parsed = response.toolCalls().get(0);
-        assertEquals("get_weak_topics", parsed.name());
+        assertEquals("get_weak_concepts", parsed.name());
         assertEquals(Map.of("courseId", 4), parsed.arguments());
 
         ChatRequest sent = model.received.get(0);

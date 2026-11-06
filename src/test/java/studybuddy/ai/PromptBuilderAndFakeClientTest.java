@@ -47,7 +47,7 @@ class PromptBuilderAndFakeClientTest {
 
     @Test
     void historyComesBeforeTheNewMessageAndToolsArePassedOn() {
-        ToolSpec spec = new ToolSpec("get_weak_topics", "Lists weak topics", "{\"type\":\"object\"}");
+        ToolSpec spec = new ToolSpec("get_weak_concepts", "Lists weak concepts", "{\"type\":\"object\"}");
         LLMRequest request = new PromptBuilder()
                 .system("Coach")
                 .withHistory(List.of(LLMMessage.user("hi"), LLMMessage.assistant("hello")))
