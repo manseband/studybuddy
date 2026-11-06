@@ -9,7 +9,6 @@ public enum ActivityType {
     QUESTION,
     QUIZ,
     FLASHCARD_REVIEW,
-    PLAN,
     COACH;
 
     public static ActivityType fromString(String value) {

@@ -21,7 +21,6 @@ public record StudyEvent(Type type, long courseId, String message, LocalDateTime
         QUIZ_SUBMITTED,
         FLASHCARDS_CHANGED,
         FLASHCARD_REVIEWED,
-        PLAN_CHANGED,
         COACH_RESPONDED
     }
 

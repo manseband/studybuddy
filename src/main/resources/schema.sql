@@ -6,8 +6,7 @@
 CREATE TABLE IF NOT EXISTS courses (
     id        INTEGER PRIMARY KEY AUTOINCREMENT,
     name      TEXT NOT NULL UNIQUE COLLATE NOCASE,
-    code      TEXT NOT NULL DEFAULT '',
-    exam_date TEXT
+    code      TEXT NOT NULL DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS materials (
@@ -142,24 +141,6 @@ CREATE TABLE IF NOT EXISTS flashcard_reviews (
     concept_id  INTEGER REFERENCES concepts(id) ON DELETE SET NULL,
     rating      TEXT NOT NULL,
     reviewed_at TEXT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS study_plans (
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
-    course_id        INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-    exam_date        TEXT NOT NULL,
-    created_at       TEXT NOT NULL,
-    omitted_concepts TEXT NOT NULL DEFAULT '[]'
-);
-
-CREATE TABLE IF NOT EXISTS study_sessions (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    plan_id    INTEGER NOT NULL REFERENCES study_plans(id) ON DELETE CASCADE,
-    date       TEXT NOT NULL,
-    minutes    INTEGER NOT NULL,
-    concepts   TEXT NOT NULL DEFAULT '[]',
-    activities TEXT NOT NULL DEFAULT '',
-    done       INTEGER NOT NULL DEFAULT 0
 );
 
 -- Study history (F13): one row per notable action.
