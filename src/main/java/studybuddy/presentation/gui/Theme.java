@@ -18,6 +18,11 @@ final class Theme {
     static final Color AI_CONNECTED = new Color(46, 139, 87);
     static final Color AI_NOT_CONNECTED = new Color(176, 128, 0);
 
+    /** Colours of a graded answer in the quiz results. */
+    static final Color ANSWER_CORRECT = new Color(46, 139, 87);
+    static final Color ANSWER_WRONG = new Color(192, 57, 43);
+    static final Color ANSWER_PENDING = new Color(176, 128, 0);
+
     private Theme() {
     }
 
@@ -26,6 +31,11 @@ final class Theme {
      * the panels are built. If the font is not installed, Java falls back to its proportional Dialog font.
      */
     static void install() {
-        UIManager.put("TextArea.font", new Font(TEXT_FONT_NAME, Font.PLAIN, TEXT_FONT_SIZE));
+        UIManager.put("TextArea.font", textFont());
+    }
+
+    /** The reading font, for other components that show course text (quiz options, for example). */
+    static Font textFont() {
+        return new Font(TEXT_FONT_NAME, Font.PLAIN, TEXT_FONT_SIZE);
     }
 }
