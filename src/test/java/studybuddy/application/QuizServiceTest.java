@@ -258,6 +258,7 @@ class QuizServiceTest {
 
         assertEquals(facade.getId(), quiz.getQuestions().get(0).getConceptId());
         assertEquals(2, llm.getRequests().size());
+        assertTrue(lastPrompt().contains("Every question must test one of these concepts"), lastPrompt());
     }
 
     @Test

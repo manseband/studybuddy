@@ -2,14 +2,10 @@ package studybuddy.application;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -25,7 +21,6 @@ import studybuddy.domain.Chunk;
 import studybuddy.domain.Concept;
 import studybuddy.domain.Difficulty;
 import studybuddy.domain.GradeResult;
-import studybuddy.domain.Material;
 import studybuddy.domain.Question;
 import studybuddy.domain.QuestionType;
 import studybuddy.domain.Quiz;
@@ -60,17 +55,13 @@ public class QuizService {
                "rubric": "what a full answer must mention", "excerpt": 2, "page": 6, "concept": null}]}""";
 
     private final LLMClient llm;
-    private final RetrievalStrategy retriever;
     private final ResponseParser responseParser;
     private final QuestionFactory questionFactory;
     private final Map<QuestionType, GradingStrategy> graders;
     private final QuizRepository quizRepo;
     private final AttemptRepository attemptRepo;
-    private final MaterialRepository materialRepo;
-    private final ConceptRepository conceptRepo;
+    private final StudyScope scope;
     private final EventBus eventBus;
-    private final int topK;
-    private final int wordBudget;
 
     /** Shape of the model's JSON reply: question fields differ by type, so each one is a map. */
     record QuestionsJson(List<Map<String, Object>> questions) {
@@ -86,17 +77,13 @@ public class QuizService {
                        QuizRepository quizRepo, AttemptRepository attemptRepo, MaterialRepository materialRepo,
                        ConceptRepository conceptRepo, EventBus eventBus, int topK, int wordBudget) {
         this.llm = llm;
-        this.retriever = retriever;
         this.responseParser = responseParser;
         this.questionFactory = questionFactory;
         this.graders = Map.copyOf(graders);
         this.quizRepo = quizRepo;
         this.attemptRepo = attemptRepo;
-        this.materialRepo = materialRepo;
-        this.conceptRepo = conceptRepo;
+        this.scope = new StudyScope(materialRepo, conceptRepo, retriever, topK, wordBudget);
         this.eventBus = eventBus;
-        this.topK = topK;
-        this.wordBudget = wordBudget;
     }
 
     // ----- F06 generation -----
@@ -112,21 +99,21 @@ public class QuizService {
         if (request.adaptive()) {
             throw new IllegalArgumentException("Adaptive quizzes are not available yet; choose a difficulty.");
         }
-        List<Concept> concepts = conceptsInScope(request);
-        List<Chunk> excerpts = selectExcerpts(chunksInScope(request, concepts));
+        List<Concept> concepts = scope.concepts(request.courseId(), request.conceptIds());
+        List<Chunk> excerpts = scope.excerpts(request.courseId(), request.materialIds(), request.conceptIds(), concepts);
         int words = excerpts.stream().mapToInt(Chunk::wordCount).sum();
         int count = Math.min(request.questionCount(), Math.max(1, words / WORDS_PER_QUESTION));
 
         Map<QuestionType, Integer> missing = splitAcrossTypes(count, request.types());
         List<String> recentStems = quizRepo.findRecentStems(request.courseId(), RECENT_QUIZZES);
-        Set<String> usedStems = recentStems.stream().map(QuizService::normalizeStem)
+        Set<String> usedStems = recentStems.stream().map(StudyScope::normalizeText)
                 .collect(Collectors.toCollection(HashSet::new));
         List<Question> accepted = new ArrayList<>();
         try {
             for (int round = 0; round <= MAX_REGENERATIONS && !missing.isEmpty(); round++) {
                 List<String> avoid = new ArrayList<>(accepted.stream().map(Question::getStem).toList());
                 recentStems.stream().limit(RECENT_STEMS_IN_PROMPT).forEach(avoid::add);
-                QuestionsJson reply = requestQuestions(missing, request.difficulty(), excerpts, concepts, avoid);
+                QuestionsJson reply = requestQuestions(missing, request, excerpts, concepts, avoid);
                 for (Map<String, Object> json : reply.questions() == null
                         ? List.<Map<String, Object>>of() : reply.questions()) {
                     accept(json, request, excerpts, concepts, missing, usedStems, accepted);
@@ -165,7 +152,7 @@ public class QuizService {
         if (question == null || !question.isValid() || !missing.containsKey(question.getType())) {
             return;
         }
-        if (usedStems.add(normalizeStem(question.getStem()))) {
+        if (usedStems.add(StudyScope.normalizeText(question.getStem()))) {
             accepted.add(question);
             missing.computeIfPresent(question.getType(), (type, left) -> left == 1 ? null : left - 1);
         }
@@ -181,7 +168,7 @@ public class QuizService {
         Chunk chunk = excerpts.get(excerpt.intValue() - 1);
         Map<String, Object> data = new HashMap<>(json);
         data.put("difficulty", request.difficulty());
-        data.put("sourcePage", pageWithin(chunk, json.get("page")));
+        data.put("sourcePage", StudyScope.pageWithin(chunk, json.get("page")));
         data.put("sourceChunkId", chunk.getId());
         String conceptName = json.get("concept") instanceof String name ? name.strip() : "";
         Long conceptId = null;
@@ -203,16 +190,7 @@ public class QuizService {
         }
     }
 
-    /** The page the model named, if the excerpt covers it; otherwise the excerpt's first page. */
-    private static int pageWithin(Chunk chunk, Object page) {
-        if (page instanceof Number number && number.intValue() >= chunk.getPageNumber()
-                && number.intValue() <= chunk.getEndPage()) {
-            return number.intValue();
-        }
-        return chunk.getPageNumber();
-    }
-
-    private QuestionsJson requestQuestions(Map<QuestionType, Integer> missing, Difficulty difficulty,
+    private QuestionsJson requestQuestions(Map<QuestionType, Integer> missing, QuizRequest request,
                                            List<Chunk> excerpts, List<Concept> concepts, List<String> avoid) {
         PromptBuilder prompt = new PromptBuilder()
                 .system("You are StudyBuddy, a study assistant. You write quiz questions that test a student's "
@@ -224,13 +202,14 @@ public class QuizService {
                 .withInstruction("True/false questions state a claim; \"answer\" is the JSON boolean true or false.")
                 .withInstruction("Short-answer questions need a model \"referenceAnswer\" and a \"rubric\" listing "
                         + "the points a full answer must mention.")
-                .withInstruction(difficultyGuidance(difficulty))
+                .withInstruction(difficultyGuidance(request.difficulty()))
                 .withOutputSchema(QUESTIONS_SCHEMA)
                 .withExcerpts(excerpts);
         if (!concepts.isEmpty()) {
             prompt.withInstruction("\"concept\" is the concept the question tests, written exactly as one of these "
-                    + "names: " + concepts.stream().map(Concept::getName).collect(Collectors.joining("; "))
-                    + ". Use null only if none fits.");
+                    + "names: " + concepts.stream().map(Concept::getName).collect(Collectors.joining("; ")) + ". "
+                    + (request.conceptIds().isEmpty() ? "Use null only if none fits."
+                            : "Every question must test one of these concepts; ignore other topics in the excerpts."));
         } else {
             prompt.withInstruction("Set \"concept\" to null.");
         }
@@ -264,75 +243,6 @@ public class QuizService {
             counts.merge(ordered.get(i % ordered.size()), 1, Integer::sum);
         }
         return counts;
-    }
-
-    private List<Concept> conceptsInScope(QuizRequest request) {
-        List<Concept> all = conceptRepo.findByCourse(request.courseId());
-        if (request.conceptIds().isEmpty()) {
-            return all;
-        }
-        List<Concept> chosen = new ArrayList<>();
-        for (long id : request.conceptIds()) {
-            chosen.add(all.stream().filter(c -> c.getId() == id).findFirst().orElseThrow(
-                    () -> new IllegalArgumentException("Concept " + id + " does not belong to this course")));
-        }
-        return chosen;
-    }
-
-    /** F06 step 1: the chosen materials, the excerpts about the chosen concepts, or else the whole course. */
-    private List<Chunk> chunksInScope(QuizRequest request, List<Concept> concepts) {
-        long courseId = request.courseId();
-        if (request.materialIds().isEmpty() && request.conceptIds().isEmpty()) {
-            return requireText(materialRepo.findChunksByCourse(courseId));
-        }
-        Map<Long, Chunk> chunks = new LinkedHashMap<>();
-        for (long id : request.materialIds()) {
-            Material material = materialRepo.findById(id)
-                    .orElseThrow(() -> new NoSuchElementException("No material with id " + id));
-            if (material.getCourseId() != courseId) {
-                throw new IllegalArgumentException("Material " + id + " does not belong to this course");
-            }
-            material.getChunks().forEach(c -> chunks.put(c.getId(), c));
-        }
-        if (!request.conceptIds().isEmpty()) {
-            for (Concept concept : concepts) {
-                retriever.retrieve(courseId, concept.getName() + " " + concept.getDefinition(), topK)
-                        .forEach(c -> chunks.put(c.getId(), c));
-            }
-        }
-        return requireText(new ArrayList<>(chunks.values()));
-    }
-
-    private static List<Chunk> requireText(List<Chunk> chunks) {
-        if (chunks.isEmpty()) {
-            throw new IllegalStateException("There is no text to write questions from. Upload materials first.");
-        }
-        return chunks;
-    }
-
-    /**
-     * Picks chunks at random until the word budget is reached, so that large courses fit in one prompt
-     * and repeated quizzes cover different parts. The excerpts stay in document order.
-     */
-    private List<Chunk> selectExcerpts(List<Chunk> chunks) {
-        List<Chunk> shuffled = new ArrayList<>(chunks);
-        Collections.shuffle(shuffled);
-        List<Chunk> selected = new ArrayList<>();
-        int words = 0;
-        for (Chunk chunk : shuffled) {
-            if (!selected.isEmpty() && words + chunk.wordCount() > wordBudget) {
-                break;
-            }
-            selected.add(chunk);
-            words += chunk.wordCount();
-        }
-        selected.sort(Comparator.comparingLong(Chunk::getMaterialId).thenComparingInt(Chunk::getPosition));
-        return selected;
-    }
-
-    /** Lower case without punctuation, so small rewordings of spacing or capitals count as repeats. */
-    private static String normalizeStem(String stem) {
-        return stem.toLowerCase(Locale.ROOT).replaceAll("[^\\p{L}\\p{N}]+", " ").strip();
     }
 
     // ----- F07 grading -----
