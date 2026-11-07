@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Path;
 
+import studybuddy.agent.AgentController;
 import studybuddy.ai.DocumentParser;
 import studybuddy.ai.FakeLLMClient;
 import studybuddy.ai.KeywordRetriever;
@@ -23,6 +24,7 @@ import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
 import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.MaterialRepository;
+import studybuddy.persistence.PreferenceRepository;
 import studybuddy.persistence.QaHistoryRepository;
 import studybuddy.persistence.QuizRepository;
 
@@ -61,7 +63,9 @@ class CliTestApp implements AutoCloseable {
         MasteryService mastery = new MasteryService(attemptRepo, quizRepo, conceptRepo, cardRepo, llm, parser, 60);
         FlashcardService cards = new FlashcardService(llm, retriever, parser, cardRepo, materialRepo, conceptRepo, bus,
                 6, 6000);
-        return new StudyAgentFacade(materials, content, quizzes, mastery, cards, bus, true, () -> { });
+        AgentController agent = ApplicationFactory.createAgent(llm, materials, content, quizzes, mastery, cards,
+                new PreferenceRepository(db), bus, 8);
+        return new StudyAgentFacade(materials, content, quizzes, mastery, cards, agent, bus, true, () -> { });
     }
 
     /** Runs one command line; the output is kept in {@link #output}. */

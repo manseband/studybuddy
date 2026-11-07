@@ -22,7 +22,7 @@ class AppConfigTest {
         AppConfig config = AppConfig.load(dir.resolve("missing.env"), Map.of());
 
         assertEquals("gemini-3.1-flash-lite", config.routineModel());
-        assertEquals("gemini-3.8-flash", config.coachModel());
+        assertEquals("gemini-3.1-flash-lite", config.coachModel());
         assertEquals("gemini-embedding-001", config.embeddingModel());
         assertEquals(400, config.chunkWords());
         assertEquals(50, config.chunkOverlap());

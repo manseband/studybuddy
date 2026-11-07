@@ -175,6 +175,12 @@ public class LearningContentService {
         return qaRepo.findByCourse(courseId);
     }
 
+    /** The excerpts of the course most relevant to the query, with no model call (used by the Study Coach). */
+    public List<Citation> searchMaterials(long courseId, String query, int limit) {
+        List<Chunk> excerpts = retriever.retrieve(courseId, query, limit);
+        return excerptCitations(excerpts, materialTitles(excerpts));
+    }
+
     // ----- F03 concepts -----
 
     /**

@@ -42,6 +42,9 @@ import dev.langchain4j.model.output.TokenUsage;
  */
 public class GeminiClient implements LLMClient {
 
+    /** The name LangChain4j gives the thought signature among an AiMessage's attributes. */
+    private static final String THOUGHT_SIGNATURE = "thinking_signature";
+
     private final ChatModel chatModel;
     private final String modelName;
     private final int maxRetries;
@@ -68,6 +71,8 @@ public class GeminiClient implements LLMClient {
                 .modelName(modelName)
                 .timeout(timeout)
                 .maxRetries(0)
+                .returnThinking(true)
+                .sendThinking(true)
                 .build();
         return new GeminiClient(model, modelName, maxRetries, 1000);
     }
@@ -107,9 +112,7 @@ public class GeminiClient implements LLMClient {
         for (LLMMessage m : request.messages()) {
             messages.add(switch (m.role()) {
                 case USER -> UserMessage.from(m.text());
-                case ASSISTANT -> m.toolCalls().isEmpty()
-                        ? AiMessage.from(m.text())
-                        : AiMessage.from(m.text().isBlank() ? null : m.text(), toExecutionRequests(m.toolCalls()));
+                case ASSISTANT -> m.toolCalls().isEmpty() ? AiMessage.from(m.text()) : toAiMessage(m);
                 case TOOL -> ToolExecutionResultMessage.from(m.toolCallId(), m.toolName(), m.text());
             });
         }
@@ -137,7 +140,17 @@ public class GeminiClient implements LLMClient {
         TokenUsage usage = response.tokenUsage();
         int in = usage == null || usage.inputTokenCount() == null ? 0 : usage.inputTokenCount();
         int out = usage == null || usage.outputTokenCount() == null ? 0 : usage.outputTokenCount();
-        return new LLMResponse(ai.text(), calls, in, out);
+        return new LLMResponse(ai.text(), calls, in, out, ai.attribute(THOUGHT_SIGNATURE, String.class));
+    }
+
+    /** A reply with tool calls, with the thought signature Gemini 3 requires in follow-up requests. */
+    private AiMessage toAiMessage(LLMMessage message) {
+        return AiMessage.builder()
+                .text(message.text().isBlank() ? null : message.text())
+                .toolExecutionRequests(toExecutionRequests(message.toolCalls()))
+                .attributes(message.providerState() == null ? Map.of()
+                        : Map.of(THOUGHT_SIGNATURE, message.providerState()))
+                .build();
     }
 
     private List<ToolExecutionRequest> toExecutionRequests(List<ToolCall> calls) {

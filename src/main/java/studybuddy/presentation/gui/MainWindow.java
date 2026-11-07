@@ -29,6 +29,7 @@ import studybuddy.application.StudyEvent;
 import studybuddy.application.StudyEventListener;
 import studybuddy.config.AppConfig;
 import studybuddy.domain.Course;
+import studybuddy.domain.CreatedItem;
 
 /**
  * The application window: a course selector above one tab per feature.
@@ -39,6 +40,8 @@ public class MainWindow implements StudyEventListener {
 
     private final StudyAgentFacade facade;
     private final List<FeaturePanel> panels = new ArrayList<>();
+    private final FlashcardPanel flashcardPanel;
+    private final QuizPanel quizPanel;
     private final JFrame frame = new JFrame("StudyBuddy");
     private final JComboBox<Course> courseSelector = new JComboBox<>();
     private final JTabbedPane tabs = new JTabbedPane();
@@ -54,9 +57,12 @@ public class MainWindow implements StudyEventListener {
         panels.add(new MaterialsPanel(facade));
         panels.add(new ConceptsPanel(facade));
         panels.add(new AskPanel(facade));
-        panels.add(new FlashcardPanel(facade));
-        panels.add(new QuizPanel(facade));
+        flashcardPanel = new FlashcardPanel(facade);
+        quizPanel = new QuizPanel(facade);
+        panels.add(flashcardPanel);
+        panels.add(quizPanel);
         panels.add(new ProgressPanel(facade));
+        panels.add(new CoachPanel(facade, this::openCreatedItem));
         panels.forEach(panel -> tabs.addTab(panel.title(), panel));
 
         frame.setLayout(new BorderLayout());
@@ -117,6 +123,17 @@ public class MainWindow implements StudyEventListener {
     /** The panels, in tab order. */
     List<FeaturePanel> panels() {
         return panels;
+    }
+
+    /** F12: opens a quiz or deck the Study Coach created, in its own tab. */
+    private void openCreatedItem(CreatedItem item) {
+        if (item.type() == CreatedItem.Type.QUIZ) {
+            tabs.setSelectedComponent(quizPanel);
+            quizPanel.openQuiz(facade.getQuiz(item.id()));
+        } else {
+            tabs.setSelectedComponent(flashcardPanel);
+            flashcardPanel.showDeck(item.id());
+        }
     }
 
     private JPanel buildTopBar() {

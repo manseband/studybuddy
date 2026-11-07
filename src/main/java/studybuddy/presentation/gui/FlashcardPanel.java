@@ -421,6 +421,20 @@ public class FlashcardPanel extends FeaturePanel {
         return view;
     }
 
+    /** Shows the deck list with this deck selected. */
+    void showDeck(long deckId) {
+        currentView = DECKS_VIEW;
+        cards.show(views, DECKS_VIEW);
+        long courseId = course.getId();
+        runInBackground(() -> facade.listFlashcards(courseId), all -> {
+            fillDecks(all);
+            int row = deckIds.indexOf(deckId);
+            if (row >= 0) {
+                deckTable.setRowSelectionInterval(row, row);
+            }
+        });
+    }
+
     void reviewDueCards() {
         long courseId = course.getId();
         startReview(() -> facade.getDueCards(courseId), () -> facade.listFlashcards(courseId));

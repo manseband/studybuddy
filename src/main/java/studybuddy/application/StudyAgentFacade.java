@@ -4,7 +4,10 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
+import studybuddy.agent.AgentController;
+import studybuddy.domain.AgentResponse;
 import studybuddy.domain.Answer;
 import studybuddy.domain.Concept;
 import studybuddy.domain.ConceptMastery;
@@ -16,6 +19,7 @@ import studybuddy.domain.Quiz;
 import studybuddy.domain.QuizAttempt;
 import studybuddy.domain.QuizRequest;
 import studybuddy.domain.Rating;
+import studybuddy.domain.TraceStep;
 
 /**
  * Facade: the single entry point used by the GUI and the CLI. It hides the services, repositories,
@@ -29,6 +33,7 @@ public class StudyAgentFacade implements AutoCloseable {
     private final QuizService quizService;
     private final MasteryService masteryService;
     private final FlashcardService flashcardService;
+    private final AgentController agentController;
     private final EventBus eventBus;
     private final boolean aiAvailable;
     private final AutoCloseable resources;
@@ -39,13 +44,14 @@ public class StudyAgentFacade implements AutoCloseable {
      */
     public StudyAgentFacade(MaterialService materialService, LearningContentService contentService,
                             QuizService quizService, MasteryService masteryService,
-                            FlashcardService flashcardService, EventBus eventBus, boolean aiAvailable,
-                            AutoCloseable resources) {
+                            FlashcardService flashcardService, AgentController agentController, EventBus eventBus,
+                            boolean aiAvailable, AutoCloseable resources) {
         this.materialService = materialService;
         this.contentService = contentService;
         this.quizService = quizService;
         this.masteryService = masteryService;
         this.flashcardService = flashcardService;
+        this.agentController = agentController;
         this.eventBus = eventBus;
         this.aiAvailable = aiAvailable;
         this.resources = resources;
@@ -231,6 +237,27 @@ public class StudyAgentFacade implements AutoCloseable {
 
     public String diagnoseWeakConcepts(long courseId) {
         return masteryService.diagnose(courseId);
+    }
+
+    // ----- F12 Study Coach -----
+
+    /**
+     * Sends a message to the Study Coach. This can take a while, so call it off the Swing thread.
+     *
+     * @param courseId the selected course, or null
+     * @param onStep   hears each step start and finish, on the calling thread
+     */
+    public AgentResponse askCoach(Long courseId, String message, Consumer<TraceStep> onStep) {
+        return agentController.handleMessage(courseId, message, onStep);
+    }
+
+    public AgentResponse askCoach(Long courseId, String message) {
+        return askCoach(courseId, message, step -> { });
+    }
+
+    /** Starts a new conversation with the Study Coach. Stated preferences are kept. */
+    public void resetCoach() {
+        agentController.resetConversation();
     }
 
     // ----- general -----

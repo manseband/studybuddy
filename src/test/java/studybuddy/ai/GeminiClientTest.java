@@ -137,12 +137,48 @@ class GeminiClientTest {
 
         // follow-up request carries the tool call and its result back to the model
         ChatRequest followUp = client.toChatRequest(request.withAppended(
-                LLMMessage.assistantToolCalls("", List.of(parsed)), LLMMessage.toolResult(parsed, "[]")));
+                LLMMessage.assistantToolCalls(response), LLMMessage.toolResult(parsed, "[]")));
         // messages: system, user, assistant tool call, tool result
         assertTrue(((AiMessage) followUp.messages().get(2)).hasToolExecutionRequests());
         ToolExecutionResultMessage result = (ToolExecutionResultMessage) followUp.messages().get(3);
         assertEquals("abc", result.id());
         assertEquals("[]", result.text());
+    }
+
+    /** Gemini 3 rejects the follow-up request of a tool call unless its thought signature comes back with it. */
+    @Test
+    void sendsTheThoughtSignatureBackWithToolCalls() {
+        ToolExecutionRequest call = ToolExecutionRequest.builder()
+                .id("abc").name("get_weak_concepts").arguments("{\"courseId\": 4}").build();
+        AiMessage signed = AiMessage.builder().toolExecutionRequests(List.of(call))
+                .attributes(Map.of("thinking_signature", "signature-1")).build();
+        ScriptedChatModel model = new ScriptedChatModel().reply(signed);
+        GeminiClient client = new GeminiClient(model, "m", 0, 0);
+        LLMRequest request = simpleRequest(false);
+
+        LLMResponse response = client.chat(request);
+
+        assertEquals("signature-1", response.providerState());
+        ChatRequest followUp = client.toChatRequest(request.withAppended(LLMMessage.assistantToolCalls(response),
+                LLMMessage.toolResult(response.toolCalls().get(0), "[]")));
+        AiMessage sentBack = (AiMessage) followUp.messages().get(2);
+        assertEquals("signature-1", sentBack.attribute("thinking_signature", String.class));
+        assertTrue(sentBack.hasToolExecutionRequests());
+    }
+
+    @Test
+    void repliesWithoutASignatureStillWork() {
+        ToolExecutionRequest call = ToolExecutionRequest.builder().id("abc").name("tool").arguments("{}").build();
+        ScriptedChatModel model = new ScriptedChatModel().reply(AiMessage.from(List.of(call)));
+        GeminiClient client = new GeminiClient(model, "m", 0, 0);
+        LLMRequest request = simpleRequest(false);
+
+        LLMResponse response = client.chat(request);
+
+        assertEquals(null, response.providerState());
+        ChatRequest followUp = client.toChatRequest(request.withAppended(LLMMessage.assistantToolCalls(response),
+                LLMMessage.toolResult(response.toolCalls().get(0), "[]")));
+        assertTrue(((AiMessage) followUp.messages().get(2)).attributes().isEmpty());
     }
 
     @Test

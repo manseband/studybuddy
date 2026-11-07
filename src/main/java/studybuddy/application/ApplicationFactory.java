@@ -3,6 +3,14 @@ package studybuddy.application;
 import java.time.Duration;
 import java.util.Map;
 
+import studybuddy.agent.AgentController;
+import studybuddy.agent.GenerateFlashcardsTool;
+import studybuddy.agent.GenerateQuizTool;
+import studybuddy.agent.GetWeakConceptsTool;
+import studybuddy.agent.Planner;
+import studybuddy.agent.SavePreferenceTool;
+import studybuddy.agent.SearchMaterialsTool;
+import studybuddy.agent.ToolManager;
 import studybuddy.ai.DocumentParser;
 import studybuddy.ai.EmbeddingRetriever;
 import studybuddy.ai.GeminiClient;
@@ -22,6 +30,7 @@ import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
 import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.MaterialRepository;
+import studybuddy.persistence.PreferenceRepository;
 import studybuddy.persistence.QaHistoryRepository;
 import studybuddy.persistence.QuizRepository;
 
@@ -61,8 +70,10 @@ public final class ApplicationFactory {
                     routineClient, responseParser, config.weakThreshold());
             FlashcardService flashcardService = new FlashcardService(routineClient, retriever, responseParser,
                     cardRepo, materialRepo, conceptRepo, eventBus, config.retrievalTopK(), config.promptWordBudget());
+            AgentController agent = createAgent(createCoachClient(config), materialService, contentService, quizService,
+                    masteryService, flashcardService, new PreferenceRepository(db), eventBus, config.agentMaxSteps());
             return new StudyAgentFacade(materialService, contentService, quizService, masteryService,
-                    flashcardService, eventBus, config.hasApiKey(), db);
+                    flashcardService, agent, eventBus, config.hasApiKey(), db);
         } catch (RuntimeException e) {
             db.close();
             throw e;
@@ -76,6 +87,21 @@ public final class ApplicationFactory {
                 QuestionType.SHORT_ANSWER, new LLMRubricGrader(llm, responseParser));
     }
 
+    /** F12: the Study Coach and its tools, each of which wraps an existing service. */
+    public static AgentController createAgent(LLMClient llm, MaterialService materialService,
+                                              LearningContentService contentService, QuizService quizService,
+                                              MasteryService masteryService, FlashcardService flashcardService,
+                                              PreferenceRepository preferences, EventBus eventBus, int maxSteps) {
+        ToolManager tools = new ToolManager();
+        tools.register(new SearchMaterialsTool(contentService));
+        tools.register(new GetWeakConceptsTool(masteryService));
+        tools.register(new GenerateQuizTool(quizService));
+        tools.register(new GenerateFlashcardsTool(flashcardService));
+        tools.register(new SavePreferenceTool(preferences));
+        return new AgentController(new Planner(llm, maxSteps), tools, materialService, contentService, preferences,
+                eventBus);
+    }
+
     static RetrievalStrategy createRetriever(AppConfig config) {
         return config.apiKey()
                 .<RetrievalStrategy>map(key -> EmbeddingRetriever.create(key, config.embeddingModel(),
@@ -87,6 +113,14 @@ public final class ApplicationFactory {
     static LLMClient createRoutineClient(AppConfig config) {
         return config.apiKey()
                 .<LLMClient>map(key -> GeminiClient.create(key, config.routineModel(),
+                        Duration.ofSeconds(config.llmTimeoutSeconds()), config.llmMaxRetries()))
+                .orElseGet(NoKeyLLMClient::new);
+    }
+
+    /** Client for the Study Coach's planning and tool calling. */
+    static LLMClient createCoachClient(AppConfig config) {
+        return config.apiKey()
+                .<LLMClient>map(key -> GeminiClient.create(key, config.coachModel(),
                         Duration.ofSeconds(config.llmTimeoutSeconds()), config.llmMaxRetries()))
                 .orElseGet(NoKeyLLMClient::new);
     }

@@ -89,7 +89,7 @@ class PromptBuilderAndFakeClientTest {
         LLMRequest request = new PromptBuilder().system("s").withOutputSchema("{}").withUserMessage("q").build();
         ToolCall call = new ToolCall("c1", "search", Map.of());
 
-        LLMRequest next = request.withAppended(LLMMessage.assistantToolCalls("", List.of(call)),
+        LLMRequest next = request.withAppended(LLMMessage.assistantToolCalls(LLMResponse.toolCalls(call)),
                 LLMMessage.toolResult(call, "3 results"));
 
         assertEquals(3, next.messages().size());
