@@ -62,7 +62,7 @@ public class QuizCommand {
         json.put("id", quiz.getId());
         json.put("courseId", quiz.getCourseId());
         json.put("createdAt", quiz.getCreatedAt());
-        json.put("difficulty", quiz.isAdaptive() ? "adaptive" : quiz.getDifficulty().name().toLowerCase());
+        json.put("difficulty", quiz.getDifficulty().name().toLowerCase());
         json.put("questions", quiz.getQuestions().stream().map(QuizCommand::questionJson).toList());
         return json;
     }
@@ -171,7 +171,7 @@ public class QuizCommand {
             Set<QuestionType> questionTypes = EnumSet.noneOf(QuestionType.class);
             types.forEach(type -> questionTypes.add(QuestionType.fromCode(type)));
             Quiz quiz = parent.root.facade().generateQuiz(new QuizRequest(c.getId(), materialIds, conceptIds, count,
-                    questionTypes, Difficulty.fromString(difficulty), false));
+                    questionTypes, Difficulty.fromString(difficulty)));
             String text = "Created quiz #" + quiz.getId() + " with " + quiz.size() + " question(s). Take it with: "
                     + "studyagent quiz take " + quiz.getId();
             if (quiz.size() < count) {
@@ -205,7 +205,7 @@ public class QuizCommand {
                 Map<String, Object> row = new LinkedHashMap<>();
                 row.put("id", quiz.getId());
                 row.put("createdAt", quiz.getCreatedAt());
-                row.put("difficulty", quiz.isAdaptive() ? "adaptive" : quiz.getDifficulty().name().toLowerCase());
+                row.put("difficulty", quiz.getDifficulty().name().toLowerCase());
                 row.put("questions", quiz.size());
                 row.put("attempts", own.size());
                 row.put("latestAttemptId", own.isEmpty() ? null : own.get(0).getId());

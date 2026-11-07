@@ -5,12 +5,11 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Parameters for generating a quiz (F06, F10).
+ * Parameters for generating a quiz (F06).
  * The scope is the given materials and/or concepts; if both are empty the whole course is used.
- * When adaptive is true, difficulty is chosen per concept from mastery data and the difficulty field is ignored.
  */
 public record QuizRequest(long courseId, List<Long> materialIds, List<Long> conceptIds, int questionCount,
-                          Set<QuestionType> types, Difficulty difficulty, boolean adaptive) {
+                          Set<QuestionType> types, Difficulty difficulty) {
 
     public static final int MIN_QUESTIONS = 1;
     public static final int MAX_QUESTIONS = 30;
@@ -26,8 +25,6 @@ public record QuizRequest(long courseId, List<Long> materialIds, List<Long> conc
         if (types.isEmpty()) {
             throw new IllegalArgumentException("Choose at least one question type");
         }
-        if (!adaptive) {
-            Objects.requireNonNull(difficulty, "difficulty is required unless the quiz is adaptive");
-        }
+        Objects.requireNonNull(difficulty, "difficulty is required");
     }
 }

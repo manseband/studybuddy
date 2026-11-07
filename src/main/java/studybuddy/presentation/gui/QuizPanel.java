@@ -218,7 +218,7 @@ public class QuizPanel extends FeaturePanel {
     }
 
     private static String difficultyLabel(Quiz quiz) {
-        return quiz.isAdaptive() ? "Adaptive" : capitalize(quiz.getDifficulty().name());
+        return capitalize(quiz.getDifficulty().name());
     }
 
     private static String capitalize(String word) {
@@ -291,7 +291,7 @@ public class QuizPanel extends FeaturePanel {
             generate(new QuizRequest(courseId,
                     materialList.getSelectedValuesList().stream().map(Material::getId).toList(),
                     conceptList.getSelectedValuesList().stream().map(Concept::getId).toList(),
-                    (Integer) count.getValue(), types, Difficulty.fromString((String) difficulty.getSelectedItem()), false));
+                    (Integer) count.getValue(), types, Difficulty.fromString((String) difficulty.getSelectedItem())));
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());
         }

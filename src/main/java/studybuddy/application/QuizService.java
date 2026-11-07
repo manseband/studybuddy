@@ -96,9 +96,6 @@ public class QuizService {
      * @throws ContentGenerationException if the model fails or no valid question could be produced; nothing is saved
      */
     public Quiz generateQuiz(QuizRequest request) {
-        if (request.adaptive()) {
-            throw new IllegalArgumentException("Adaptive quizzes are not available yet; choose a difficulty.");
-        }
         List<Concept> concepts = scope.concepts(request.courseId(), request.conceptIds());
         List<Chunk> excerpts = scope.excerpts(request.courseId(), request.materialIds(), request.conceptIds(), concepts);
         int words = excerpts.stream().mapToInt(Chunk::wordCount).sum();

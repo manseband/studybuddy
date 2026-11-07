@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * A generated quiz (F06). difficulty is the fixed level chosen by the student, or null when the
- * quiz is adaptive (each question then carries its own level from the adaptive policy, F10).
- */
+/** A generated quiz (F06). difficulty is the level chosen by the student. */
 public class Quiz {
 
     private long id;
@@ -34,10 +31,6 @@ public class Quiz {
 
     public Optional<Question> findQuestion(long questionId) {
         return questions.stream().filter(q -> q.getId() == questionId).findFirst();
-    }
-
-    public boolean isAdaptive() {
-        return difficulty == null;
     }
 
     public long getId() {

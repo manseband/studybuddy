@@ -89,13 +89,6 @@ class QuizRepositoryTest {
     }
 
     @Test
-    void adaptiveQuizHasNoFixedDifficulty() {
-        Quiz adaptive = quizzes.save(new Quiz(0, courseId, LocalDateTime.now(), null));
-
-        assertTrue(quizzes.findById(adaptive.getId()).orElseThrow().isAdaptive());
-    }
-
-    @Test
     void listsNewestFirstAndFindsRecentStems() {
         savedQuiz("Old");
         Quiz newer = savedQuiz("New");

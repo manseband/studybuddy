@@ -13,10 +13,7 @@ import org.junit.jupiter.api.Test;
 class ValueTypesTest {
 
     @Test
-    void difficultyStepsStayInRange() {
-        assertEquals(Difficulty.MEDIUM, Difficulty.EASY.harder());
-        assertEquals(Difficulty.HARD, Difficulty.HARD.harder());
-        assertEquals(Difficulty.EASY, Difficulty.EASY.easier());
+    void difficultyParsesText() {
         assertEquals(Difficulty.HARD, Difficulty.fromString(" hard "));
         assertThrows(IllegalArgumentException.class, () -> Difficulty.fromString("extreme"));
     }
@@ -33,13 +30,11 @@ class ValueTypesTest {
     void quizRequestValidatesCountTypesAndDifficulty() {
         Set<QuestionType> mcq = Set.of(QuestionType.MULTIPLE_CHOICE);
         assertThrows(IllegalArgumentException.class,
-                () -> new QuizRequest(1, List.of(), List.of(), 31, mcq, Difficulty.EASY, false));
+                () -> new QuizRequest(1, List.of(), List.of(), 31, mcq, Difficulty.EASY));
         assertThrows(IllegalArgumentException.class,
-                () -> new QuizRequest(1, List.of(), List.of(), 5, Set.of(), Difficulty.EASY, false));
+                () -> new QuizRequest(1, List.of(), List.of(), 5, Set.of(), Difficulty.EASY));
         assertThrows(NullPointerException.class,
-                () -> new QuizRequest(1, List.of(), List.of(), 5, mcq, null, false));
-        // adaptive quizzes do not need a fixed difficulty
-        new QuizRequest(1, List.of(), List.of(), 5, mcq, null, true);
+                () -> new QuizRequest(1, List.of(), List.of(), 5, mcq, null));
     }
 
     @Test

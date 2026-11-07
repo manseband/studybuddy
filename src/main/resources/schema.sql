@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS quizzes (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     course_id  INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
     created_at TEXT NOT NULL,
-    difficulty TEXT
+    difficulty TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS questions (

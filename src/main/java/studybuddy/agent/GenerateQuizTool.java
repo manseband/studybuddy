@@ -62,7 +62,7 @@ public class GenerateQuizTool implements AgentTool {
         int count = AgentTool.intArg(args, "count", DEFAULT_COUNT);
         Quiz quiz = quizService.generateQuiz(new QuizRequest(AgentTool.longArg(args, "courseId"),
                 AgentTool.idsArg(args, "materialIds"), AgentTool.idsArg(args, "conceptIds"), count, types(args),
-                Difficulty.fromString(AgentTool.stringArg(args, "difficulty", "medium")), false));
+                Difficulty.fromString(AgentTool.stringArg(args, "difficulty", "medium"))));
 
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("quizId", quiz.getId());

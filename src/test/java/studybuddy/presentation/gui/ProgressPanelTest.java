@@ -87,7 +87,7 @@ class ProgressPanelTest {
                   {"type": "tf", "stem": "Two", "answer": true, "excerpt": 1, "page": 1, "concept": "Facade"},
                   {"type": "tf", "stem": "Three", "answer": true, "excerpt": 1, "page": 1, "concept": "Facade"}]}""");
         Quiz quiz = facade.generateQuiz(new QuizRequest(course.getId(), List.of(), List.of(), 3,
-                Set.of(QuestionType.TRUE_FALSE), Difficulty.EASY, false));
+                Set.of(QuestionType.TRUE_FALSE), Difficulty.EASY));
         QuizAttempt attempt = facade.startAttempt(quiz.getId());
         facade.submitQuiz(attempt);
     }

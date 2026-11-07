@@ -18,16 +18,6 @@ public enum Difficulty {
         return weight;
     }
 
-    /** One level up, staying at HARD. Used by adaptive practice (F10). */
-    public Difficulty harder() {
-        return this == EASY ? MEDIUM : HARD;
-    }
-
-    /** One level down, staying at EASY. */
-    public Difficulty easier() {
-        return this == HARD ? MEDIUM : EASY;
-    }
-
     public static Difficulty fromString(String value) {
         try {
             return valueOf(value.trim().toUpperCase(Locale.ROOT));

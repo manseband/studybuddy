@@ -83,6 +83,9 @@ public class Planner {
                         + "mean instead of guessing. Also ask if the goal is too unclear to act on.")
                 .withInstruction("Base statements about course content on search_materials and name the material and "
                         + "page. If the materials do not cover something, say so.")
+                .withInstruction("Unless the student asks for a quiz difficulty, match it to mastery: easy for weak "
+                        + "concepts, medium for concepts without enough data, hard for strong concepts. One quiz has "
+                        + "one difficulty, so make separate quizzes if the levels really need to differ.")
                 .withInstruction("If a tool fails, say what could not be done. Never claim something was created "
                         + "unless a tool result says so. Mention the id of anything created.")
                 .withInstruction("You cannot delete or change existing data. Say so if asked.")

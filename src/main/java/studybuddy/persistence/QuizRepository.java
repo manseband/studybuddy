@@ -45,7 +45,7 @@ public class QuizRepository implements Repository<Quiz> {
                     Statement.RETURN_GENERATED_KEYS)) {
                 ps.setLong(1, quiz.getCourseId());
                 ps.setString(2, quiz.getCreatedAt().toString());
-                ps.setString(3, quiz.isAdaptive() ? null : quiz.getDifficulty().name());
+                ps.setString(3, quiz.getDifficulty().name());
                 ps.executeUpdate();
                 quiz.setId(SqlUtil.generatedId(ps));
             }
@@ -138,10 +138,9 @@ public class QuizRepository implements Repository<Quiz> {
                 ps.setLong(1, param);
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        String difficulty = rs.getString("difficulty");
                         quizzes.add(new Quiz(rs.getLong("id"), rs.getLong("course_id"),
                                 LocalDateTime.parse(rs.getString("created_at")),
-                                difficulty == null ? null : Difficulty.valueOf(difficulty)));
+                                Difficulty.valueOf(rs.getString("difficulty"))));
                     }
                 }
             }

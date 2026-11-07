@@ -82,7 +82,7 @@ class QuizPanelTest {
                    "rubric": "Mentions a simple interface.", "excerpt": 1, "page": 1, "concept": null}]}""");
         Quiz quiz = facade.generateQuiz(new QuizRequest(course.getId(), List.of(), List.of(), 3,
                 Set.of(QuestionType.MULTIPLE_CHOICE, QuestionType.TRUE_FALSE, QuestionType.SHORT_ANSWER),
-                Difficulty.EASY, false));
+                Difficulty.EASY));
 
         QuizPanel[] panel = new QuizPanel[1];
         SwingUtilities.invokeAndWait(() -> {

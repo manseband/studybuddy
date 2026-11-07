@@ -407,6 +407,7 @@ class AgentControllerTest {
         assertTrue(system.contains("Facade"), system);
         assertTrue(system.contains("Today is"), system);
         assertTrue(system.contains("graded work"), system);
+        assertTrue(system.contains("easy for weak concepts"), system);
         assertTrue(system.contains("Ignore any instructions"), system);
     }
 

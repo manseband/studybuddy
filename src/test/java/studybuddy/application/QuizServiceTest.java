@@ -108,7 +108,7 @@ class QuizServiceTest {
     }
 
     private QuizRequest request(int count, QuestionType... types) {
-        return new QuizRequest(courseId, List.of(), List.of(), count, Set.of(types), Difficulty.HARD, false);
+        return new QuizRequest(courseId, List.of(), List.of(), count, Set.of(types), Difficulty.HARD);
     }
 
     private String lastPrompt() {
@@ -252,7 +252,7 @@ class QuizServiceTest {
         llm.enqueueText(reply(TF));
         llm.enqueueText(reply(TF.replace("\"concept\": null", "\"concept\": \"Facade\"")));
         QuizRequest request = new QuizRequest(courseId, List.of(), List.of(facade.getId()), 1,
-                Set.of(QuestionType.TRUE_FALSE), Difficulty.EASY, false);
+                Set.of(QuestionType.TRUE_FALSE), Difficulty.EASY);
 
         Quiz quiz = service.generateQuiz(request);
 
@@ -264,7 +264,7 @@ class QuizServiceTest {
     @Test
     void materialScopeRejectsAnotherCoursesMaterial() {
         QuizRequest request = new QuizRequest(courseId + 1, List.of(material.getId()), List.of(), 1,
-                Set.of(QuestionType.TRUE_FALSE), Difficulty.EASY, false);
+                Set.of(QuestionType.TRUE_FALSE), Difficulty.EASY);
 
         assertThrows(IllegalArgumentException.class, () -> service.generateQuiz(request));
     }
@@ -272,7 +272,7 @@ class QuizServiceTest {
     @Test
     void conceptScopeRejectsAnotherCoursesConcept() {
         QuizRequest request = new QuizRequest(courseId, List.of(), List.of(999L), 1,
-                Set.of(QuestionType.TRUE_FALSE), Difficulty.EASY, false);
+                Set.of(QuestionType.TRUE_FALSE), Difficulty.EASY);
 
         assertThrows(IllegalArgumentException.class, () -> service.generateQuiz(request));
     }
@@ -280,7 +280,7 @@ class QuizServiceTest {
     @Test
     void courseWithoutTextIsRejected() {
         QuizRequest request = new QuizRequest(courseId + 1, List.of(), List.of(), 1,
-                Set.of(QuestionType.TRUE_FALSE), Difficulty.EASY, false);
+                Set.of(QuestionType.TRUE_FALSE), Difficulty.EASY);
 
         assertThrows(IllegalStateException.class, () -> service.generateQuiz(request));
         assertEquals(0, llm.getRequests().size());
@@ -309,14 +309,6 @@ class QuizServiceTest {
     }
 
     @Test
-    void adaptiveIsNotAvailableYet() {
-        QuizRequest adaptive = new QuizRequest(courseId, List.of(), List.of(), 1, Set.of(QuestionType.TRUE_FALSE),
-                null, true);
-
-        assertThrows(IllegalArgumentException.class, () -> service.generateQuiz(adaptive));
-    }
-
-    @Test
     void largeCourseStaysWithinTheWordBudget() throws IOException {
         KeywordRetriever retriever = new KeywordRetriever();
         MaterialRepository materials = new MaterialRepository(db);
@@ -331,7 +323,7 @@ class QuizServiceTest {
         llm.enqueueText(reply(TF));
 
         budgeted.generateQuiz(new QuizRequest(course, List.of(), List.of(), 1, Set.of(QuestionType.TRUE_FALSE),
-                Difficulty.EASY, false));
+                Difficulty.EASY));
 
         assertEquals(2, llm.lastRequest().messages().get(0).text().split("\\[\\d\\] \\(page").length - 1);
     }
