@@ -28,6 +28,7 @@ import studybuddy.persistence.AttemptRepository;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
+import studybuddy.persistence.ExplanationRepository;
 import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.PreferenceRepository;
@@ -58,7 +59,7 @@ public final class ApplicationFactory {
             ResponseParser responseParser = new ResponseParser();
             ConceptRepository conceptRepo = new ConceptRepository(db);
             LearningContentService contentService = new LearningContentService(routineClient, retriever,
-                    responseParser, materialRepo, new QaHistoryRepository(db), conceptRepo, eventBus,
+                    responseParser, materialRepo, new QaHistoryRepository(db), new ExplanationRepository(db), conceptRepo, eventBus,
                     config.retrievalTopK(), config.promptWordBudget());
             QuizRepository quizRepo = new QuizRepository(db);
             AttemptRepository attemptRepo = new AttemptRepository(db);

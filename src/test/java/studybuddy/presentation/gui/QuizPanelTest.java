@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 
+import javax.swing.JButton;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import org.junit.jupiter.api.AfterEach;
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import studybuddy.ai.FakeLLMClient;
+import studybuddy.ai.LLMException;
 import studybuddy.application.StudyAgentFacade;
 import studybuddy.domain.Course;
 import studybuddy.domain.Difficulty;
@@ -107,6 +110,53 @@ class QuizPanelTest {
         assertEquals("false", attempt.answerFor(quiz.getQuestions().get(1).getId()));
         assertEquals(1.0, attempt.getTotalScore());
         assertEquals(1, llm.getRequests().size());
+
+        // Explain shows the explanation in the first question's card and disables that button
+        llm.enqueueText("{\"explanation\": \"A Facade hides a subsystem.\", \"misconception\": null, \"excerpt\": 1}");
+        SwingUtilities.invokeAndWait(() -> findButton(panel[0], "Explain").doClick());
+        waitFor(() -> allText(panel[0]).contains("A Facade hides a subsystem."));
+        assertTrue(allText(panel[0]).contains("Read source: notes.txt, p. 1"), allText(panel[0]));
+
+        // a failure shows a message and the button can be used again
+        llm.enqueueFailure(new LLMException("rate limited", true));
+        JButton[] next = new JButton[1];
+        SwingUtilities.invokeAndWait(() -> {
+            next[0] = findButton(panel[0], "Explain");
+            next[0].doClick();
+        });
+        waitFor(() -> allText(panel[0]).contains("The explanation is unavailable"));
+        assertTrue(allText(panel[0]).contains("rate limited"), allText(panel[0]));
+        assertTrue(next[0].isEnabled());
+    }
+
+    /** The first enabled button with this text. */
+    private static JButton findButton(Container parent, String text) {
+        for (Component child : parent.getComponents()) {
+            if (child instanceof JButton button && text.equals(button.getText()) && button.isEnabled()) {
+                return button;
+            }
+            if (child instanceof Container container) {
+                JButton found = findButton(container, text);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static String allText(Container parent) {
+        StringBuilder text = new StringBuilder();
+        for (Component child : parent.getComponents()) {
+            if (child instanceof JTextArea area) {
+                text.append(area.getText()).append('\n');
+            } else if (child instanceof JButton button) {
+                text.append(button.getText()).append('\n');
+            } else if (child instanceof Container container) {
+                text.append(allText(container));
+            }
+        }
+        return text.toString();
     }
 
     private static void clickRadio(Container parent, String label) {

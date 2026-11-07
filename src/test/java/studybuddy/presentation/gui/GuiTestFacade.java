@@ -18,6 +18,7 @@ import studybuddy.persistence.AttemptRepository;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
+import studybuddy.persistence.ExplanationRepository;
 import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.PreferenceRepository;
@@ -42,7 +43,7 @@ final class GuiTestFacade {
         MaterialService materialService = new MaterialService(new CourseRepository(db), materials, new DocumentParser(),
                 retriever, bus, 1_000_000, 400, 50);
         LearningContentService content = new LearningContentService(llm, retriever, parser, materials,
-                new QaHistoryRepository(db), concepts, bus, 6, 6000);
+                new QaHistoryRepository(db), new ExplanationRepository(db), concepts, bus, 6, 6000);
         QuizService quizService = new QuizService(llm, retriever, parser, new QuestionFactory(),
                 ApplicationFactory.createGraders(llm, parser), quizzes, attempts, materials, concepts, bus, 6, 6000);
         MasteryService mastery = new MasteryService(attempts, quizzes, concepts, cards, llm, parser, 60);

@@ -3,6 +3,7 @@ package studybuddy.application;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -12,9 +13,12 @@ import studybuddy.domain.Answer;
 import studybuddy.domain.Concept;
 import studybuddy.domain.ConceptMastery;
 import studybuddy.domain.Course;
+import studybuddy.domain.Explanation;
 import studybuddy.domain.Flashcard;
+import studybuddy.domain.GradeResult;
 import studybuddy.domain.Material;
 import studybuddy.domain.QaEntry;
+import studybuddy.domain.Question;
 import studybuddy.domain.Quiz;
 import studybuddy.domain.QuizAttempt;
 import studybuddy.domain.QuizRequest;
@@ -184,8 +188,32 @@ public class StudyAgentFacade implements AutoCloseable {
         return quizService.regradePending(attemptId);
     }
 
+    /** A changed grade makes any explanation written for the old one out of date, so it is forgotten. */
     public QuizAttempt overrideGrade(long attemptId, long questionId, double score) {
-        return quizService.overrideGrade(attemptId, questionId, score);
+        QuizAttempt attempt = quizService.overrideGrade(attemptId, questionId, score);
+        contentService.clearExplanation(attemptId, questionId);
+        return attempt;
+    }
+
+    // ----- F08 explanations -----
+
+    /**
+     * Explains a graded answer, using the cached explanation if there is one.
+     *
+     * @throws NoSuchElementException     if the question is not part of the attempt
+     * @throws IllegalStateException      if the answer is still waiting to be graded
+     * @throws ContentGenerationException if the model fails
+     */
+    public Explanation explainAnswer(long attemptId, long questionId) {
+        QuizAttempt attempt = quizService.getAttempt(attemptId);
+        Question question = quizService.getQuiz(attempt.getQuizId()).findQuestion(questionId).orElseThrow(
+                () -> new NoSuchElementException("Question " + questionId + " is not part of this attempt"));
+        GradeResult result = attempt.resultFor(questionId).orElseThrow(
+                () -> new IllegalStateException("This answer has not been graded yet."));
+        if (result.pending()) {
+            throw new IllegalStateException("This answer has not been graded yet.");
+        }
+        return contentService.explainAnswer(attemptId, question, attempt.answerFor(questionId), result.correct());
     }
 
     // ----- F05 flashcards -----

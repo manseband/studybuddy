@@ -22,6 +22,7 @@ import studybuddy.persistence.AttemptRepository;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
+import studybuddy.persistence.ExplanationRepository;
 import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.PreferenceRepository;
@@ -53,7 +54,7 @@ class CliTestApp implements AutoCloseable {
         ResponseParser parser = new ResponseParser();
         ConceptRepository conceptRepo = new ConceptRepository(db);
         LearningContentService content = new LearningContentService(llm, retriever, parser, materialRepo,
-                new QaHistoryRepository(db), conceptRepo, bus, 6, 6000);
+                new QaHistoryRepository(db), new ExplanationRepository(db), conceptRepo, bus, 6, 6000);
         QuizRepository quizRepo = new QuizRepository(db);
         AttemptRepository attemptRepo = new AttemptRepository(db);
         QuizService quizzes = new QuizService(llm, retriever, parser, new QuestionFactory(),

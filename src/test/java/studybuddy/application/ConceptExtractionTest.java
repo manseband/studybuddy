@@ -24,6 +24,7 @@ import studybuddy.domain.Material;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
+import studybuddy.persistence.ExplanationRepository;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QaHistoryRepository;
 
@@ -48,7 +49,7 @@ class ConceptExtractionTest {
         String page = "word ".repeat(10).strip();
         material = materials.uploadMaterial(courseId, Files.writeString(dir.resolve("notes.txt"), page + "\f" + page));
         service = new LearningContentService(llm, new KeywordRetriever(), new ResponseParser(),
-                new MaterialRepository(db), new QaHistoryRepository(db),
+                new MaterialRepository(db), new QaHistoryRepository(db), new ExplanationRepository(db),
                 new ConceptRepository(db), new EventBus(), 6, 15);
     }
 

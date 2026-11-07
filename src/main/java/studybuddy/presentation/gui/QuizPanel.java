@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -45,9 +46,11 @@ import javax.swing.table.DefaultTableModel;
 
 import studybuddy.application.StudyAgentFacade;
 import studybuddy.domain.AttemptStatus;
+import studybuddy.domain.Citation;
 import studybuddy.domain.Concept;
 import studybuddy.domain.Course;
 import studybuddy.domain.Difficulty;
+import studybuddy.domain.Explanation;
 import studybuddy.domain.GradeResult;
 import studybuddy.domain.Material;
 import studybuddy.domain.MultipleChoiceQuestion;
@@ -494,12 +497,75 @@ public class QuizPanel extends FeaturePanel {
             addToCard(card, wrappedText(result.feedback()));
         }
         addToCard(card, new JLabel("Source: p. " + question.getSourcePage()));
-        if (result.gradedByAI() && !result.pending()) {
-            JButton dispute = new JButton("Dispute");
-            dispute.addActionListener(e -> dispute(quiz, attempt.getId(), question.getId()));
-            addToCard(card, dispute);
+        if (!result.pending()) {
+            JPanel explanation = new JPanel();
+            explanation.setLayout(new BoxLayout(explanation, BoxLayout.Y_AXIS));
+            explanation.setOpaque(false);
+            Box buttons = Box.createHorizontalBox();
+            JButton explain = new JButton("Explain");
+            explain.addActionListener(e -> explain(explain, explanation, attempt.getId(), question.getId()));
+            buttons.add(explain);
+            if (result.gradedByAI()) {
+                JButton dispute = new JButton("Dispute");
+                dispute.addActionListener(e -> dispute(quiz, attempt.getId(), question.getId()));
+                buttons.add(Box.createHorizontalStrut(6));
+                buttons.add(dispute);
+            }
+            addToCard(card, buttons);
+            addToCard(card, explanation);
         }
         return card;
+    }
+
+    /** F08: fetches the explanation and shows it inside the question's card. */
+    private void explain(JButton button, JPanel holder, long attemptId, long questionId) {
+        button.setEnabled(false);
+        button.setText("Explaining...");
+        runInBackground(() -> facade.explainAnswer(attemptId, questionId), explanation -> {
+            button.setText("Explain");
+            showExplanation(holder, explanation);
+        }, error -> {
+            button.setEnabled(true);
+            button.setText("Explain");
+            holder.removeAll();
+            addToCard(holder, wrappedText("The explanation is unavailable: " + error.getMessage()
+                    + "\nThe correct answer is shown above."));
+            layOutResults();
+        });
+    }
+
+    private void showExplanation(JPanel holder, Explanation explanation) {
+        holder.removeAll();
+        addToCard(holder, wrappedText(explanation.text()));
+        if (explanation.misconception() != null) {
+            addToCard(holder, wrappedText("Likely misconception: " + explanation.misconception()));
+        }
+        if (explanation.sourceAvailable()) {
+            Citation citation = explanation.citation();
+            JButton source = new JButton("Read source: " + citation.materialTitle() + ", " + citation.pageLabel());
+            source.addActionListener(e -> showExcerpt(citation));
+            addToCard(holder, source);
+        } else {
+            addToCard(holder, new JLabel("No source available: this uses only the answer key."));
+        }
+        layOutResults();
+    }
+
+    private void showExcerpt(Citation citation) {
+        JTextArea text = new JTextArea(citation.excerpt(), 12, 50);
+        text.setLineWrap(true);
+        text.setWrapStyleWord(true);
+        text.setEditable(false);
+        text.setCaretPosition(0);
+        JOptionPane.showMessageDialog(this, new JScrollPane(text),
+                citation.materialTitle() + ", " + citation.pageLabel(), JOptionPane.PLAIN_MESSAGE);
+    }
+
+    /** New wrapped text only knows its height once its width is set, so this lays out twice. */
+    private void layOutResults() {
+        resultsColumn.revalidate();
+        resultsColumn.repaint();
+        SwingUtilities.invokeLater(resultsColumn::revalidate);
     }
 
     private static String markText(GradeResult result) {

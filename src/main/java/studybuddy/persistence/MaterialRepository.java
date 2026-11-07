@@ -108,6 +108,11 @@ public class MaterialRepository implements Repository<Material> {
         return db.withConnection(c -> chunksWhere(c, "course_id", courseId));
     }
 
+    /** One chunk by its id; empty if its material has been removed. */
+    public Optional<Chunk> findChunk(long chunkId) {
+        return db.withConnection(c -> chunksWhere(c, "id", chunkId).stream().findFirst());
+    }
+
     /** Stores newly computed embeddings (with their model name) for existing chunks. */
     public void updateEmbeddings(List<Chunk> chunks) {
         db.inTransaction(c -> {

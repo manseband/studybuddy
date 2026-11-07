@@ -45,6 +45,7 @@ import studybuddy.persistence.AttemptRepository;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
+import studybuddy.persistence.ExplanationRepository;
 import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.PreferenceRepository;
@@ -85,7 +86,7 @@ class AgentControllerTest {
         FlashcardRepository cards = new FlashcardRepository(db);
         materials = new MaterialService(new CourseRepository(db), materialRepo, new DocumentParser(), retriever, bus,
                 1_000_000, 400, 50);
-        content = new LearningContentService(llm, retriever, parser, materialRepo, new QaHistoryRepository(db),
+        content = new LearningContentService(llm, retriever, parser, materialRepo, new QaHistoryRepository(db), new ExplanationRepository(db),
                 concepts, bus, 6, 6000);
         quizzes = new QuizService(llm, retriever, parser, new QuestionFactory(),
                 ApplicationFactory.createGraders(llm, parser), quizRepo, attempts, materialRepo, concepts, bus, 6, 6000);
