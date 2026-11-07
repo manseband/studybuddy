@@ -42,6 +42,8 @@ public class ConceptsPanel extends FeaturePanel {
     };
     private final JTable table = new StudyTable(model);
     private final JComboBox<Material> materialSelector = new JComboBox<>();
+    /** Shown instead of the selector when there are no materials; an empty dropdown looks like a blank choice. */
+    private final JLabel noMaterials = new JLabel("No materials yet");
     private final JButton extract = new JButton("Extract Concepts");
     private final JButton save = new JButton("Save All");
     private final JButton remove = new JButton("Remove");
@@ -61,6 +63,7 @@ public class ConceptsPanel extends FeaturePanel {
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         top.add(new JLabel("Material:"));
         top.add(materialSelector);
+        top.add(noMaterials);
         extract.addActionListener(e -> extractConcepts());
         top.add(extract);
         save.addActionListener(e -> saveCandidates());
@@ -134,6 +137,11 @@ public class ConceptsPanel extends FeaturePanel {
         });
     }
 
+    /** Whether the material dropdown is showing rather than the "No materials yet" text; used by tests. */
+    boolean materialSelectorShown() {
+        return materialSelector.isVisible() && !noMaterials.isVisible();
+    }
+
     /** Rows currently shown; used by tests. */
     int rowCount() {
         return model.getRowCount();
@@ -151,7 +159,10 @@ public class ConceptsPanel extends FeaturePanel {
     }
 
     private void updateButtons() {
-        extract.setEnabled(course != null && materialSelector.getItemCount() > 0);
+        boolean hasMaterials = materialSelector.getItemCount() > 0;
+        materialSelector.setVisible(hasMaterials);
+        noMaterials.setVisible(!hasMaterials);
+        extract.setEnabled(course != null && hasMaterials);
         save.setEnabled(reviewing != null);
         remove.setEnabled(selected() != null);
         merge.setEnabled(reviewing == null && selected() != null);
