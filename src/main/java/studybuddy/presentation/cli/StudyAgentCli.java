@@ -29,7 +29,7 @@ import studybuddy.config.AppConfig;
         description = "StudyBuddy: an AI study and learning agent for your course materials.",
         subcommands = {GuiCommand.class, CourseCommand.class, MaterialCommand.class, AskCommand.class,
                 ConceptsCommand.class, FlashcardsCommand.class, QuizCommand.class, WeakConceptsCommand.class,
-                CoachCommand.class, ExplainCommand.class})
+                CoachCommand.class, ExplainCommand.class, ProgressCommand.class, HistoryCommand.class})
 public class StudyAgentCli implements Runnable {
 
     @Option(names = "--json", scope = CommandLine.ScopeType.INHERIT,

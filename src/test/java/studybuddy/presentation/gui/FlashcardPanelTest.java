@@ -1,6 +1,7 @@
 package studybuddy.presentation.gui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
@@ -20,8 +21,10 @@ import org.junit.jupiter.api.io.TempDir;
 
 import studybuddy.ai.FakeLLMClient;
 import studybuddy.application.StudyAgentFacade;
+import studybuddy.domain.Concept;
 import studybuddy.domain.Course;
 import studybuddy.domain.Flashcard;
+import studybuddy.domain.Material;
 import studybuddy.domain.Rating;
 import studybuddy.persistence.Database;
 
@@ -75,9 +78,45 @@ class FlashcardPanelTest {
     private List<Flashcard> generated() {
         llm.enqueueText("""
                 {"cards": [
-                  {"front": "What is a Facade?", "back": "One simple interface.", "excerpt": 1, "page": 1, "concept": null},
-                  {"front": "What does it hide?", "back": "A subsystem.", "excerpt": 1, "page": 1, "concept": null}]}""");
+                  {"front": "What is a Facade?", "back": "One simple interface.", "excerpt": 1, "concept": "Facade"},
+                  {"front": "What does it hide?", "back": "A subsystem.", "excerpt": 1, "concept": null}]}""");
         return facade.generateFlashcards(course.getId(), List.of(), List.of(), 5);
+    }
+
+    private void saveConceptAndDeck() throws Exception {
+        Material material = facade.listMaterials(course.getId()).get(0);
+        facade.saveConcepts(material.getId(), List.of(new Concept(0, course.getId(), "Facade", "Hides things.", 3)));
+        facade.saveFlashcards(generated());
+        SwingUtilities.invokeAndWait(panel::refresh);
+        waitFor(() -> panel.deckCount() == 1);
+    }
+
+    @Test
+    void theCardTableShowsEachConceptAndNotesTheUntaggedCards() throws Exception {
+        saveConceptAndDeck();
+
+        SwingUtilities.invokeAndWait(() -> panel.selectDeck(0));
+
+        assertEquals("Facade", panel.cardCell(0, 2));
+        assertEquals("None", panel.cardCell(1, 2));
+        assertEquals("1 card has no concept, so reviewing it doesn't affect mastery.", panel.untaggedNoteText());
+
+        SwingUtilities.invokeAndWait(panel::clearDeckSelection);
+        assertNull(panel.untaggedNoteText());
+    }
+
+    @Test
+    void deletingADeckEmptiesTheListAndClearsTheSelection() throws Exception {
+        saveConceptAndDeck();
+        long deckId = facade.listFlashcards(course.getId()).get(0).getDeckId();
+        SwingUtilities.invokeAndWait(() -> panel.selectDeck(0));
+
+        SwingUtilities.invokeAndWait(() -> panel.deleteDeck(deckId));
+        waitFor(() -> facade.listFlashcards(course.getId()).isEmpty());
+        SwingUtilities.invokeAndWait(panel::refresh);
+
+        waitFor(() -> panel.deckCount() == 0);
+        assertNull(panel.untaggedNoteText());
     }
 
     @Test

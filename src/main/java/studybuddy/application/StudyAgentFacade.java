@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import studybuddy.agent.AgentController;
+import studybuddy.domain.ActivityRecord;
+import studybuddy.domain.ActivityType;
 import studybuddy.domain.AgentResponse;
 import studybuddy.domain.Answer;
 import studybuddy.domain.Concept;
@@ -17,12 +19,14 @@ import studybuddy.domain.Explanation;
 import studybuddy.domain.Flashcard;
 import studybuddy.domain.GradeResult;
 import studybuddy.domain.Material;
+import studybuddy.domain.ProgressReport;
 import studybuddy.domain.QaEntry;
 import studybuddy.domain.Question;
 import studybuddy.domain.Quiz;
 import studybuddy.domain.QuizAttempt;
 import studybuddy.domain.QuizRequest;
 import studybuddy.domain.Rating;
+import studybuddy.domain.ReportFormat;
 import studybuddy.domain.TraceStep;
 
 /**
@@ -37,6 +41,7 @@ public class StudyAgentFacade implements AutoCloseable {
     private final QuizService quizService;
     private final MasteryService masteryService;
     private final FlashcardService flashcardService;
+    private final ProgressService progressService;
     private final AgentController agentController;
     private final EventBus eventBus;
     private final boolean aiAvailable;
@@ -48,13 +53,15 @@ public class StudyAgentFacade implements AutoCloseable {
      */
     public StudyAgentFacade(MaterialService materialService, LearningContentService contentService,
                             QuizService quizService, MasteryService masteryService,
-                            FlashcardService flashcardService, AgentController agentController, EventBus eventBus,
-                            boolean aiAvailable, AutoCloseable resources) {
+                            FlashcardService flashcardService, ProgressService progressService,
+                            AgentController agentController, EventBus eventBus, boolean aiAvailable,
+                            AutoCloseable resources) {
         this.materialService = materialService;
         this.contentService = contentService;
         this.quizService = quizService;
         this.masteryService = masteryService;
         this.flashcardService = flashcardService;
+        this.progressService = progressService;
         this.agentController = agentController;
         this.eventBus = eventBus;
         this.aiAvailable = aiAvailable;
@@ -235,6 +242,11 @@ public class StudyAgentFacade implements AutoCloseable {
         return flashcardService.getDeck(deckId);
     }
 
+    /** Deletes the deck's cards; mastery, review history and the streak are kept. */
+    public void deleteDeck(long deckId) {
+        flashcardService.deleteDeck(deckId);
+    }
+
     public List<Flashcard> getDueCards(long courseId) {
         return flashcardService.getDueCards(courseId);
     }
@@ -286,6 +298,30 @@ public class StudyAgentFacade implements AutoCloseable {
     /** Starts a new conversation with the Study Coach. Stated preferences are kept. */
     public void resetCoach() {
         agentController.resetConversation();
+    }
+
+    // ----- F13 progress and history -----
+
+    public ProgressReport getProgress(long courseId) {
+        return progressService.getProgress(courseId);
+    }
+
+    /**
+     * The course's activity, newest first. Each filter can be null.
+     *
+     * @throws IllegalArgumentException if from is after to
+     */
+    public List<ActivityRecord> getHistory(long courseId, LocalDate from, LocalDate to, ActivityType type) {
+        return progressService.getHistory(courseId, from, to, type);
+    }
+
+    /**
+     * Writes the full progress report to a file, replacing any file already there.
+     *
+     * @throws IllegalStateException if the file cannot be written
+     */
+    public Path exportReport(long courseId, ReportFormat format, Path file) {
+        return progressService.exportReport(courseId, format, file);
     }
 
     // ----- general -----

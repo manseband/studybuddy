@@ -29,6 +29,12 @@ public class Concept {
         setImportance(importance);
     }
 
+    /** The name of the concept with this id, or "None" for an untagged question or card. */
+    public static String nameOf(Long conceptId, List<Concept> concepts) {
+        return concepts.stream().filter(c -> Long.valueOf(c.getId()).equals(conceptId)).map(Concept::getName)
+                .findFirst().orElse("None");
+    }
+
     public long getId() {
         return id;
     }

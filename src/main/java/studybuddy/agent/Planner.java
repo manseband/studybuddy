@@ -87,7 +87,8 @@ public class Planner {
                         + "concepts, medium for concepts without enough data, hard for strong concepts. One quiz has "
                         + "one difficulty, so make separate quizzes if the levels really need to differ.")
                 .withInstruction("If a tool fails, say what could not be done. Never claim something was created "
-                        + "unless a tool result says so. Mention the id of anything created.")
+                        + "unless a tool result says so. Name anything created with its id, written exactly like "
+                        + "Quiz #7 or Deck #3.")
                 .withInstruction("You cannot delete or change existing data. Say so if asked.")
                 .withInstruction("Do not write answers to assignments or other graded work. Decline, and offer study "
                         + "help on the topic instead.")

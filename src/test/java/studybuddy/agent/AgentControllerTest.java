@@ -144,6 +144,37 @@ class AgentControllerTest {
         assertEquals(StudyEvent.Type.COACH_RESPONDED, events.get(0).type());
     }
 
+    private long conversationsAnnounced() {
+        return events.stream().filter(e -> e.type() == StudyEvent.Type.COACH_CONVERSATION_STARTED).count();
+    }
+
+    @Test
+    void eachConversationIsAnnouncedOnceForTheHistory() {
+        llm.enqueueText("One.");
+        llm.enqueueText("Two.");
+        llm.enqueueText("Three.");
+
+        ask("first message");
+        ask("second message");
+        assertEquals(1, conversationsAnnounced());
+        assertEquals("first message", events.stream()
+                .filter(e -> e.type() == StudyEvent.Type.COACH_CONVERSATION_STARTED).findFirst().orElseThrow().message());
+
+        agent.resetConversation();
+        ask("a new conversation");
+        assertEquals(2, conversationsAnnounced());
+    }
+
+    @Test
+    void aConversationWithoutACourseHasNoPlaceInTheHistory() {
+        materials.createCourse("Second course", "");
+        llm.enqueueText("Which course?");
+
+        agent.handleMessage(null, "hi", step -> { });
+
+        assertEquals(0, conversationsAnnounced());
+    }
+
     @Test
     void offersEveryToolToTheModelAndNothingThatDeletesOrChangesData() {
         llm.enqueueText("Done.");
@@ -325,7 +356,7 @@ class AgentControllerTest {
 
         assertEquals(AgentResponse.Status.FAILED, response.status());
         assertEquals(1, response.created().size());
-        assertTrue(response.text().contains("Completed: Created Flashcard deck"), response.text());
+        assertTrue(response.text().contains("Completed: Created Deck #"), response.text());
     }
 
     @Test
@@ -447,7 +478,7 @@ class AgentControllerTest {
         List<LLMMessage> messages = llm.lastRequest().messages();
         assertEquals("Make cards", messages.get(0).text());
         assertTrue(messages.get(1).text().contains("Your deck is ready."));
-        assertTrue(messages.get(1).text().contains("Flashcard deck #"), messages.get(1).text());
+        assertTrue(messages.get(1).text().contains("Deck #"), messages.get(1).text());
         assertEquals("What did I ask for?", messages.get(2).text());
         assertEquals(3, messages.size());
     }

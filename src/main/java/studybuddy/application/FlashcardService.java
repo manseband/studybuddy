@@ -38,7 +38,7 @@ public class FlashcardService {
 
     private static final String CARDS_SCHEMA = """
             {"cards": [{"front": "a question or term", "back": "a short answer",
-                        "excerpt": 1, "page": 3, "concept": "Observer pattern"}]}""";
+                        "excerpt": 1, "concept": "Observer pattern"}]}""";
 
     private final LLMClient llm;
     private final ResponseParser responseParser;
@@ -50,7 +50,7 @@ public class FlashcardService {
     record CardsJson(List<CardJson> cards) {
     }
 
-    record CardJson(String front, String back, Integer excerpt, Integer page, String concept) {
+    record CardJson(String front, String back, Integer excerpt, String concept) {
     }
 
     /**
@@ -120,11 +120,9 @@ public class FlashcardService {
                 || json.excerpt() < 1 || json.excerpt() > excerpts.size()) {
             return null;
         }
-        Chunk chunk = excerpts.get(json.excerpt() - 1);
         Long conceptId = json.concept() == null ? null : concepts.stream().filter(c -> c.matches(json.concept()))
                 .map(Concept::getId).findFirst().orElse(null);
-        return Flashcard.create(courseId, 0, conceptId, json.front(), json.back(),
-                StudyScope.pageWithin(chunk, json.page()), LocalDate.now());
+        return Flashcard.create(courseId, 0, conceptId, json.front(), json.back(), LocalDate.now());
     }
 
     private CardsJson requestCards(int count, List<Chunk> excerpts, List<Concept> concepts, List<String> existing,
@@ -133,7 +131,7 @@ public class FlashcardService {
                 .system("You are StudyBuddy, a study assistant. You write flashcards that help a student remember "
                         + "their course materials.")
                 .withInstruction("Base every card only on the numbered excerpts. \"excerpt\" is the number of the "
-                        + "excerpt the card comes from and \"page\" is a page that excerpt covers.")
+                        + "excerpt the card comes from.")
                 .withInstruction("Each card tests one idea. The front is a clear question or term, and the back is "
                         + "a short answer the student can check themselves against.")
                 .withOutputSchema(CARDS_SCHEMA)
@@ -177,6 +175,19 @@ public class FlashcardService {
             throw new NoSuchElementException("No flashcard deck with id " + deckId);
         }
         return cards;
+    }
+
+    /**
+     * Deletes a deck's cards. Their ratings stay, so mastery, the study history of reviews and the streak do not
+     * change: they record what the student already studied.
+     *
+     * @throws NoSuchElementException if there is no such deck
+     */
+    public void deleteDeck(long deckId) {
+        List<Flashcard> deck = getDeck(deckId);
+        cardRepo.deleteDeck(deckId);
+        eventBus.publish(StudyEvent.of(StudyEvent.Type.FLASHCARDS_CHANGED, deck.get(0).getCourseId(),
+                "Deleted Deck #" + deckId));
     }
 
     /** The course's cards due today or earlier, most overdue first. */

@@ -15,10 +15,12 @@ import studybuddy.application.FlashcardService;
 import studybuddy.application.LearningContentService;
 import studybuddy.application.MasteryService;
 import studybuddy.application.MaterialService;
+import studybuddy.application.ProgressService;
 import studybuddy.application.QuestionFactory;
 import studybuddy.application.QuizService;
 import studybuddy.application.StudyAgentFacade;
 import studybuddy.persistence.AttemptRepository;
+import studybuddy.persistence.CoachConversationRepository;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
@@ -48,13 +50,15 @@ class CliTestApp implements AutoCloseable {
         KeywordRetriever retriever = new KeywordRetriever();
         MaterialRepository materialRepo = new MaterialRepository(db);
         EventBus bus = new EventBus();
-        MaterialService materials = new MaterialService(new CourseRepository(db), materialRepo, new DocumentParser(),
+        CourseRepository courseRepo = new CourseRepository(db);
+        MaterialService materials = new MaterialService(courseRepo, materialRepo, new DocumentParser(),
                 retriever, bus, 1_000_000, 400, 50);
         materials.loadIndex();
         ResponseParser parser = new ResponseParser();
         ConceptRepository conceptRepo = new ConceptRepository(db);
+        QaHistoryRepository qaRepo = new QaHistoryRepository(db);
         LearningContentService content = new LearningContentService(llm, retriever, parser, materialRepo,
-                new QaHistoryRepository(db), new ExplanationRepository(db), conceptRepo, bus, 6, 6000);
+                qaRepo, new ExplanationRepository(db), conceptRepo, bus, 6, 6000);
         QuizRepository quizRepo = new QuizRepository(db);
         AttemptRepository attemptRepo = new AttemptRepository(db);
         QuizService quizzes = new QuizService(llm, retriever, parser, new QuestionFactory(),
@@ -66,7 +70,9 @@ class CliTestApp implements AutoCloseable {
                 6, 6000);
         AgentController agent = ApplicationFactory.createAgent(llm, materials, content, quizzes, mastery, cards,
                 new PreferenceRepository(db), bus, 8);
-        return new StudyAgentFacade(materials, content, quizzes, mastery, cards, agent, bus, true, () -> { });
+        ProgressService progress = new ProgressService(courseRepo, materialRepo, qaRepo, quizRepo, attemptRepo, cardRepo,
+                new CoachConversationRepository(db), mastery, bus);
+        return new StudyAgentFacade(materials, content, quizzes, mastery, cards, progress, agent, bus, true, () -> { });
     }
 
     /** Runs one command line; the output is kept in {@link #output}. */

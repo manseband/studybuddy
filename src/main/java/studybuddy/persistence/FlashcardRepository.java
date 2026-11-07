@@ -89,7 +89,7 @@ public class FlashcardRepository implements Repository<Flashcard> {
                 ps.setLong(1, courseId);
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        reviews.add(new FlashcardReview(rs.getLong("card_id"), rs.getLong("course_id"),
+                        reviews.add(new FlashcardReview(SqlUtil.nullableLong(rs, "card_id"), rs.getLong("course_id"),
                                 SqlUtil.nullableLong(rs, "concept_id"), Rating.valueOf(rs.getString("rating")),
                                 LocalDateTime.parse(rs.getString("reviewed_at"))));
                     }
@@ -109,6 +109,16 @@ public class FlashcardRepository implements Repository<Flashcard> {
         });
     }
 
+    /** Deletes every card of the deck. Their ratings stay in flashcard_reviews, without a card id. */
+    public void deleteDeck(long deckId) {
+        db.withConnection(c -> {
+            try (PreparedStatement ps = c.prepareStatement("DELETE FROM flashcards WHERE deck_id = ?")) {
+                ps.setLong(1, deckId);
+                return ps.executeUpdate();
+            }
+        });
+    }
+
     private static long nextDeckId(Connection c) throws SQLException {
         try (Statement st = c.createStatement();
              ResultSet rs = st.executeQuery("SELECT COALESCE(MAX(deck_id), 0) + 1 FROM flashcards")) {
@@ -120,21 +130,22 @@ public class FlashcardRepository implements Repository<Flashcard> {
     private static void saveCard(Connection c, Flashcard card) throws SQLException {
         if (card.getId() == 0) {
             try (PreparedStatement ps = c.prepareStatement(
-                    "INSERT INTO flashcards(course_id, deck_id, concept_id, front, back, source_page, box, next_due, "
-                            + "review_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO flashcards(course_id, deck_id, concept_id, front, back, box, next_due, "
+                            + "review_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS)) {
                 ps.setLong(1, card.getCourseId());
                 ps.setLong(2, card.getDeckId());
                 bindContent(ps, 3, card);
+                ps.setString(9, card.getCreatedAt().toString());
                 ps.executeUpdate();
                 card.setId(SqlUtil.generatedId(ps));
             }
         } else {
             try (PreparedStatement ps = c.prepareStatement(
-                    "UPDATE flashcards SET concept_id = ?, front = ?, back = ?, source_page = ?, box = ?, "
+                    "UPDATE flashcards SET concept_id = ?, front = ?, back = ?, box = ?, "
                             + "next_due = ?, review_count = ? WHERE id = ?")) {
                 bindContent(ps, 1, card);
-                ps.setLong(8, card.getId());
+                ps.setLong(7, card.getId());
                 ps.executeUpdate();
             }
         }
@@ -144,10 +155,9 @@ public class FlashcardRepository implements Repository<Flashcard> {
         ps.setObject(first, card.getConceptId());
         ps.setString(first + 1, card.getFront());
         ps.setString(first + 2, card.getBack());
-        ps.setInt(first + 3, card.getSourcePage());
-        ps.setInt(first + 4, card.getBox());
-        ps.setString(first + 5, card.getNextDue().toString());
-        ps.setInt(first + 6, card.getReviewCount());
+        ps.setInt(first + 3, card.getBox());
+        ps.setString(first + 4, card.getNextDue().toString());
+        ps.setInt(first + 5, card.getReviewCount());
     }
 
     private List<Flashcard> query(String sql, long param) {
@@ -159,8 +169,8 @@ public class FlashcardRepository implements Repository<Flashcard> {
                     while (rs.next()) {
                         cards.add(new Flashcard(rs.getLong("id"), rs.getLong("course_id"), rs.getLong("deck_id"),
                                 SqlUtil.nullableLong(rs, "concept_id"), rs.getString("front"), rs.getString("back"),
-                                rs.getInt("source_page"), rs.getInt("box"), LocalDate.parse(rs.getString("next_due")),
-                                rs.getInt("review_count")));
+                                rs.getInt("box"), LocalDate.parse(rs.getString("next_due")),
+                                rs.getInt("review_count"), LocalDateTime.parse(rs.getString("created_at"))));
                     }
                 }
             }

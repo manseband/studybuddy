@@ -79,7 +79,7 @@ class FlashcardServiceTest {
     }
 
     private static String card(String front) {
-        return "{\"front\": \"" + front + "\", \"back\": \"An answer\", \"excerpt\": 1, \"page\": 1, \"concept\": null}";
+        return "{\"front\": \"" + front + "\", \"back\": \"An answer\", \"excerpt\": 1, \"concept\": null}";
     }
 
     private static String reply(String... cards) {
@@ -98,7 +98,7 @@ class FlashcardServiceTest {
     private List<Flashcard> savedDeck(String... fronts) {
         List<Flashcard> deck = new ArrayList<>();
         for (String front : fronts) {
-            deck.add(Flashcard.create(courseId, 0, null, front, "Back", 1, LocalDate.now()));
+            deck.add(Flashcard.create(courseId, 0, null, front, "Back", LocalDate.now()));
         }
         return service.saveDeck(deck);
     }
@@ -106,10 +106,10 @@ class FlashcardServiceTest {
     // ----- generation -----
 
     @Test
-    void generatesUnsavedCardsWithSourceAndConcept() {
+    void generatesUnsavedCardsWithAConcept() {
         Concept facade = concepts.save(new Concept(0, courseId, "Facade", "Hides a subsystem.", 3));
         llm.enqueueText(reply("{\"front\": \"What is a Facade?\", \"back\": \"One simple interface.\", \"excerpt\": 1, "
-                + "\"page\": 99, \"concept\": \"facade\"}"));
+                + "\"concept\": \"facade\"}"));
 
         List<Flashcard> generated = generate(5);
 
@@ -117,7 +117,6 @@ class FlashcardServiceTest {
         Flashcard first = generated.get(0);
         assertEquals("What is a Facade?", first.getFront());
         assertEquals(facade.getId(), first.getConceptId());
-        assertEquals(1, first.getSourcePage());
         assertEquals(1, first.getBox());
         assertEquals(LocalDate.now(), first.getNextDue());
         assertEquals(0, first.getId());
@@ -240,12 +239,27 @@ class FlashcardServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.saveDeck(List.of()));
     }
 
+    // ----- deleting -----
+
+    @Test
+    void deleteDeckRemovesItsCardsAndNotifies() {
+        long kept = savedDeck("Keep").get(0).getDeckId();
+        long deleted = savedDeck("Delete").get(0).getDeckId();
+        events.clear();
+
+        service.deleteDeck(deleted);
+
+        assertEquals(List.of(kept), service.listCards(courseId).stream().map(Flashcard::getDeckId).toList());
+        assertEquals(StudyEvent.Type.FLASHCARDS_CHANGED, events.get(0).type());
+        assertThrows(NoSuchElementException.class, () -> service.deleteDeck(deleted));
+    }
+
     // ----- review -----
 
     @Test
     void reviewMovesTheCardAndRecordsEvidence() {
         Concept facade = concepts.save(new Concept(0, courseId, "Facade", "", 3));
-        Flashcard card = service.saveDeck(List.of(Flashcard.create(courseId, 0, facade.getId(), "Front", "Back", 2,
+        Flashcard card = service.saveDeck(List.of(Flashcard.create(courseId, 0, facade.getId(), "Front", "Back",
                 LocalDate.now()))).get(0);
         assertEquals(1, service.getDueCards(courseId).size());
 
@@ -266,9 +280,9 @@ class FlashcardServiceTest {
     @Test
     void dueCardsAreMostOverdueFirstAndFutureCardsAreLeftOut() {
         LocalDate today = LocalDate.now();
-        Flashcard tomorrow = Flashcard.create(courseId, 0, null, "Tomorrow", "B", 1, today.plusDays(1));
-        Flashcard dueToday = Flashcard.create(courseId, 0, null, "Today", "B", 1, today);
-        Flashcard overdue = Flashcard.create(courseId, 0, null, "Overdue", "B", 1, today.minusDays(3));
+        Flashcard tomorrow = Flashcard.create(courseId, 0, null, "Tomorrow", "B", today.plusDays(1));
+        Flashcard dueToday = Flashcard.create(courseId, 0, null, "Today", "B", today);
+        Flashcard overdue = Flashcard.create(courseId, 0, null, "Overdue", "B", today.minusDays(3));
         long deckId = service.saveDeck(List.of(tomorrow, dueToday, overdue)).get(0).getDeckId();
 
         assertEquals(List.of("Overdue", "Today"), service.getDueCards(courseId).stream().map(Flashcard::getFront).toList());

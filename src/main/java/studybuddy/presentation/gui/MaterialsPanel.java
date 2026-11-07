@@ -2,8 +2,6 @@ package studybuddy.presentation.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.List;
 
@@ -11,10 +9,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,18 +21,21 @@ import studybuddy.application.DuplicateMaterialException;
 import studybuddy.application.StudyAgentFacade;
 import studybuddy.domain.Material;
 
-/** F01: upload materials to the selected course; right-click a row to rename or remove it. */
+/** F01: upload materials to the selected course; double-click a title to rename it, as in the Concepts tab. */
 public class MaterialsPanel extends FeaturePanel {
+
+    private static final int TITLE = 0;
 
     private final DefaultTableModel model = new DefaultTableModel(
             new Object[] {"Title", "Type", "Pages", "Words", "Chunks", "Status"}, 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
-            return false;
+            return column == TITLE;
         }
     };
     private final JTable table = new StudyTable(model);
     private final JButton upload = new JButton("Upload Material");
+    private final JButton remove = new JButton("Remove");
     private final JProgressBar progress = new JProgressBar();
     private final JLabel summary = new JLabel(" ");
     private List<Material> materials = List.of();
@@ -49,6 +48,9 @@ public class MaterialsPanel extends FeaturePanel {
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         upload.addActionListener(e -> chooseFile());
         top.add(upload);
+        remove.addActionListener(e -> removeSelected());
+        remove.setEnabled(false);
+        top.add(remove);
         progress.setIndeterminate(true);
         progress.setVisible(false);
         top.add(progress);
@@ -57,30 +59,10 @@ public class MaterialsPanel extends FeaturePanel {
         add(new JScrollPane(table), BorderLayout.CENTER);
         add(summary, BorderLayout.SOUTH);
 
-        JPopupMenu menu = new JPopupMenu();
-        JMenuItem rename = new JMenuItem("Rename");
-        rename.addActionListener(e -> renameSelected());
-        menu.add(rename);
-        JMenuItem remove = new JMenuItem("Remove");
-        remove.addActionListener(e -> removeSelected());
-        menu.add(remove);
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                showMenu(e);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                showMenu(e);
-            }
-
-            private void showMenu(MouseEvent e) {
-                int row = table.rowAtPoint(e.getPoint());
-                if (e.isPopupTrigger() && row >= 0) {
-                    table.setRowSelectionInterval(row, row);
-                    menu.show(table, e.getX(), e.getY());
-                }
+        table.getSelectionModel().addListSelectionListener(e -> remove.setEnabled(selected() != null));
+        model.addTableModelListener(e -> {
+            if (e.getColumn() == TITLE && e.getFirstRow() >= 0) {
+                renameFromCell(e.getFirstRow());
             }
         });
     }
@@ -165,15 +147,20 @@ public class MaterialsPanel extends FeaturePanel {
         return row < 0 || row >= materials.size() ? null : materials.get(row);
     }
 
-    private void renameSelected() {
-        Material material = selected();
-        if (material == null) {
+    /** Saves an edited title; a title that cannot be saved is reported and the old one comes back. */
+    private void renameFromCell(int row) {
+        if (row >= materials.size()) {
             return;
         }
-        String title = JOptionPane.showInputDialog(this, "New title:", material.getTitle());
-        if (title != null && !title.isBlank()) {
-            runInBackground(() -> facade.renameMaterial(material.getId(), title), renamed -> { });
+        Material material = materials.get(row);
+        String title = String.valueOf(model.getValueAt(row, TITLE));
+        if (title.equals(material.getTitle())) {
+            return;
         }
+        runInBackground(() -> facade.renameMaterial(material.getId(), title), renamed -> { }, error -> {
+            showError(error.getMessage());
+            refresh();
+        });
     }
 
     private void removeSelected() {

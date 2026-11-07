@@ -21,7 +21,9 @@ public record StudyEvent(Type type, long courseId, String message, LocalDateTime
         QUIZ_SUBMITTED,
         FLASHCARDS_CHANGED,
         FLASHCARD_REVIEWED,
-        COACH_RESPONDED
+        COACH_RESPONDED,
+        /** The first answered message of a Study Coach conversation; its message is what the student asked. */
+        COACH_CONVERSATION_STARTED
     }
 
     public static StudyEvent of(Type type, long courseId, String message) {

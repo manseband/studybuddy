@@ -43,7 +43,7 @@ public class ConceptsPanel extends FeaturePanel {
     private final JTable table = new StudyTable(model);
     private final JComboBox<Material> materialSelector = new JComboBox<>();
     private final JButton extract = new JButton("Extract Concepts");
-    private final JButton save = new JButton("Save");
+    private final JButton save = new JButton("Save All");
     private final JButton remove = new JButton("Remove");
     private final JButton merge = new JButton("Merge Into...");
     private final JLabel status = new JLabel(" ");
@@ -69,15 +69,20 @@ public class ConceptsPanel extends FeaturePanel {
         top.add(remove);
         merge.addActionListener(e -> mergeSelected());
         top.add(merge);
-        top.add(status);
-        add(top, BorderLayout.NORTH);
+        JPanel north = new JPanel(new BorderLayout(0, 4));
+        north.add(top, BorderLayout.NORTH);
+        north.add(status, BorderLayout.SOUTH);
+        add(north, BorderLayout.NORTH);
 
         model.addTableModelListener(e -> {
             if (!filling && e.getFirstRow() >= 0 && e.getColumn() >= 0) {
                 applyEdit(e.getFirstRow());
             }
         });
-        table.getSelectionModel().addListSelectionListener(e -> showDetails());
+        table.getSelectionModel().addListSelectionListener(e -> {
+            showDetails();
+            updateButtons();
+        });
         details.setEditable(false);
         details.setLineWrap(true);
         details.setWrapStyleWord(true);
@@ -148,7 +153,8 @@ public class ConceptsPanel extends FeaturePanel {
     private void updateButtons() {
         extract.setEnabled(course != null && materialSelector.getItemCount() > 0);
         save.setEnabled(reviewing != null);
-        merge.setEnabled(reviewing == null);
+        remove.setEnabled(selected() != null);
+        merge.setEnabled(reviewing == null && selected() != null);
     }
 
     private void extractConcepts() {
@@ -167,7 +173,7 @@ public class ConceptsPanel extends FeaturePanel {
             }
             reviewing = material;
             fill(new ArrayList<>(candidates));
-            status.setText("Review these concepts, then click Save.");
+            status.setText("Remove the concepts you don't want. Save All keeps every concept left in the list.");
             updateButtons();
         }, error -> {
             status.setText(" ");

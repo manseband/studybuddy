@@ -65,7 +65,7 @@ class MasteryServiceTest {
 
     /** Stores a card on the concept with one rating at the given time. */
     private void rate(Long conceptId, Rating rating, LocalDateTime at) {
-        Flashcard card = Flashcard.create(courseId, 0, conceptId, "Front", "Back", 1, LocalDate.of(2026, 11, 1));
+        Flashcard card = Flashcard.create(courseId, 0, conceptId, "Front", "Back", LocalDate.of(2026, 11, 1));
         cards.saveDeck(List.of(card));
         card.review(rating);
         cards.recordReview(card, rating, at);

@@ -76,7 +76,7 @@ class CoachCommandTest {
 
         assertTrue(app.output.contains("... Generating 5-card flashcard deck"), app.output);
         assertTrue(app.output.contains("Coach: Your deck is ready."), app.output);
-        assertTrue(app.output.contains("Created: Flashcard deck #1 (1 cards)"), app.output);
+        assertTrue(app.output.contains("Created: Deck #1 (1 cards)"), app.output);
     }
 
     @Test
@@ -92,7 +92,7 @@ class CoachCommandTest {
         assertEquals("generate_flashcards", step.get("tool").asText());
         assertEquals(5, step.get("arguments").get("count").asInt());
         assertEquals("SUCCEEDED", step.get("status").asText());
-        assertTrue(step.get("result").asText().contains("Created Flashcard deck"));
+        assertTrue(step.get("result").asText().contains("Created Deck #1"));
         assertTrue(step.has("millis"));
         assertEquals("DECK", json.get("created").get(0).get("type").asText());
         assertEquals(1, json.get("created").get(0).get("id").asInt());

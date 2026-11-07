@@ -11,10 +11,12 @@ import studybuddy.application.FlashcardService;
 import studybuddy.application.LearningContentService;
 import studybuddy.application.MasteryService;
 import studybuddy.application.MaterialService;
+import studybuddy.application.ProgressService;
 import studybuddy.application.QuestionFactory;
 import studybuddy.application.QuizService;
 import studybuddy.application.StudyAgentFacade;
 import studybuddy.persistence.AttemptRepository;
+import studybuddy.persistence.CoachConversationRepository;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
@@ -40,10 +42,12 @@ final class GuiTestFacade {
         QuizRepository quizzes = new QuizRepository(db);
         AttemptRepository attempts = new AttemptRepository(db);
         FlashcardRepository cards = new FlashcardRepository(db);
-        MaterialService materialService = new MaterialService(new CourseRepository(db), materials, new DocumentParser(),
+        CourseRepository courses = new CourseRepository(db);
+        QaHistoryRepository questions = new QaHistoryRepository(db);
+        MaterialService materialService = new MaterialService(courses, materials, new DocumentParser(),
                 retriever, bus, 1_000_000, 400, 50);
         LearningContentService content = new LearningContentService(llm, retriever, parser, materials,
-                new QaHistoryRepository(db), new ExplanationRepository(db), concepts, bus, 6, 6000);
+                questions, new ExplanationRepository(db), concepts, bus, 6, 6000);
         QuizService quizService = new QuizService(llm, retriever, parser, new QuestionFactory(),
                 ApplicationFactory.createGraders(llm, parser), quizzes, attempts, materials, concepts, bus, 6, 6000);
         MasteryService mastery = new MasteryService(attempts, quizzes, concepts, cards, llm, parser, 60);
@@ -51,7 +55,9 @@ final class GuiTestFacade {
                 6000);
         AgentController agent = ApplicationFactory.createAgent(llm, materialService, content, quizService, mastery,
                 flashcards, new PreferenceRepository(db), bus, 8);
-        return new StudyAgentFacade(materialService, content, quizService, mastery, flashcards, agent, bus, true,
-                () -> { });
+        ProgressService progress = new ProgressService(courses, materials, questions, quizzes, attempts, cards,
+                new CoachConversationRepository(db), mastery, bus);
+        return new StudyAgentFacade(materialService, content, quizService, mastery, flashcards, progress, agent, bus,
+                true, () -> { });
     }
 }

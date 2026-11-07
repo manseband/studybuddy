@@ -1,6 +1,7 @@
 package studybuddy.presentation.gui;
 
 import java.awt.BorderLayout;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -15,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import studybuddy.application.StudyAgentFacade;
@@ -25,6 +27,10 @@ import studybuddy.domain.Course;
  * main window, and runs slow work (database, AI) on a background thread so the window stays responsive.
  */
 public abstract class FeaturePanel extends JPanel {
+
+    /** Explains the lists made by {@link #multiSelectList}, in a dialog that chooses what to study. */
+    protected static final String SCOPE_HINT = "Click to choose, Ctrl-click for several, click again to clear. "
+            + "Leave both empty for the whole course.";
 
     protected final StudyAgentFacade facade;
     protected Course course;
@@ -78,11 +84,25 @@ public abstract class FeaturePanel extends JPanel {
         }.execute();
     }
 
-    /** A list where several items can be chosen. */
+    /** A list where several items can be chosen, and clicking the only chosen item again clears the choice. */
     protected static <T> JList<T> multiSelectList(List<T> items) {
         DefaultListModel<T> listModel = new DefaultListModel<>();
         items.forEach(listModel::addElement);
-        JList<T> list = new JList<>(listModel);
+        JList<T> list = new JList<>(listModel) {
+            private boolean clickClears;
+
+            @Override
+            protected void processMouseEvent(MouseEvent e) {
+                if (e.getID() == MouseEvent.MOUSE_PRESSED) {
+                    clickClears = SwingUtilities.isLeftMouseButton(e) && !e.isControlDown() && !e.isShiftDown()
+                            && getSelectedIndices().length == 1 && getSelectedIndex() == locationToIndex(e.getPoint());
+                }
+                super.processMouseEvent(e);
+                if (e.getID() == MouseEvent.MOUSE_CLICKED && e.getClickCount() == 1 && clickClears) {
+                    clearSelection();
+                }
+            }
+        };
         list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         return list;
     }

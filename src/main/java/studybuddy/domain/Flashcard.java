@@ -1,6 +1,7 @@
 package studybuddy.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * A flashcard scheduled with Leitner boxes (F05).
@@ -24,28 +25,28 @@ public class Flashcard {
     private Long conceptId;
     private String front;
     private String back;
-    private int sourcePage;
     private int box;
     private LocalDate nextDue;
     private int reviewCount;
+    private final LocalDateTime createdAt;
 
     public Flashcard(long id, long courseId, long deckId, Long conceptId, String front, String back,
-                     int sourcePage, int box, LocalDate nextDue, int reviewCount) {
+                     int box, LocalDate nextDue, int reviewCount, LocalDateTime createdAt) {
         this.id = id;
         this.courseId = courseId;
         this.deckId = deckId;
         this.conceptId = conceptId;
         setContent(front, back);
-        this.sourcePage = sourcePage;
         this.box = Math.clamp(box, MIN_BOX, MAX_BOX);
         this.nextDue = nextDue;
         this.reviewCount = reviewCount;
+        this.createdAt = createdAt;
     }
 
     /** A new card in box 1, due today. */
     public static Flashcard create(long courseId, long deckId, Long conceptId, String front, String back,
-                                   int sourcePage, LocalDate today) {
-        return new Flashcard(0, courseId, deckId, conceptId, front, back, sourcePage, MIN_BOX, today, 0);
+                                   LocalDate today) {
+        return new Flashcard(0, courseId, deckId, conceptId, front, back, MIN_BOX, today, 0, LocalDateTime.now());
     }
 
     /** Records a review today. */
@@ -118,10 +119,6 @@ public class Flashcard {
         this.back = back.trim();
     }
 
-    public int getSourcePage() {
-        return sourcePage;
-    }
-
     public int getBox() {
         return box;
     }
@@ -132,5 +129,9 @@ public class Flashcard {
 
     public int getReviewCount() {
         return reviewCount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }

@@ -28,7 +28,6 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -61,18 +60,21 @@ public class FlashcardPanel extends FeaturePanel {
 
     private final DefaultTableModel deckModel = readOnlyModel("Deck", "Cards", "Due today");
     private final JTable deckTable = new StudyTable(deckModel);
-    private final DefaultTableModel cardModel = readOnlyModel("Front", "Back", "Box", "Next due", "Page");
+    private final DefaultTableModel cardModel = readOnlyModel("Front", "Back", "Concept", "Next due");
     private final JButton generate = new JButton("Generate Deck");
     private final JButton reviewDue = new JButton("Review Due Cards");
     private final JButton reviewDeck = new JButton("Review Deck");
+    private final JButton deleteDeck = new JButton("Delete Deck");
     private final JProgressBar progress = new JProgressBar();
     private final JLabel deckStatus = new JLabel(" ");
     private final JLabel dueLabel = new JLabel(" ");
+    private final JLabel untaggedNote = new JLabel(" ");
     private final List<Long> deckIds = new ArrayList<>();
     private Map<Long, List<Flashcard>> decks = Map.of();
+    private List<Concept> concepts = List.of();
 
     private final DefaultTableModel previewModel = new DefaultTableModel(
-            new Object[] {"Front", "Back", "Concept", "Page"}, 0) {
+            new Object[] {"Front", "Back", "Concept"}, 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
             return column == PREVIEW_FRONT || column == PREVIEW_BACK;
@@ -86,7 +88,6 @@ public class FlashcardPanel extends FeaturePanel {
     private final JLabel reviewProgress = new JLabel(" ");
     private final JTextArea reviewFront = wrappedText(" ");
     private final JTextArea reviewBack = wrappedText(" ");
-    private final JLabel reviewSource = new JLabel(" ");
     private final JButton showAnswer = new JButton("Show Answer");
     private final JPanel ratingButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
     private List<Flashcard> reviewQueue = List.of();
@@ -122,11 +123,14 @@ public class FlashcardPanel extends FeaturePanel {
     @Override
     public void refresh() {
         if (course == null) {
-            fillDecks(List.of());
+            fillDecks(List.of(), List.of());
             return;
         }
         long courseId = course.getId();
-        runInBackground(() -> facade.listFlashcards(courseId), this::fillDecks);
+        record Loaded(List<Flashcard> cards, List<Concept> concepts) {
+        }
+        runInBackground(() -> new Loaded(facade.listFlashcards(courseId), facade.listConcepts(courseId)),
+                loaded -> fillDecks(loaded.cards(), loaded.concepts()));
     }
 
     private static DefaultTableModel readOnlyModel(String... columns) {
@@ -150,6 +154,8 @@ public class FlashcardPanel extends FeaturePanel {
         top.add(reviewDue);
         reviewDeck.addActionListener(e -> reviewSelectedDeck());
         top.add(reviewDeck);
+        deleteDeck.addActionListener(e -> confirmDeleteDeck());
+        top.add(deleteDeck);
         dueLabel.setFont(dueLabel.getFont().deriveFont(Font.BOLD));
         top.add(dueLabel);
         progress.setIndeterminate(true);
@@ -158,18 +164,21 @@ public class FlashcardPanel extends FeaturePanel {
         top.add(deckStatus);
         view.add(top, BorderLayout.NORTH);
 
-        deckTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         deckTable.getSelectionModel().addListSelectionListener(e -> showSelectedDeck());
         JTable cardTable = new StudyTable(cardModel);
         wrapCardText(cardTable);
-        JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(deckTable),
-                new JScrollPane(cardTable));
+        JPanel cardArea = new JPanel(new BorderLayout(0, 4));
+        untaggedNote.setVisible(false);
+        cardArea.add(untaggedNote, BorderLayout.NORTH);
+        cardArea.add(new JScrollPane(cardTable), BorderLayout.CENTER);
+        JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(deckTable), cardArea);
         split.setResizeWeight(0.25);
         view.add(split, BorderLayout.CENTER);
         return view;
     }
 
-    private void fillDecks(List<Flashcard> all) {
+    private void fillDecks(List<Flashcard> all, List<Concept> allConcepts) {
+        concepts = allConcepts;
         Long selected = selectedDeckId();
         Map<Long, List<Flashcard>> grouped = new LinkedHashMap<>();
         all.forEach(card -> grouped.computeIfAbsent(card.getDeckId(), id -> new ArrayList<>()).add(card));
@@ -200,12 +209,19 @@ public class FlashcardPanel extends FeaturePanel {
     private void showSelectedDeck() {
         cardModel.setRowCount(0);
         Long deckId = selectedDeckId();
+        long untagged = 0;
         if (deckId != null) {
             for (Flashcard card : decks.getOrDefault(deckId, List.of())) {
-                cardModel.addRow(new Object[] {card.getFront(), card.getBack(), card.getBox(), card.getNextDue(),
-                        card.getSourcePage()});
+                cardModel.addRow(new Object[] {card.getFront(), card.getBack(),
+                        Concept.nameOf(card.getConceptId(), concepts), card.getNextDue()});
+                if (card.getConceptId() == null) {
+                    untagged++;
+                }
             }
         }
+        untaggedNote.setText(untagged == 1 ? "1 card has no concept, so reviewing it doesn't affect mastery."
+                : untagged + " cards have no concept, so reviewing them doesn't affect mastery.");
+        untaggedNote.setVisible(untagged > 0);
         updateDeckButtons();
     }
 
@@ -213,6 +229,21 @@ public class FlashcardPanel extends FeaturePanel {
         generate.setEnabled(course != null && !progress.isVisible());
         reviewDue.setEnabled(course != null && !decks.isEmpty());
         reviewDeck.setEnabled(selectedDeckId() != null);
+        deleteDeck.setEnabled(selectedDeckId() != null);
+    }
+
+    private void confirmDeleteDeck() {
+        Long deckId = selectedDeckId();
+        if (deckId != null && JOptionPane.showConfirmDialog(this, "Delete Deck #" + deckId + " with "
+                + decks.get(deckId).size() + " card(s)? Mastery scores and history is kept.",
+                "Delete Deck", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+            deleteDeck(deckId);
+        }
+    }
+
+    /** Runs once the deletion is confirmed; the change event refreshes the list. */
+    void deleteDeck(long deckId) {
+        runInBackground(() -> facade.deleteDeck(deckId));
     }
 
     // ----- generating -----
@@ -238,8 +269,7 @@ public class FlashcardPanel extends FeaturePanel {
         size.add(new JLabel("Number of cards:"));
         size.add(count);
         JPanel form = new JPanel(new BorderLayout(0, 8));
-        form.add(new JLabel("Choose what to cover (Ctrl-click for several), or leave both empty for the whole course."),
-                BorderLayout.NORTH);
+        form.add(new JLabel(SCOPE_HINT), BorderLayout.NORTH);
         form.add(scope, BorderLayout.CENTER);
         form.add(size, BorderLayout.SOUTH);
 
@@ -297,14 +327,13 @@ public class FlashcardPanel extends FeaturePanel {
     }
 
     /** Shows unsaved cards so the student can edit or remove them before saving. */
-    void showPreview(List<Flashcard> generated, List<Concept> concepts, int requested) {
+    void showPreview(List<Flashcard> generated, List<Concept> courseConcepts, int requested) {
         previewCards.clear();
         previewCards.addAll(generated);
         previewModel.setRowCount(0);
         for (Flashcard card : generated) {
-            String concept = concepts.stream().filter(c -> Long.valueOf(c.getId()).equals(card.getConceptId()))
-                    .map(Concept::getName).findFirst().orElse("");
-            previewModel.addRow(new Object[] {card.getFront(), card.getBack(), concept, card.getSourcePage()});
+            previewModel.addRow(new Object[] {card.getFront(), card.getBack(),
+                    Concept.nameOf(card.getConceptId(), courseConcepts)});
         }
         previewStatus.setText(generated.size() < requested
                 ? "Only " + generated.size() + " of the " + requested + " requested cards were generated. The "
@@ -403,7 +432,6 @@ public class FlashcardPanel extends FeaturePanel {
         card.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
         card.add(reviewFront, BorderLayout.NORTH);
         card.add(reviewBack, BorderLayout.CENTER);
-        card.add(reviewSource, BorderLayout.SOUTH);
         view.add(new JScrollPane(card), BorderLayout.CENTER);
 
         showAnswer.addActionListener(e -> revealAnswer());
@@ -419,20 +447,6 @@ public class FlashcardPanel extends FeaturePanel {
         bottom.add(ratingButtons);
         view.add(bottom, BorderLayout.SOUTH);
         return view;
-    }
-
-    /** Shows the deck list with this deck selected. */
-    void showDeck(long deckId) {
-        currentView = DECKS_VIEW;
-        cards.show(views, DECKS_VIEW);
-        long courseId = course.getId();
-        runInBackground(() -> facade.listFlashcards(courseId), all -> {
-            fillDecks(all);
-            int row = deckIds.indexOf(deckId);
-            if (row >= 0) {
-                deckTable.setRowSelectionInterval(row, row);
-            }
-        });
     }
 
     void reviewDueCards() {
@@ -465,7 +479,6 @@ public class FlashcardPanel extends FeaturePanel {
         reviewProgress.setText("Card " + (reviewIndex + 1) + " of " + reviewQueue.size());
         reviewFront.setText(card.getFront());
         reviewBack.setText(" ");
-        reviewSource.setText(" ");
         showAnswer.setVisible(true);
         setRatingButtonsVisible(false);
     }
@@ -474,7 +487,6 @@ public class FlashcardPanel extends FeaturePanel {
     void revealAnswer() {
         Flashcard card = reviewQueue.get(reviewIndex);
         reviewBack.setText(card.getBack());
-        reviewSource.setText("Source: p. " + card.getSourcePage());
         showAnswer.setVisible(false);
         setRatingButtonsVisible(true);
     }
@@ -498,7 +510,6 @@ public class FlashcardPanel extends FeaturePanel {
         reviewFront.setText(reviewed == 0 ? "There is nothing to review today." : "You reviewed " + reviewed
                 + " card(s).");
         reviewBack.setText(" ");
-        reviewSource.setText(" ");
         showAnswer.setVisible(false);
         setRatingButtonsVisible(false);
         runInBackground(() -> facade.getNextDueDate(reviewScope.get()), this::showNextDue);
@@ -530,6 +541,26 @@ public class FlashcardPanel extends FeaturePanel {
     /** Rows in the deck list; used by tests. */
     int deckCount() {
         return deckModel.getRowCount();
+    }
+
+    /** Selects a deck as if its row had been clicked; used by tests. */
+    void selectDeck(int row) {
+        deckTable.setRowSelectionInterval(row, row);
+    }
+
+    /** Clears the deck selection as a repeated click does; used by tests. */
+    void clearDeckSelection() {
+        deckTable.clearSelection();
+    }
+
+    /** A cell of the selected deck's card table; used by tests. */
+    Object cardCell(int row, int column) {
+        return cardModel.getValueAt(row, column);
+    }
+
+    /** The note about cards without a concept, or null when it is hidden; used by tests. */
+    String untaggedNoteText() {
+        return untaggedNote.isVisible() ? untaggedNote.getText() : null;
     }
 
     /** The due-today label; used by tests. */

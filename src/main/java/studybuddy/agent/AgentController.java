@@ -34,6 +34,8 @@ public class AgentController {
     private final LearningContentService contentService;
     private final PreferenceRepository preferences;
     private final EventBus eventBus;
+    /** Whether this conversation has been announced for the study history, which gets one line per conversation. */
+    private boolean conversationAnnounced;
 
     public AgentController(Planner planner, ToolManager toolManager, MaterialService materialService,
                            LearningContentService contentService, PreferenceRepository preferences,
@@ -71,6 +73,10 @@ public class AgentController {
         if (response.status() != AgentResponse.Status.FAILED) {
             eventBus.publish(StudyEvent.of(StudyEvent.Type.COACH_RESPONDED, selected == null ? 0 : selected.getId(),
                     "Asked the Study Coach: " + goal));
+            if (selected != null && !conversationAnnounced) {
+                conversationAnnounced = true;
+                eventBus.publish(StudyEvent.of(StudyEvent.Type.COACH_CONVERSATION_STARTED, selected.getId(), goal));
+            }
         }
         return response;
     }
@@ -78,6 +84,7 @@ public class AgentController {
     /** Starts a new conversation. Stated preferences are kept. */
     public synchronized void resetConversation() {
         memory.clear();
+        conversationAnnounced = false;
     }
 
     private static Course selectedCourse(Long courseId, List<Course> courses) {

@@ -21,10 +21,10 @@ import studybuddy.domain.Course;
 import studybuddy.domain.Flashcard;
 import studybuddy.domain.Rating;
 
-/** {@code studyagent flashcards generate|list|show|review} (F05). */
+/** {@code studyagent flashcards generate|list|show|review|delete} (F05). */
 @Command(name = "flashcards", description = "Generate flashcards and review them with spaced repetition.",
         subcommands = {FlashcardsCommand.Generate.class, FlashcardsCommand.ListDecks.class, FlashcardsCommand.Show.class,
-                FlashcardsCommand.Review.class})
+                FlashcardsCommand.Review.class, FlashcardsCommand.Delete.class})
 public class FlashcardsCommand {
 
     @ParentCommand
@@ -37,16 +37,15 @@ public class FlashcardsCommand {
         json.put("front", card.getFront());
         json.put("back", card.getBack());
         json.put("conceptId", card.getConceptId());
-        json.put("sourcePage", card.getSourcePage());
         json.put("box", card.getBox());
         json.put("nextDue", card.getNextDue().toString());
         json.put("reviewCount", card.getReviewCount());
         return json;
     }
 
-    private static String cardsText(List<Flashcard> cards) {
-        return cards.stream().map(card -> "Q: " + card.getFront() + "\nA: " + card.getBack() + " (p. "
-                + card.getSourcePage() + ", box " + card.getBox() + ", due " + card.getNextDue() + ")")
+    private static String cardsText(List<Flashcard> cards, List<Concept> concepts) {
+        return cards.stream().map(card -> "Q: " + card.getFront() + "\nA: " + card.getBack() + " (concept: "
+                + Concept.nameOf(card.getConceptId(), concepts) + ", due " + card.getNextDue() + ")")
                 .collect(Collectors.joining("\n\n"));
     }
 
@@ -78,9 +77,9 @@ public class FlashcardsCommand {
             if (!preview) {
                 cards = facade.saveFlashcards(cards);
             }
-            StringBuilder text = new StringBuilder(cardsText(cards)).append("\n\n");
+            StringBuilder text = new StringBuilder(cardsText(cards, facade.listConcepts(c.getId()))).append("\n\n");
             text.append(preview ? cards.size() + " card(s) generated (preview, not saved)."
-                    : "Created deck #" + cards.get(0).getDeckId() + " with " + cards.size()
+                    : "Created Deck #" + cards.get(0).getDeckId() + " with " + cards.size()
                             + " card(s). Review it with: studyagent flashcards review --deck "
                             + cards.get(0).getDeckId());
             if (cards.size() < count) {
@@ -158,7 +157,28 @@ public class FlashcardsCommand {
         @Override
         public Integer call() {
             List<Flashcard> cards = parent.root.facade().getDeck(deckId);
-            parent.root.printResult(cards.stream().map(FlashcardsCommand::cardJson).toList(), cardsText(cards));
+            List<Concept> concepts = parent.root.facade().listConcepts(cards.get(0).getCourseId());
+            parent.root.printResult(cards.stream().map(FlashcardsCommand::cardJson).toList(),
+                    cardsText(cards, concepts));
+            return 0;
+        }
+    }
+
+    @Command(name = "delete", description = "Delete a deck. Mastery scores and history is kept.")
+    static class Delete implements Callable<Integer> {
+        @ParentCommand
+        FlashcardsCommand parent;
+
+        @Parameters(index = "0", description = "Deck id.")
+        long deckId;
+
+        @Override
+        public Integer call() {
+            parent.root.facade().deleteDeck(deckId);
+            Map<String, Object> json = new LinkedHashMap<>();
+            json.put("deckId", deckId);
+            json.put("deleted", true);
+            parent.root.printResult(json, "Deleted Deck #" + deckId);
             return 0;
         }
     }
@@ -192,7 +212,7 @@ public class FlashcardsCommand {
                 if (reveal == null || reveal.strip().equalsIgnoreCase("q")) {
                     break;
                 }
-                parent.root.prompt("A: " + card.getBack() + " (p. " + card.getSourcePage() + ")\n");
+                parent.root.prompt("A: " + card.getBack() + "\n");
                 Rating rating = askRating();
                 if (rating == null) {
                     break;

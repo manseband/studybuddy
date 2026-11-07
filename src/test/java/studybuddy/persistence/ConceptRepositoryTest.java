@@ -67,7 +67,7 @@ class ConceptRepositoryTest {
     private long insertFlashcard(long conceptId) {
         return db.withConnection(c -> {
             try (PreparedStatement ps = c.prepareStatement("INSERT INTO flashcards(course_id, deck_id, concept_id, "
-                    + "front, back, next_due) VALUES (?, 1, ?, 'f', 'b', '2026-10-30')",
+                    + "front, back, next_due, created_at) VALUES (?, 1, ?, 'f', 'b', '2026-10-30', '2026-10-30T09:00')",
                     java.sql.Statement.RETURN_GENERATED_KEYS)) {
                 ps.setLong(1, courseId);
                 ps.setLong(2, conceptId);

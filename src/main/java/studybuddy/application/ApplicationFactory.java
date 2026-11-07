@@ -25,6 +25,7 @@ import studybuddy.grading.GradingStrategy;
 import studybuddy.grading.LLMRubricGrader;
 import studybuddy.grading.RuleBasedGrader;
 import studybuddy.persistence.AttemptRepository;
+import studybuddy.persistence.CoachConversationRepository;
 import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.CourseRepository;
 import studybuddy.persistence.Database;
@@ -51,15 +52,17 @@ public final class ApplicationFactory {
             EventBus eventBus = new EventBus();
             RetrievalStrategy retriever = createRetriever(config);
             MaterialRepository materialRepo = new MaterialRepository(db);
-            MaterialService materialService = new MaterialService(new CourseRepository(db), materialRepo,
+            CourseRepository courseRepo = new CourseRepository(db);
+            MaterialService materialService = new MaterialService(courseRepo, materialRepo,
                     new DocumentParser(), retriever, eventBus, config.maxFileBytes(), config.chunkWords(),
                     config.chunkOverlap());
             materialService.loadIndex();
             LLMClient routineClient = createRoutineClient(config);
             ResponseParser responseParser = new ResponseParser();
             ConceptRepository conceptRepo = new ConceptRepository(db);
+            QaHistoryRepository qaRepo = new QaHistoryRepository(db);
             LearningContentService contentService = new LearningContentService(routineClient, retriever,
-                    responseParser, materialRepo, new QaHistoryRepository(db), new ExplanationRepository(db), conceptRepo, eventBus,
+                    responseParser, materialRepo, qaRepo, new ExplanationRepository(db), conceptRepo, eventBus,
                     config.retrievalTopK(), config.promptWordBudget());
             QuizRepository quizRepo = new QuizRepository(db);
             AttemptRepository attemptRepo = new AttemptRepository(db);
@@ -73,8 +76,10 @@ public final class ApplicationFactory {
                     cardRepo, materialRepo, conceptRepo, eventBus, config.retrievalTopK(), config.promptWordBudget());
             AgentController agent = createAgent(createCoachClient(config), materialService, contentService, quizService,
                     masteryService, flashcardService, new PreferenceRepository(db), eventBus, config.agentMaxSteps());
+            ProgressService progressService = new ProgressService(courseRepo, materialRepo, qaRepo, quizRepo,
+                    attemptRepo, cardRepo, new CoachConversationRepository(db), masteryService, eventBus);
             return new StudyAgentFacade(materialService, contentService, quizService, masteryService,
-                    flashcardService, agent, eventBus, config.hasApiKey(), db);
+                    flashcardService, progressService, agent, eventBus, config.hasApiKey(), db);
         } catch (RuntimeException e) {
             db.close();
             throw e;

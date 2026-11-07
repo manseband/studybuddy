@@ -2,24 +2,34 @@ package studybuddy.domain;
 
 import java.util.Locale;
 
-/** Kinds of entries in the study history (F13), used by the --type filter. */
+/** Kinds of entries in the study history (F13), used by the history filter. */
 public enum ActivityType {
-    MATERIAL,
-    CONCEPTS,
-    QUESTION,
-    QUIZ,
-    FLASHCARD_REVIEW,
-    COACH;
+    MATERIAL("Materials"),
+    QUESTION("Questions"),
+    QUIZ("Quizzes"),
+    FLASHCARDS("Flashcards"),
+    COACH("Coach");
+
+    private final String label;
+
+    ActivityType(String label) {
+        this.label = label;
+    }
+
+    /** The name shown in the history filter. */
+    public String label() {
+        return label;
+    }
 
     public static ActivityType fromString(String value) {
-        String v = value == null ? "" : value.trim().toUpperCase(Locale.ROOT).replace('-', '_');
-        if (v.equals("FLASHCARDS") || v.equals("REVIEW")) {
-            return FLASHCARD_REVIEW;
-        }
-        try {
-            return valueOf(v);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Unknown activity type '" + value + "'");
-        }
+        return switch (value == null ? "" : value.trim().toLowerCase(Locale.ROOT)) {
+            case "material", "materials" -> MATERIAL;
+            case "question", "questions" -> QUESTION;
+            case "quiz", "quizzes" -> QUIZ;
+            case "flashcard", "flashcards" -> FLASHCARDS;
+            case "coach" -> COACH;
+            default -> throw new IllegalArgumentException("Unknown activity type '" + value
+                    + "' (expected material, question, quiz, flashcards or coach)");
+        };
     }
 }

@@ -37,7 +37,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.ListSelectionModel;
 import javax.swing.Scrollable;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -171,7 +170,6 @@ public class QuizPanel extends FeaturePanel {
         top.add(progress);
         top.add(listStatus);
         view.add(top, BorderLayout.NORTH);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getSelectionModel().addListSelectionListener(e -> updateListButtons());
         view.add(new JScrollPane(table), BorderLayout.CENTER);
         return view;
@@ -271,8 +269,7 @@ public class QuizPanel extends FeaturePanel {
         options.add(settings);
         options.add(typeBoxes);
         JPanel form = new JPanel(new BorderLayout(0, 8));
-        form.add(new JLabel("Choose what to cover (Ctrl-click for several), or leave both empty for the whole course."),
-                BorderLayout.NORTH);
+        form.add(new JLabel(SCOPE_HINT), BorderLayout.NORTH);
         form.add(scope, BorderLayout.CENTER);
         form.add(options, BorderLayout.SOUTH);
 

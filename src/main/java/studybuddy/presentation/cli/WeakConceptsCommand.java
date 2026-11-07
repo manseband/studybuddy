@@ -47,7 +47,7 @@ public class WeakConceptsCommand implements Callable<Integer> {
         return 0;
     }
 
-    private static String toText(List<ConceptMastery> mastery) {
+    static String toText(List<ConceptMastery> mastery) {
         if (mastery.isEmpty()) {
             return "This course has no concepts yet, and mastery is tracked per concept. Extract them with: "
                     + "studyagent concepts extract --material ID";
@@ -65,7 +65,7 @@ public class WeakConceptsCommand implements Callable<Integer> {
         return text.toString().stripTrailing();
     }
 
-    private static Map<String, Object> toJson(ConceptMastery m) {
+    static Map<String, Object> toJson(ConceptMastery m) {
         Map<String, Object> json = new LinkedHashMap<>();
         json.put("conceptId", m.conceptId());
         json.put("concept", m.conceptName());

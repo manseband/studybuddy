@@ -60,7 +60,7 @@ public class GenerateFlashcardsTool implements AgentTool {
         data.put("requested", count);
         data.put("created", cards.size());
         data.put("fronts", cards.stream().map(Flashcard::getFront).toList());
-        String label = "Flashcard deck #" + deckId + " (" + cards.size() + " cards)";
+        String label = "Deck #" + deckId + " (" + cards.size() + " cards)";
         return ToolResult.ok("Created " + label, data, List.of(new CreatedItem(CreatedItem.Type.DECK, deckId, label)));
     }
 }

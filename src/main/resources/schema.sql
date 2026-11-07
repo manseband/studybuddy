@@ -126,32 +126,33 @@ CREATE TABLE IF NOT EXISTS flashcards (
     concept_id   INTEGER REFERENCES concepts(id) ON DELETE SET NULL,
     front        TEXT NOT NULL,
     back         TEXT NOT NULL,
-    source_page  INTEGER NOT NULL DEFAULT 0,
     box          INTEGER NOT NULL DEFAULT 1,
     next_due     TEXT NOT NULL,
-    review_count INTEGER NOT NULL DEFAULT 0
+    review_count INTEGER NOT NULL DEFAULT 0,
+    created_at   TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_flashcards_course ON flashcards(course_id);
 
--- Flashcard ratings are mastery evidence (F09) and history entries (F13).
+-- Flashcard ratings are mastery evidence (F09) and history entries (F13). They outlive a deleted deck,
+-- because they record what the student already studied.
 CREATE TABLE IF NOT EXISTS flashcard_reviews (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    card_id     INTEGER NOT NULL REFERENCES flashcards(id) ON DELETE CASCADE,
+    card_id     INTEGER REFERENCES flashcards(id) ON DELETE SET NULL,
     course_id   INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
     concept_id  INTEGER REFERENCES concepts(id) ON DELETE SET NULL,
     rating      TEXT NOT NULL,
     reviewed_at TEXT NOT NULL
 );
 
--- Study history (F13): one row per notable action.
-CREATE TABLE IF NOT EXISTS activity_log (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    course_id   INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-    type        TEXT NOT NULL,
-    description TEXT NOT NULL,
-    occurred_at TEXT NOT NULL
+-- Study history (F13): one line per Study Coach conversation, never the full text.
+-- The rest of the history is read from the dated tables above.
+CREATE TABLE IF NOT EXISTS coach_conversations (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    course_id     INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    first_message TEXT NOT NULL,
+    started_at    TEXT NOT NULL
 );
-CREATE INDEX IF NOT EXISTS idx_activity_course ON activity_log(course_id, occurred_at);
+CREATE INDEX IF NOT EXISTS idx_coach_conversations_course ON coach_conversations(course_id, started_at);
 
 -- Study Coach preference profile (F12), kept across sessions.
 CREATE TABLE IF NOT EXISTS agent_preferences (

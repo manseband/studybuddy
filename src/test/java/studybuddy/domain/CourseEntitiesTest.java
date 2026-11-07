@@ -23,8 +23,7 @@ class CourseEntitiesTest {
 
     @Test
     void leitnerReviewMovesCardsBetweenBoxes() {
-        Flashcard card = Flashcard.create(1, 1, null, "What is a Facade?", "A simple interface to a subsystem",
-                3, TODAY);
+        Flashcard card = Flashcard.create(1, 1, null, "What is a Facade?", "A simple interface to a subsystem", TODAY);
         assertTrue(card.isDue(TODAY));
 
         card.review(Rating.GOOD, TODAY);
@@ -47,7 +46,7 @@ class CourseEntitiesTest {
 
     @Test
     void leitnerBoxNeverExceedsFive() {
-        Flashcard card = Flashcard.create(1, 1, null, "front", "back", 1, TODAY);
+        Flashcard card = Flashcard.create(1, 1, null, "front", "back", TODAY);
         for (int i = 0; i < 5; i++) {
             card.review(Rating.EASY, TODAY);
         }
@@ -57,7 +56,7 @@ class CourseEntitiesTest {
 
     @Test
     void flashcardRejectsEmptySides() {
-        assertThrows(IllegalArgumentException.class, () -> Flashcard.create(1, 1, null, "front", " ", 1, TODAY));
+        assertThrows(IllegalArgumentException.class, () -> Flashcard.create(1, 1, null, "front", " ", TODAY));
     }
 
     @Test

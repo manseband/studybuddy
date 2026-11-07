@@ -1,6 +1,7 @@
 package studybuddy.presentation.gui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
@@ -58,11 +59,13 @@ class PanelsSmokeTest {
             assertEquals("Materials", materials.title());
             assertNotEquals(Font.MONOSPACED, new JTextArea().getFont().getFamily());
             assertEquals(Theme.TABLE_ROW_HEIGHT, new StudyTable(new DefaultTableModel()).getRowHeight());
+            assertFalse(onEdt(window[0]::courseSelectorShown), "no courses: shows text, not an empty dropdown");
 
             Course course = facade.createCourse("EECS3311", "");
             uploadSample(facade, course);
 
             waitFor(() -> materials.rowCount() == 1);
+            assertTrue(onEdt(window[0]::courseSelectorShown));
         }
     }
 

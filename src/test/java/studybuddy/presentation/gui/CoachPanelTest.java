@@ -9,8 +9,6 @@ import java.awt.GraphicsEnvironment;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 
@@ -27,7 +25,6 @@ import studybuddy.ai.LLMResponse;
 import studybuddy.ai.ToolCall;
 import studybuddy.application.StudyAgentFacade;
 import studybuddy.domain.Course;
-import studybuddy.domain.CreatedItem;
 import studybuddy.persistence.Database;
 
 /** Drives the Coach tab without showing a window. */
@@ -41,7 +38,6 @@ class CoachPanelTest {
     private StudyAgentFacade facade;
     private Course course;
     private CoachPanel panel;
-    private final List<CreatedItem> opened = new ArrayList<>();
 
     @BeforeEach
     void setUp() throws Exception {
@@ -53,7 +49,7 @@ class CoachPanelTest {
         facade.uploadMaterial(course.getId(), Files.writeString(dir.resolve("notes.txt"),
                 "The Facade pattern gives one simple interface to a whole subsystem. ".repeat(20)));
         SwingUtilities.invokeAndWait(() -> {
-            panel = new CoachPanel(facade, opened::add);
+            panel = new CoachPanel(facade);
             panel.setCourse(course);
         });
     }
@@ -86,10 +82,10 @@ class CoachPanelTest {
     }
 
     @Test
-    void showsStepsAndALinkToWhatWasCreated() throws Exception {
+    void showsStepsAndWhatWasCreated() throws Exception {
         llm.enqueue(LLMResponse.toolCalls(new ToolCall("1", "generate_flashcards",
                 Map.of("courseId", course.getId(), "count", 5))));
-        llm.enqueueText("{\"cards\": [{\"front\": \"Front\", \"back\": \"Back\", \"excerpt\": 1, \"page\": 1, \"concept\": null}]}");
+        llm.enqueueText("{\"cards\": [{\"front\": \"Front\", \"back\": \"Back\", \"excerpt\": 1, \"concept\": null}]}");
         llm.enqueueText("Your deck is ready.");
 
         send("Make cards");
@@ -97,11 +93,7 @@ class CoachPanelTest {
         waitFor(() -> panel.transcriptText().contains("Coach: Your deck is ready."));
         assertTrue(panel.transcriptText().contains("You: Make cards"));
         assertEquals(1, panel.activityRows());
-        assertTrue(panel.activityRow(0).contains("Created Flashcard deck"), panel.activityRow(0));
-        assertEquals(1, panel.linkCount());
-
-        SwingUtilities.invokeAndWait(() -> panel.clickLink(0));
-        assertEquals(CreatedItem.Type.DECK, opened.get(0).type());
+        assertTrue(panel.activityRow(0).contains("Created Deck #1"), panel.activityRow(0));
     }
 
     @Test

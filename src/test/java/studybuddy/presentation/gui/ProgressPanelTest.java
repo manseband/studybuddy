@@ -9,8 +9,10 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BooleanSupplier;
 
 import javax.swing.SwingUtilities;
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.io.TempDir;
 import studybuddy.ai.FakeLLMClient;
 import studybuddy.ai.LLMException;
 import studybuddy.application.StudyAgentFacade;
+import studybuddy.domain.ActivityType;
 import studybuddy.domain.Concept;
 import studybuddy.domain.Course;
 import studybuddy.domain.Difficulty;
@@ -31,6 +34,7 @@ import studybuddy.domain.QuestionType;
 import studybuddy.domain.Quiz;
 import studybuddy.domain.QuizAttempt;
 import studybuddy.domain.QuizRequest;
+import studybuddy.domain.ReportFormat;
 import studybuddy.persistence.Database;
 
 class ProgressPanelTest {
@@ -104,6 +108,90 @@ class ProgressPanelTest {
         failAQuiz();
 
         refreshAndWaitForStatus("Weak");
+    }
+
+    @Test
+    void showsTheAverageScoreAndStreak() throws Exception {
+        waitFor(() -> panel.summaryText().contains("No graded quizzes yet"));
+        assertTrue(panel.summaryText().contains("Current streak: 0 days"), panel.summaryText());
+
+        failAQuiz();
+        SwingUtilities.invokeAndWait(panel::refresh);
+
+        waitFor(() -> panel.summaryText().contains("Average score: 0% over 1 quiz"));
+        assertTrue(panel.summaryText().contains("Current streak: 1 day"), panel.summaryText());
+    }
+
+    @Test
+    void listsTheHistoryAndFiltersIt() throws Exception {
+        waitFor(() -> panel.historyRowCount() == 1);
+        assertEquals("Material uploaded", panel.activityAt(0));
+
+        failAQuiz();
+        SwingUtilities.invokeAndWait(panel::refresh);
+        waitFor(() -> panel.historyRowCount() == 3);
+        assertEquals("Material uploaded", panel.activityAt(2));
+
+        SwingUtilities.invokeAndWait(() -> {
+            panel.setHistoryFilter("", "", ActivityType.MATERIAL);
+            panel.loadHistory();
+        });
+        waitFor(() -> panel.historyRowCount() == 1);
+
+        // a refresh keeps the filter
+        SwingUtilities.invokeAndWait(panel::refresh);
+        Thread.sleep(200);
+        waitFor(() -> panel.historyRowCount() == 1);
+
+        SwingUtilities.invokeAndWait(() -> {
+            panel.setHistoryFilter(LocalDate.now().plusDays(1).toString(), "", null);
+            panel.loadHistory();
+        });
+        waitFor(() -> panel.historyRowCount() == 0 && panel.historyMessage().contains("No activity matches"));
+    }
+
+    @Test
+    void aBadDateRangeRunsNoQuery() throws Exception {
+        waitFor(() -> panel.historyRowCount() == 1);
+
+        SwingUtilities.invokeAndWait(() -> {
+            panel.setHistoryFilter("yesterday", "", null);
+            panel.loadHistory();
+        });
+        assertEquals("Enter dates as YYYY-MM-DD.", panel.historyMessage());
+
+        SwingUtilities.invokeAndWait(() -> {
+            panel.setHistoryFilter("2026-11-05", "2026-11-01", null);
+            panel.loadHistory();
+        });
+        waitFor(() -> panel.historyMessage().contains("start date"));
+        assertEquals(1, panel.historyRowCount());
+    }
+
+    @Test
+    void aCourseWithoutActivitySuggestsWhatToDo() throws Exception {
+        Course empty = facade.createCourse("Empty", "");
+
+        SwingUtilities.invokeAndWait(() -> panel.setCourse(empty));
+
+        waitFor(() -> panel.historyMessage().contains("No activity yet"));
+        assertEquals(0, panel.historyRowCount());
+    }
+
+    @Test
+    void exportsTheReportOrReportsTheFailure() throws Exception {
+        Path file = dir.resolve("report.csv");
+        List<String> failures = new CopyOnWriteArrayList<>();
+
+        SwingUtilities.invokeAndWait(() -> panel.export(file, ReportFormat.CSV, failures::add));
+        waitFor(() -> panel.exportMessage().equals("Saved report.csv"));
+        assertTrue(Files.readString(file).contains("Material uploaded"));
+        assertTrue(failures.isEmpty());
+
+        SwingUtilities.invokeAndWait(() -> panel.export(dir.resolve("missing").resolve("report.csv"), ReportFormat.CSV,
+                failures::add));
+        waitFor(() -> !failures.isEmpty());
+        assertTrue(failures.get(0).contains("Choose another location"), failures.get(0));
     }
 
     @Test

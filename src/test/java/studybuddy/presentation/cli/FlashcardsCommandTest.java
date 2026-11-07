@@ -29,8 +29,8 @@ class FlashcardsCommandTest {
 
     private static final String TWO_CARDS = """
             {"cards": [
-              {"front": "What is a Facade?", "back": "One simple interface.", "excerpt": 1, "page": 1, "concept": "Facade"},
-              {"front": "What does it hide?", "back": "A subsystem.", "excerpt": 1, "page": 1, "concept": null}]}""";
+              {"front": "What is a Facade?", "back": "One simple interface.", "excerpt": 1, "concept": "Facade"},
+              {"front": "What does it hide?", "back": "A subsystem.", "excerpt": 1, "concept": null}]}""";
 
     @TempDir
     Path dir;
@@ -73,7 +73,8 @@ class FlashcardsCommandTest {
     void generateSavesADeckAndNoticesFewerCards() {
         generateDeck();
 
-        assertTrue(app.output.contains("Created deck #1 with 2 card(s)"), app.output);
+        assertTrue(app.output.contains("Created Deck #1 with 2 card(s)"), app.output);
+        assertTrue(app.output.contains("A: A subsystem. (concept: None, due"), app.output);
         assertTrue(app.output.contains("Q: What is a Facade?"), app.output);
         assertTrue(app.output.contains("only 2 of the 5"), app.output);
         assertEquals(2, app.facade().listFlashcards(courseId).size());
@@ -129,6 +130,23 @@ class FlashcardsCommandTest {
         assertTrue(app.output.contains("A: A subsystem."), app.output);
 
         assertEquals(1, app.run("flashcards", "show", "99"));
+    }
+
+    @Test
+    void deleteRemovesTheDeckAndKeepsMastery() throws IOException {
+        Concept concept = new Concept(0, courseId, "Facade", "", 3);
+        app.facade().saveConcepts(material.getId(), List.of(concept));
+        generateDeck();
+        runWithInput("\na\nq\n", "flashcards", "review", "--deck", "1");
+
+        assertEquals(0, app.run("flashcards", "delete", "1"), app.output);
+        assertTrue(app.output.contains("Deleted Deck #1"), app.output);
+        assertTrue(app.facade().listFlashcards(courseId).isEmpty());
+
+        assertEquals(0, app.run("weak-concepts", "--course", "EECS3311", "--json"));
+        assertEquals(1, mapper.readTree(app.output).get("concepts").get(0).get("evidenceCount").asInt());
+
+        assertEquals(1, app.run("flashcards", "delete", "1"));
     }
 
     @Test

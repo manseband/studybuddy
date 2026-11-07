@@ -29,7 +29,6 @@ import studybuddy.application.StudyEvent;
 import studybuddy.application.StudyEventListener;
 import studybuddy.config.AppConfig;
 import studybuddy.domain.Course;
-import studybuddy.domain.CreatedItem;
 
 /**
  * The application window: a course selector above one tab per feature.
@@ -40,10 +39,10 @@ public class MainWindow implements StudyEventListener {
 
     private final StudyAgentFacade facade;
     private final List<FeaturePanel> panels = new ArrayList<>();
-    private final FlashcardPanel flashcardPanel;
-    private final QuizPanel quizPanel;
     private final JFrame frame = new JFrame("StudyBuddy");
     private final JComboBox<Course> courseSelector = new JComboBox<>();
+    /** Shown instead of the selector when there are no courses; an empty dropdown looks like a blank choice. */
+    private final JLabel noCourses = new JLabel("No courses yet");
     private final JTabbedPane tabs = new JTabbedPane();
     private final JButton deleteCourse = new JButton("Delete Course");
     /** Courses whose missing embeddings were already retried in this session (F01). */
@@ -57,12 +56,10 @@ public class MainWindow implements StudyEventListener {
         panels.add(new MaterialsPanel(facade));
         panels.add(new ConceptsPanel(facade));
         panels.add(new AskPanel(facade));
-        flashcardPanel = new FlashcardPanel(facade);
-        quizPanel = new QuizPanel(facade);
-        panels.add(flashcardPanel);
-        panels.add(quizPanel);
+        panels.add(new FlashcardPanel(facade));
+        panels.add(new QuizPanel(facade));
         panels.add(new ProgressPanel(facade));
-        panels.add(new CoachPanel(facade, this::openCreatedItem));
+        panels.add(new CoachPanel(facade));
         panels.forEach(panel -> tabs.addTab(panel.title(), panel));
 
         frame.setLayout(new BorderLayout());
@@ -125,15 +122,9 @@ public class MainWindow implements StudyEventListener {
         return panels;
     }
 
-    /** F12: opens a quiz or deck the Study Coach created, in its own tab. */
-    private void openCreatedItem(CreatedItem item) {
-        if (item.type() == CreatedItem.Type.QUIZ) {
-            tabs.setSelectedComponent(quizPanel);
-            quizPanel.openQuiz(facade.getQuiz(item.id()));
-        } else {
-            tabs.setSelectedComponent(flashcardPanel);
-            flashcardPanel.showDeck(item.id());
-        }
+    /** Whether the course dropdown is showing rather than the "No courses yet" text; used by tests. */
+    boolean courseSelectorShown() {
+        return courseSelector.isVisible() && !noCourses.isVisible();
     }
 
     private JPanel buildTopBar() {
@@ -143,6 +134,7 @@ public class MainWindow implements StudyEventListener {
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
         left.add(new JLabel("Course:"));
         left.add(courseSelector);
+        left.add(noCourses);
         JButton newCourse = new JButton("New Course");
         newCourse.addActionListener(e -> newCourse());
         left.add(newCourse);
@@ -186,6 +178,8 @@ public class MainWindow implements StudyEventListener {
     private void courseSelected() {
         Course selected = (Course) courseSelector.getSelectedItem();
         deleteCourse.setEnabled(selected != null);
+        courseSelector.setVisible(selected != null);
+        noCourses.setVisible(selected == null);
         panels.forEach(panel -> panel.setCourse(selected));
         if (selected != null && facade.isAiAvailable() && embeddingsChecked.add(selected.getId())) {
             retryMissingEmbeddings(selected.getId());

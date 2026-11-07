@@ -41,7 +41,7 @@ class FlashcardRepositoryTest {
     }
 
     private Flashcard newCard(Long conceptId, String front) {
-        return Flashcard.create(courseId, 0, conceptId, front, "Back", 4, TODAY);
+        return Flashcard.create(courseId, 0, conceptId, front, "Back", TODAY);
     }
 
     @Test
@@ -56,10 +56,10 @@ class FlashcardRepositoryTest {
         assertEquals(conceptId, loaded.getConceptId());
         assertEquals("Front", loaded.getFront());
         assertEquals("Back", loaded.getBack());
-        assertEquals(4, loaded.getSourcePage());
         assertEquals(1, loaded.getBox());
         assertEquals(TODAY, loaded.getNextDue());
         assertEquals(0, loaded.getReviewCount());
+        assertEquals(saved.getCreatedAt(), loaded.getCreatedAt());
     }
 
     @Test
@@ -118,13 +118,40 @@ class FlashcardRepositoryTest {
     }
 
     @Test
-    void deleteRemovesTheCardAndItsReviews() {
+    void deleteRemovesTheCardAndKeepsItsReviews() {
         Flashcard card = cards.saveDeck(List.of(newCard(null, "Front"))).get(0);
         cards.recordReview(card, Rating.GOOD, LocalDateTime.of(2026, 11, 6, 10, 0));
 
         cards.delete(card.getId());
 
         assertTrue(cards.findById(card.getId()).isEmpty());
+        assertNull(cards.findReviews(courseId).get(0).cardId());
+    }
+
+    @Test
+    void deleteDeckRemovesOnlyThatDeckAndKeepsItsTaggedReviews() {
+        long conceptId = concepts.save(new Concept(0, courseId, "Facade", "", 3)).getId();
+        Flashcard card = cards.saveDeck(List.of(newCard(conceptId, "A"), newCard(conceptId, "B"))).get(0);
+        cards.saveDeck(List.of(newCard(null, "C")));
+        cards.recordReview(card, Rating.GOOD, LocalDateTime.of(2026, 11, 6, 10, 0));
+
+        cards.deleteDeck(card.getDeckId());
+
+        assertEquals(List.of("C"), cards.findByCourse(courseId).stream().map(Flashcard::getFront).toList());
+        FlashcardReview kept = cards.findReviews(courseId).get(0);
+        assertNull(kept.cardId());
+        assertEquals(conceptId, kept.conceptId());
+        assertEquals(Rating.GOOD, kept.rating());
+    }
+
+    @Test
+    void deletingACourseStillRemovesItsReviews() {
+        Flashcard card = cards.saveDeck(List.of(newCard(null, "Front"))).get(0);
+        cards.recordReview(card, Rating.GOOD, LocalDateTime.of(2026, 11, 6, 10, 0));
+        cards.deleteDeck(card.getDeckId());
+
+        new CourseRepository(db).delete(courseId);
+
         assertTrue(cards.findReviews(courseId).isEmpty());
     }
 }

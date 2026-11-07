@@ -3,7 +3,6 @@ package studybuddy.presentation.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -20,20 +19,17 @@ import javax.swing.SwingUtilities;
 import studybuddy.application.StudyAgentFacade;
 import studybuddy.domain.AgentResponse;
 import studybuddy.domain.Course;
-import studybuddy.domain.CreatedItem;
 import studybuddy.domain.TraceStep;
 
 /**
  * F12: a chat with the Study Coach for the selected course, with an activity list showing each step as it
- * happens and buttons that open whatever the coach created. The coach runs in the background.
+ * happens. The coach runs in the background.
  */
 public class CoachPanel extends FeaturePanel {
 
     private static final int ACTIVITY_WIDTH = 300;
 
-    private final Consumer<CreatedItem> openItem;
     private final JTextArea transcript = new JTextArea();
-    private final JPanel links = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
     private final JTextField input = new JTextField();
     private final JButton send = new JButton("Send");
     private final JButton newConversation = new JButton("New Conversation");
@@ -45,10 +41,8 @@ public class CoachPanel extends FeaturePanel {
     private int conversation;
     private boolean busy;
 
-    /** @param openItem shows a quiz or deck the coach created */
-    public CoachPanel(StudyAgentFacade facade, Consumer<CreatedItem> openItem) {
+    public CoachPanel(StudyAgentFacade facade) {
         super(facade);
-        this.openItem = openItem;
         setLayout(new BorderLayout(0, 6));
         setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
@@ -59,14 +53,12 @@ public class CoachPanel extends FeaturePanel {
         input.addActionListener(e -> sendMessage());
         send.addActionListener(e -> sendMessage());
         newConversation.addActionListener(e -> restartConversation());
-        links.setVisible(false);
 
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         controls.add(send);
         controls.add(newConversation);
         controls.add(status);
         JPanel entry = new JPanel(new BorderLayout(0, 4));
-        entry.add(links, BorderLayout.NORTH);
         entry.add(input, BorderLayout.CENTER);
         entry.add(controls, BorderLayout.SOUTH);
         JPanel chat = new JPanel(new BorderLayout(0, 6));
@@ -119,8 +111,6 @@ public class CoachPanel extends FeaturePanel {
         status.setText(" ");
         showWelcome();
         activity.clear();
-        links.removeAll();
-        links.setVisible(false);
         updateControls();
         runInBackground(facade::resetCoach);
     }
@@ -173,13 +163,6 @@ public class CoachPanel extends FeaturePanel {
         finish();
         transcript.append("\nCoach: " + response.text() + "\n");
         transcript.setCaretPosition(transcript.getDocument().getLength());
-        for (CreatedItem item : response.created()) {
-            JButton open = new JButton("Open " + item.label());
-            open.addActionListener(e -> openItem.accept(item));
-            links.add(open);
-        }
-        links.setVisible(links.getComponentCount() > 0);
-        links.revalidate();
     }
 
     private void finish() {
@@ -206,15 +189,5 @@ public class CoachPanel extends FeaturePanel {
     /** A row of the activity list; used by tests. */
     String activityRow(int row) {
         return activity.get(row);
-    }
-
-    /** How many items have an Open button; used by tests. */
-    int linkCount() {
-        return links.getComponentCount();
-    }
-
-    /** Clicks an Open button; used by tests. */
-    void clickLink(int index) {
-        ((JButton) links.getComponent(index)).doClick();
     }
 }
