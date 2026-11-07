@@ -12,7 +12,7 @@ import studybuddy.domain.Course;
 import studybuddy.domain.ProgressReport;
 import studybuddy.domain.ReportFormat;
 
-/** {@code studyagent progress --course EECS3311} and {@code progress export} (F13). */
+/** {@code studybuddy progress --course EECS3311} and {@code progress export} (F13). */
 @Command(name = "progress", description = "Show a course's average score, study streak and concept mastery.",
         subcommands = ProgressCommand.Export.class)
 public class ProgressCommand implements Callable<Integer> {

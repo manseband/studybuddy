@@ -12,7 +12,7 @@ import studybuddy.application.ContentGenerationException;
 import studybuddy.domain.ConceptMastery;
 import studybuddy.domain.Course;
 
-/** {@code studyagent weak-concepts --course EECS3311 [--diagnose]} (F09). */
+/** {@code studybuddy weak-concepts --course EECS3311 [--diagnose]} (F09). */
 @Command(name = "weak-concepts", description = "Rank a course's concepts by mastery; --diagnose adds an AI analysis.")
 public class WeakConceptsCommand implements Callable<Integer> {
 
@@ -50,7 +50,7 @@ public class WeakConceptsCommand implements Callable<Integer> {
     static String toText(List<ConceptMastery> mastery) {
         if (mastery.isEmpty()) {
             return "This course has no concepts yet, and mastery is tracked per concept. Extract them with: "
-                    + "studyagent concepts extract --material ID";
+                    + "studybuddy concepts extract --material ID";
         }
         if (mastery.stream().allMatch(m -> m.evidenceCount() == 0)) {
             return "No evidence yet. Take a quiz or review flashcards on this course. Quizzes and decks created before "

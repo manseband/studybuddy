@@ -21,7 +21,7 @@ import studybuddy.domain.Course;
 import studybuddy.domain.Flashcard;
 import studybuddy.domain.Rating;
 
-/** {@code studyagent flashcards generate|list|show|review|delete} (F05). */
+/** {@code studybuddy flashcards generate|list|show|review|delete} (F05). */
 @Command(name = "flashcards", description = "Generate flashcards and review them with spaced repetition.",
         subcommands = {FlashcardsCommand.Generate.class, FlashcardsCommand.ListDecks.class, FlashcardsCommand.Show.class,
                 FlashcardsCommand.Review.class, FlashcardsCommand.Delete.class})
@@ -80,7 +80,7 @@ public class FlashcardsCommand {
             StringBuilder text = new StringBuilder(cardsText(cards, facade.listConcepts(c.getId()))).append("\n\n");
             text.append(preview ? cards.size() + " card(s) generated (preview, not saved)."
                     : "Created Deck #" + cards.get(0).getDeckId() + " with " + cards.size()
-                            + " card(s). Review it with: studyagent flashcards review --deck "
+                            + " card(s). Review it with: studybuddy flashcards review --deck "
                             + cards.get(0).getDeckId());
             if (cards.size() < count) {
                 text.append("\nNote: only ").append(cards.size()).append(" of the ").append(count)
@@ -140,7 +140,7 @@ public class FlashcardsCommand {
             json.put("decks", rows);
             json.put("dueToday", totalDue);
             parent.root.printResult(json, cards.isEmpty()
-                    ? "No flashcards yet. Create some with: studyagent flashcards generate --course " + course
+                    ? "No flashcards yet. Create some with: studybuddy flashcards generate --course " + course
                     : text + "\n" + totalDue + " card(s) due today in this course.");
             return 0;
         }

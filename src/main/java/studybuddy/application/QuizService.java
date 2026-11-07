@@ -316,6 +316,6 @@ public class QuizService {
 
     private void publishSubmitted(QuizAttempt attempt) {
         eventBus.publish(StudyEvent.of(StudyEvent.Type.QUIZ_SUBMITTED, attempt.getCourseId(), String.format(
-                "Scored %.1f/%d on quiz #%d", attempt.getTotalScore(), attempt.getMaxScore(), attempt.getQuizId())));
+                "Scored %.1f/%d on Quiz #%d", attempt.getTotalScore(), attempt.getMaxScore(), attempt.getQuizId())));
     }
 }

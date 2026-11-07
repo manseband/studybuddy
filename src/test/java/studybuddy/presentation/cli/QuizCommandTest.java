@@ -83,7 +83,7 @@ class QuizCommandTest {
 
         assertEquals(0, app.run("quiz", "generate", "--course", "EECS3311", "--count", "3"));
 
-        assertTrue(app.output.contains("Created quiz #1 with 3 question(s)"), app.output);
+        assertTrue(app.output.contains("Created Quiz #1 with 3 question(s)"), app.output);
         assertFalse(app.output.contains("Note:"), app.output);
     }
 

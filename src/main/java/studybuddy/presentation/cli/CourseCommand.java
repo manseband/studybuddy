@@ -11,7 +11,7 @@ import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParentCommand;
 import studybuddy.domain.Course;
 
-/** {@code studyagent course create|list|delete} (F01). */
+/** {@code studybuddy course create|list|delete} (F01). */
 @Command(name = "course", description = "Create, list and delete courses.",
         subcommands = {CourseCommand.Create.class, CourseCommand.ListCourses.class, CourseCommand.Delete.class})
 public class CourseCommand {
@@ -56,7 +56,7 @@ public class CourseCommand {
             List<Course> courses = parent.root.facade().listCourses();
             StringBuilder text = new StringBuilder();
             if (courses.isEmpty()) {
-                text.append("No courses yet. Create one with: studyagent course create \"NAME\"");
+                text.append("No courses yet. Create one with: studybuddy course create \"NAME\"");
             }
             for (Course c : courses) {
                 text.append(String.format("#%-3d %-20s %s%n", c.getId(), c.getName(), c.getCode()));

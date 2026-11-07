@@ -14,7 +14,7 @@ import studybuddy.domain.Concept;
 import studybuddy.domain.Course;
 import studybuddy.domain.Material;
 
-/** {@code studyagent concepts extract|list|show|edit|merge|delete} (F03). */
+/** {@code studybuddy concepts extract|list|show|edit|merge|delete} (F03). */
 @Command(name = "concepts", description = "Extract and manage the key concepts of a course.",
         subcommands = {ConceptsCommand.Extract.class, ConceptsCommand.ListConcepts.class, ConceptsCommand.Show.class,
                 ConceptsCommand.Edit.class, ConceptsCommand.Merge.class, ConceptsCommand.Delete.class})
@@ -98,7 +98,7 @@ public class ConceptsCommand {
             Course c = parent.root.facade().findCourse(course);
             List<Concept> concepts = parent.root.facade().listConcepts(c.getId());
             parent.root.printResult(concepts.stream().map(ConceptsCommand::toJson).toList(), concepts.isEmpty()
-                    ? "No concepts yet. Extract them with: studyagent concepts extract --material ID"
+                    ? "No concepts yet. Extract them with: studybuddy concepts extract --material ID"
                     : table(concepts));
             return 0;
         }

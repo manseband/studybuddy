@@ -15,7 +15,7 @@ import studybuddy.application.MaterialService;
 import studybuddy.domain.Course;
 import studybuddy.domain.Material;
 
-/** {@code studyagent material add|list|rename|remove} (F01). */
+/** {@code studybuddy material add|list|rename|remove} (F01). */
 @Command(name = "material", description = "Upload and manage course materials (PDF, TXT, MD).",
         subcommands = {MaterialCommand.Add.class, MaterialCommand.ListMaterials.class, MaterialCommand.Rename.class,
                 MaterialCommand.Remove.class, MaterialCommand.Reindex.class})
@@ -91,7 +91,7 @@ public class MaterialCommand {
             StringBuilder text = new StringBuilder();
             if (materials.isEmpty()) {
                 text.append("No materials in ").append(c.getName())
-                    .append(" yet. Upload one with: studyagent material add --course \"")
+                    .append(" yet. Upload one with: studybuddy material add --course \"")
                     .append(c.getName()).append("\" FILE");
             } else {
                 text.append(String.format("%-5s %-30s %-5s %6s %7s %7s  %s%n", "ID", "TITLE", "TYPE", "PAGES", "WORDS",

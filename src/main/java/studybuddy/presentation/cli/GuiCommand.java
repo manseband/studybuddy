@@ -7,7 +7,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.ParentCommand;
 import studybuddy.presentation.gui.MainWindow;
 
-/** {@code studyagent gui}: opens the graphical interface and waits until its window is closed. */
+/** {@code studybuddy gui}: opens the graphical interface and waits until its window is closed. */
 @Command(name = "gui", description = "Open the graphical interface.")
 public class GuiCommand implements Callable<Integer> {
 

@@ -13,7 +13,7 @@ import studybuddy.domain.AgentResponse;
 import studybuddy.domain.CreatedItem;
 import studybuddy.domain.TraceStep;
 
-/** {@code studyagent coach [--course C]} starts a conversation; {@code --once "message"} sends one message (F12). */
+/** {@code studybuddy coach [--course C]} starts a conversation; {@code --once "message"} sends one message (F12). */
 @Command(name = "coach", description = "Talk to the Study Coach, which carries out study goals step by step.")
 public class CoachCommand implements Callable<Integer> {
 

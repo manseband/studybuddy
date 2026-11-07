@@ -12,7 +12,7 @@ import studybuddy.domain.Explanation;
 import studybuddy.domain.Question;
 import studybuddy.domain.QuizAttempt;
 
-/** {@code studyagent explain --attempt 15 --question 3} (F08). */
+/** {@code studybuddy explain --attempt 15 --question 3} (F08). */
 @Command(name = "explain", description = "Explain a graded quiz answer, citing your materials.")
 public class ExplainCommand implements Callable<Integer> {
 

@@ -30,7 +30,7 @@ import studybuddy.domain.Quiz;
 import studybuddy.domain.QuizAttempt;
 import studybuddy.domain.QuizRequest;
 
-/** {@code studyagent quiz generate|list|show|take|grade|results|regrade|dispute} (F06, F07). */
+/** {@code studybuddy quiz generate|list|show|take|grade|results|regrade|dispute} (F06, F07). */
 @Command(name = "quiz", description = "Generate, take and grade quizzes.",
         subcommands = {QuizCommand.Generate.class, QuizCommand.ListQuizzes.class, QuizCommand.Show.class,
                 QuizCommand.Take.class, QuizCommand.Grade.class, QuizCommand.Results.class, QuizCommand.Regrade.class,
@@ -115,7 +115,7 @@ public class QuizCommand {
     }
 
     static String resultsText(Quiz quiz, QuizAttempt attempt) {
-        StringBuilder text = new StringBuilder(String.format("Attempt #%d of quiz #%d: %.1f / %d (%.0f%%)",
+        StringBuilder text = new StringBuilder(String.format("Attempt #%d of Quiz #%d: %.1f / %d (%.0f%%)",
                 attempt.getId(), quiz.getId(), attempt.getTotalScore(), attempt.getMaxScore(), attempt.getPercentage()));
         int number = 1;
         for (Question q : quiz.getQuestions()) {
@@ -134,7 +134,7 @@ public class QuizCommand {
             }
         }
         if (attempt.getStatus() == AttemptStatus.PENDING_GRADING) {
-            text.append("\n\nSome answers are waiting to be graded. Try again with: studyagent quiz regrade ")
+            text.append("\n\nSome answers are waiting to be graded. Try again with: studybuddy quiz regrade ")
                     .append(attempt.getId());
         }
         return text.toString();
@@ -172,8 +172,8 @@ public class QuizCommand {
             types.forEach(type -> questionTypes.add(QuestionType.fromCode(type)));
             Quiz quiz = parent.root.facade().generateQuiz(new QuizRequest(c.getId(), materialIds, conceptIds, count,
                     questionTypes, Difficulty.fromString(difficulty)));
-            String text = "Created quiz #" + quiz.getId() + " with " + quiz.size() + " question(s). Take it with: "
-                    + "studyagent quiz take " + quiz.getId();
+            String text = "Created Quiz #" + quiz.getId() + " with " + quiz.size() + " question(s). Take it with: "
+                    + "studybuddy quiz take " + quiz.getId();
             if (quiz.size() < count) {
                 text += "\nNote: only " + quiz.size() + " of the " + count + " requested questions could be generated "
                         + "from this material.";
@@ -217,7 +217,7 @@ public class QuizCommand {
                                 own.get(0).getPercentage(), own.get(0).getId())));
             }
             parent.root.printResult(json, quizzes.isEmpty()
-                    ? "No quizzes yet. Create one with: studyagent quiz generate --course " + course
+                    ? "No quizzes yet. Create one with: studybuddy quiz generate --course " + course
                     : text.toString().stripTrailing());
             return 0;
         }

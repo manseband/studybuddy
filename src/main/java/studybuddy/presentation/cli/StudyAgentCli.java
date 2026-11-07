@@ -21,11 +21,11 @@ import studybuddy.application.StudyAgentFacade;
 import studybuddy.config.AppConfig;
 
 /**
- * Root of the {@code studyagent} command line. Every subcommand talks only to the
+ * Root of the {@code studybuddy} command line. Every subcommand talks only to the
  * {@link StudyAgentFacade}. With {@code --json}, results and errors are printed as JSON
  * (used by the KUMA test harness in Stage 3); otherwise as readable text.
  */
-@Command(name = "studyagent", mixinStandardHelpOptions = true, version = "StudyBuddy 0.1",
+@Command(name = "studybuddy", mixinStandardHelpOptions = true, version = "StudyBuddy 0.1",
         description = "StudyBuddy: an AI study and learning agent for your course materials.",
         subcommands = {GuiCommand.class, CourseCommand.class, MaterialCommand.class, AskCommand.class,
                 ConceptsCommand.class, FlashcardsCommand.class, QuizCommand.class, WeakConceptsCommand.class,
@@ -83,7 +83,7 @@ public class StudyAgentCli implements Runnable {
 
     @Override
     public void run() {
-        out.println("Use a subcommand, e.g. 'studyagent course list'. See 'studyagent --help'.");
+        out.println("Use a subcommand, e.g. 'studybuddy course list'. See 'studybuddy --help'.");
     }
 
     StudyAgentFacade facade() {

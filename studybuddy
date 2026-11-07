@@ -1,0 +1,24 @@
+#!/bin/sh
+# StudyBuddy launcher for macOS, Linux and Git Bash.
+#   ./studybuddy              opens the GUI
+#   ./studybuddy course list  runs a CLI command (any command from "./studybuddy --help")
+# Builds target/studybuddy.jar first if it does not exist yet.
+# Run it from the project folder: .env and data/ are looked up in the current folder.
+
+dir=$(cd "$(dirname "$0")" && pwd)
+jar="$dir/target/studybuddy.jar"
+
+if ! command -v java >/dev/null 2>&1; then
+    echo 'Java 25 or newer is required, and "java" must be on the PATH.' >&2
+    exit 1
+fi
+
+if [ ! -f "$jar" ]; then
+    echo "Building StudyBuddy for the first time, this takes about a minute..."
+    "$dir/mvnw" -q -f "$dir/pom.xml" -DskipTests package || exit 1
+fi
+
+if [ $# -eq 0 ]; then
+    exec java -jar "$jar" gui
+fi
+exec java -jar "$jar" "$@"
