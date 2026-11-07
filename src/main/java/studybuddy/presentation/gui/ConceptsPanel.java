@@ -45,14 +45,17 @@ public class ConceptsPanel extends FeaturePanel {
     /** Shown instead of the selector when there are no materials; an empty dropdown looks like a blank choice. */
     private final JLabel noMaterials = new JLabel("No materials yet");
     private final JButton extract = new JButton("Extract Concepts");
-    private final JButton save = new JButton("Save All");
     private final JButton remove = new JButton("Remove");
+    private final JButton cancel = new JButton("Cancel");
+    private final JButton save = new JButton("Save Concepts");
     private final JButton merge = new JButton("Merge Into...");
     private final JLabel status = new JLabel(" ");
     private final JTextArea details = new JTextArea(7, 40);
     private List<Concept> concepts = new ArrayList<>();
     /** The material being reviewed; null when the table shows saved concepts. */
     private Material reviewing;
+    /** True while the model works; the table stays empty until its candidates arrive. */
+    private boolean extracting;
     private boolean filling;
 
     public ConceptsPanel(StudyAgentFacade facade) {
@@ -66,10 +69,12 @@ public class ConceptsPanel extends FeaturePanel {
         top.add(noMaterials);
         extract.addActionListener(e -> extractConcepts());
         top.add(extract);
-        save.addActionListener(e -> saveCandidates());
-        top.add(save);
         remove.addActionListener(e -> removeSelected());
         top.add(remove);
+        cancel.addActionListener(e -> cancelReview());
+        top.add(cancel);
+        save.addActionListener(e -> saveCandidates());
+        top.add(save);
         merge.addActionListener(e -> mergeSelected());
         top.add(merge);
         JPanel north = new JPanel(new BorderLayout(0, 4));
@@ -104,6 +109,7 @@ public class ConceptsPanel extends FeaturePanel {
     @Override
     public void setCourse(studybuddy.domain.Course newCourse) {
         reviewing = null;
+        extracting = false;
         status.setText(" ");
         materialSelector.removeAllItems();
         super.setCourse(newCourse);
@@ -130,7 +136,7 @@ public class ConceptsPanel extends FeaturePanel {
                     materialSelector.setSelectedItem(m);
                 }
             }
-            if (reviewing == null) {
+            if (reviewing == null && !extracting) {
                 fill(new ArrayList<>(loaded.concepts()));
             }
             updateButtons();
@@ -162,7 +168,10 @@ public class ConceptsPanel extends FeaturePanel {
         boolean hasMaterials = materialSelector.getItemCount() > 0;
         materialSelector.setVisible(hasMaterials);
         noMaterials.setVisible(!hasMaterials);
-        extract.setEnabled(course != null && hasMaterials);
+        boolean idle = reviewing == null && !extracting;
+        materialSelector.setEnabled(idle);
+        extract.setEnabled(course != null && hasMaterials && idle);
+        cancel.setEnabled(reviewing != null);
         save.setEnabled(reviewing != null);
         remove.setEnabled(selected() != null);
         merge.setEnabled(reviewing == null && selected() != null);
@@ -173,31 +182,71 @@ public class ConceptsPanel extends FeaturePanel {
         if (material == null) {
             return;
         }
-        extract.setEnabled(false);
+        commitEdit();
+        extracting = true;
+        fill(new ArrayList<>());
         status.setText("Extracting concepts...");
+        updateButtons();
         runInBackground(() -> facade.extractConcepts(material.getId()), candidates -> {
-            status.setText(" ");
+            if (!isCurrentCourse(material)) {
+                return;
+            }
             if (candidates.isEmpty()) {
-                updateButtons();
+                finishWithoutCandidates();
                 showInfo("No concepts were found. The material may be too short.");
                 return;
             }
+            extracting = false;
             reviewing = material;
             fill(new ArrayList<>(candidates));
-            status.setText("Remove the concepts you don't want. Save All keeps every concept left in the list.");
+            status.setText("Edit or remove concepts, then click Save Concepts.");
             updateButtons();
         }, error -> {
-            status.setText(" ");
-            updateButtons();
+            if (isCurrentCourse(material)) {
+                finishWithoutCandidates();
+            }
             showError(error.getMessage());
         });
     }
 
+    /** False if the student moved to another course while the model was working. */
+    private boolean isCurrentCourse(Material material) {
+        return course != null && course.getId() == material.getCourseId();
+    }
+
+    /** Brings back the saved concepts when an extraction produced nothing to review. */
+    private void finishWithoutCandidates() {
+        extracting = false;
+        status.setText(" ");
+        updateButtons();
+        refresh();
+    }
+
+    /** Throws the candidates away and brings back the saved concepts. */
+    private void cancelReview() {
+        if (table.getCellEditor() != null) {
+            table.getCellEditor().cancelCellEditing();
+        }
+        reviewing = null;
+        status.setText(" ");
+        updateButtons();
+        refresh();
+    }
+
+    /** Applies a cell still being typed in, which a click on a button does not do by itself. */
+    private void commitEdit() {
+        if (table.getCellEditor() != null) {
+            table.getCellEditor().stopCellEditing();
+        }
+    }
+
     private void saveCandidates() {
+        commitEdit();
         Material material = reviewing;
         List<Concept> toSave = List.copyOf(concepts);
         reviewing = null;
         status.setText(" ");
+        updateButtons();
         runInBackground(() -> facade.saveConcepts(material.getId(), toSave), saved -> refresh());
     }
 
