@@ -1,10 +1,10 @@
 package studybuddy.domain;
 
 /**
- * A quiz question (F06). Subclasses add the answer key for their type and decide whether
+ * A quiz question (F05). Subclasses add the answer key for their type and decide whether
  * a generated question is well formed ({@link #isValid()}); invalid questions are regenerated.
  * conceptId is null for an untagged question (excluded from mastery).
- * sourceChunkId points at the excerpt the question was written from (used by F08).
+ * sourceChunkId points at the excerpt the question was written from (used by F07).
  */
 public abstract class Question {
 

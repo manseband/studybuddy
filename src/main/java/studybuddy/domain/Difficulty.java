@@ -2,7 +2,7 @@ package studybuddy.domain;
 
 import java.util.Locale;
 
-/** Question difficulty. The weight makes harder questions count more in mastery (F09). */
+/** Question difficulty. The weight makes harder questions count more in mastery (F08). */
 public enum Difficulty {
     EASY(1.0),
     MEDIUM(1.5),

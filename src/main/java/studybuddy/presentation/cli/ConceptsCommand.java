@@ -14,7 +14,7 @@ import studybuddy.domain.Concept;
 import studybuddy.domain.Course;
 import studybuddy.domain.Material;
 
-/** {@code studybuddy concepts extract|list|show|edit|merge|delete} (F03). */
+/** {@code studybuddy concepts extract|list|show|edit|merge|delete} (F02). */
 @Command(name = "concepts", description = "Extract and manage the key concepts of a course.",
         subcommands = {ConceptsCommand.Extract.class, ConceptsCommand.ListConcepts.class, ConceptsCommand.Show.class,
                 ConceptsCommand.Edit.class, ConceptsCommand.Merge.class, ConceptsCommand.Delete.class})

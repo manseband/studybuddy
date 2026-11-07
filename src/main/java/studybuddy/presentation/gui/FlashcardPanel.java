@@ -40,7 +40,7 @@ import studybuddy.domain.Material;
 import studybuddy.domain.Rating;
 
 /**
- * F05: the Flashcards tab has three views: the course's decks, an editable preview of newly generated
+ * F04: the Flashcards tab has three views: the course's decks, an editable preview of newly generated
  * cards, and review of the due cards. Review needs no AI, so it works without an API key.
  */
 public class FlashcardPanel extends FeaturePanel {

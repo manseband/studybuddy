@@ -2,7 +2,7 @@ package studybuddy.domain;
 
 import java.util.Locale;
 
-/** Flashcard recall rating (F05). */
+/** Flashcard recall rating (F04). */
 public enum Rating {
     AGAIN(0.0),
     HARD(0.5),
@@ -15,7 +15,7 @@ public enum Rating {
         this.evidenceScore = evidenceScore;
     }
 
-    /** Score in [0, 1] recorded as mastery evidence for the card's concept (F09). */
+    /** Score in [0, 1] recorded as mastery evidence for the card's concept (F08). */
     public double evidenceScore() {
         return evidenceScore;
     }

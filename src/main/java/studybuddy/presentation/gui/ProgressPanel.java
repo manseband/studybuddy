@@ -40,7 +40,7 @@ import studybuddy.domain.ProgressReport;
 import studybuddy.domain.ReportFormat;
 
 /**
- * F09 and F13: the course's average score and streak above two tabs, one with concepts ranked by mastery (weakest
+ * F08 and F10: the course's average score and streak above two tabs, one with concepts ranked by mastery (weakest
  * first) and an optional AI diagnosis, the other with the study history. Everything updates on its own: any
  * event from a service refreshes this panel.
  */

@@ -3,7 +3,7 @@ package studybuddy.domain;
 import java.util.List;
 
 /**
- * A course's progress (F13). Calculated on demand from the stored records.
+ * A course's progress (F10). Calculated on demand from the stored records.
  *
  * @param gradedQuizzes how many fully graded attempts the average covers
  * @param averageScore  their average percentage; 0 if there are none

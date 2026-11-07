@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * A key concept of a course (F03). Concepts are the topic taxonomy: questions and flashcards are
- * tagged with them and mastery (F09) is computed per concept.
+ * A key concept of a course (F02). Concepts are the topic taxonomy: questions and flashcards are
+ * tagged with them and mastery (F08) is computed per concept.
  */
 public class Concept {
 
@@ -111,7 +111,7 @@ public class Concept {
     }
 
     /**
-     * Normalizes a concept name for deduplication (F03 step 3): lower case, punctuation removed,
+     * Normalizes a concept name for deduplication (F02 step 3): lower case, punctuation removed,
      * whitespace collapsed and a simple plural "s" dropped from each word ("Design Patterns" == "design pattern").
      */
     public static String normalize(String name) {

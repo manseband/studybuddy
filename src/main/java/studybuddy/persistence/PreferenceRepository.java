@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/** SQLite storage for the Study Coach's profile of the student's stated preferences (F12), kept across sessions. */
+/** SQLite storage for the Study Coach's profile of the student's stated preferences (F09), kept across sessions. */
 public class PreferenceRepository {
 
     private final Database db;

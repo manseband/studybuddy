@@ -13,7 +13,7 @@ import studybuddy.domain.Question;
 import studybuddy.domain.ShortAnswerQuestion;
 
 /**
- * Grades short answers with the LLM against the rubric and reference answer (F07). The model's score is
+ * Grades short answers with the LLM against the rubric and reference answer (F06). The model's score is
  * checked here: an out-of-range score is clamped and logged. If the model fails, the answer is marked
  * pending so it can be re-graded later and the rest of the attempt is not lost.
  */

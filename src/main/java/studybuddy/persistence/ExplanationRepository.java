@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import studybuddy.domain.Citation;
 import studybuddy.domain.Explanation;
 
-/** SQLite cache of explanations (F08), one per question of an attempt, so asking again costs no model call. */
+/** SQLite cache of explanations (F07), one per question of an attempt, so asking again costs no model call. */
 public class ExplanationRepository {
 
     private final Database db;

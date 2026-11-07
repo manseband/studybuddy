@@ -111,7 +111,7 @@ public class StudyAgentFacade implements AutoCloseable {
         return materialService.refreshEmbeddings(courseId);
     }
 
-    // ----- F04 questions -----
+    // ----- F03 questions -----
 
     public Answer askQuestion(long courseId, String question) {
         return contentService.answerQuestion(courseId, question);
@@ -125,7 +125,7 @@ public class StudyAgentFacade implements AutoCloseable {
         return contentService.getQuestionHistory(courseId);
     }
 
-    // ----- F03 concepts -----
+    // ----- F02 concepts -----
 
     /** Candidate concepts for review; nothing is saved until {@link #saveConcepts}. */
     public List<Concept> extractConcepts(long materialId) {
@@ -160,7 +160,7 @@ public class StudyAgentFacade implements AutoCloseable {
         contentService.deleteConcept(conceptId);
     }
 
-    // ----- F06, F07 quizzes -----
+    // ----- F05, F06 quizzes -----
 
     /** The quiz can be shorter than requested if there is too little material; compare its size. */
     public Quiz generateQuiz(QuizRequest request) {
@@ -202,7 +202,7 @@ public class StudyAgentFacade implements AutoCloseable {
         return attempt;
     }
 
-    // ----- F08 explanations -----
+    // ----- F07 explanations -----
 
     /**
      * Explains a graded answer, using the cached explanation if there is one.
@@ -223,7 +223,7 @@ public class StudyAgentFacade implements AutoCloseable {
         return contentService.explainAnswer(attemptId, question, attempt.answerFor(questionId), result.correct());
     }
 
-    // ----- F05 flashcards -----
+    // ----- F04 flashcards -----
 
     /** Unsaved cards for the student to review; there can be fewer than requested. Save with {@link #saveFlashcards}. */
     public List<Flashcard> generateFlashcards(long courseId, List<Long> materialIds, List<Long> conceptIds, int count) {
@@ -264,7 +264,7 @@ public class StudyAgentFacade implements AutoCloseable {
         return flashcardService.recordReview(cardId, rating);
     }
 
-    // ----- F09 weak concepts -----
+    // ----- F08 weak concepts -----
 
     /** The mastery of every concept in the course, weakest first. */
     public List<ConceptMastery> getMastery(long courseId) {
@@ -279,7 +279,7 @@ public class StudyAgentFacade implements AutoCloseable {
         return masteryService.diagnose(courseId);
     }
 
-    // ----- F12 Study Coach -----
+    // ----- F09 Study Coach -----
 
     /**
      * Sends a message to the Study Coach. This can take a while, so call it off the Swing thread.
@@ -300,7 +300,7 @@ public class StudyAgentFacade implements AutoCloseable {
         agentController.resetConversation();
     }
 
-    // ----- F13 progress and history -----
+    // ----- F10 progress and history -----
 
     public ProgressReport getProgress(long courseId) {
         return progressService.getProgress(courseId);

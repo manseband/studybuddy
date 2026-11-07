@@ -23,7 +23,7 @@ import studybuddy.domain.Quiz;
 import studybuddy.domain.ShortAnswerQuestion;
 import studybuddy.domain.TrueFalseQuestion;
 
-/** SQLite storage for quizzes and their questions (F06). The type-specific answer key is stored as JSON. */
+/** SQLite storage for quizzes and their questions (F05). The type-specific answer key is stored as JSON. */
 public class QuizRepository implements Repository<Quiz> {
 
     private final Database db;
@@ -78,7 +78,7 @@ public class QuizRepository implements Repository<Quiz> {
         });
     }
 
-    /** Question stems from the course's most recent quizzes, newest first (F06: avoid repeats). */
+    /** Question stems from the course's most recent quizzes, newest first (F05: avoid repeats). */
     public List<String> findRecentStems(long courseId, int quizCount) {
         return db.withConnection(c -> {
             List<String> stems = new ArrayList<>();

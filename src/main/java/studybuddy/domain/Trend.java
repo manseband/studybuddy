@@ -1,6 +1,6 @@
 package studybuddy.domain;
 
-/** Direction of a concept's recent mastery evidence (F09). */
+/** Direction of a concept's recent mastery evidence (F08). */
 public enum Trend {
     UP,
     DOWN,

@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import studybuddy.domain.Concept;
 
 /**
- * SQLite storage for course concepts (F03), their prerequisite links and the materials they appear in.
+ * SQLite storage for course concepts (F02), their prerequisite links and the materials they appear in.
  * Deleting a concept leaves its questions and flashcards untagged (ON DELETE SET NULL in the schema).
  */
 public class ConceptRepository implements Repository<Concept> {

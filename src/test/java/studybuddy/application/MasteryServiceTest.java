@@ -35,7 +35,7 @@ import studybuddy.persistence.Database;
 import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.QuizRepository;
 
-/** F09 with real repositories. Attempts are stored directly, so the only scripted model call is the diagnosis. */
+/** F08 with real repositories. Attempts are stored directly, so the only scripted model call is the diagnosis. */
 class MasteryServiceTest {
 
     private Database db;

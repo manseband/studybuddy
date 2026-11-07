@@ -14,7 +14,7 @@ import studybuddy.domain.Answer;
 import studybuddy.domain.Citation;
 import studybuddy.domain.Course;
 
-/** {@code studybuddy ask --course EECS3311 "How is Adapter different from Facade?"} (F04). */
+/** {@code studybuddy ask --course EECS3311 "How is Adapter different from Facade?"} (F03). */
 @Command(name = "ask", description = "Ask a question about a course; the answer cites your materials.")
 public class AskCommand implements Callable<Integer> {
 

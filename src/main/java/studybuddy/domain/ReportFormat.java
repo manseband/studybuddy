@@ -2,7 +2,7 @@ package studybuddy.domain;
 
 import java.util.Locale;
 
-/** File formats of the exported progress report (F13). */
+/** File formats of the exported progress report (F10). */
 public enum ReportFormat {
     MARKDOWN("md"),
     CSV("csv");

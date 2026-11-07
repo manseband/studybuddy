@@ -27,7 +27,7 @@ import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.QuizRepository;
 
 /**
- * Finds a course's weak concepts (F09). Scores are calculated from stored quiz answers and flashcard ratings
+ * Finds a course's weak concepts (F08). Scores are calculated from stored quiz answers and flashcard ratings
  * whenever they are needed, with a deterministic formula, and are never saved. The LLM is used only for
  * the optional diagnosis.
  *
@@ -100,7 +100,7 @@ public class MasteryService {
     }
 
     /**
-     * Asks the model to look across the mistakes on weak concepts for patterns (F09).
+     * Asks the model to look across the mistakes on weak concepts for patterns (F08).
      *
      * @return the patterns and suggestions as text, or a short message if no concept is weak (no model call)
      * @throws ContentGenerationException if the model fails; the scores themselves are unaffected

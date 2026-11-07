@@ -40,7 +40,7 @@ import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QaHistoryRepository;
 import studybuddy.persistence.QuizRepository;
 
-/** F08 with a scripted model. Each page of the material is its own chunk. */
+/** F07 with a scripted model. Each page of the material is its own chunk. */
 class ExplanationTest {
 
     private static final String REPLY = "{\"explanation\": \"A Facade offers one interface.\", "

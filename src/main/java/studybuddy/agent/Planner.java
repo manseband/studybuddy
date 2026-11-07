@@ -17,7 +17,7 @@ import studybuddy.domain.CreatedItem;
 import studybuddy.domain.TraceStep;
 
 /**
- * The agent loop (F12): the model answers with tool calls or a final answer. Tool calls are run and their
+ * The agent loop (F09): the model answers with tool calls or a final answer. Tool calls are run and their
  * results sent back, until it gives a final answer or the step limit is reached. Every tool call counts as
  * a step, so the number of steps and of model calls is always bounded.
  */

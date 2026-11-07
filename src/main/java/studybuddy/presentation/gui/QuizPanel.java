@@ -61,7 +61,7 @@ import studybuddy.domain.QuizRequest;
 import studybuddy.domain.TrueFalseQuestion;
 
 /**
- * F06, F07: the Quizzes tab has three views: the list of past quizzes, taking a quiz, and the results of
+ * F05, F06: the Quizzes tab has three views: the list of past quizzes, taking a quiz, and the results of
  * an attempt. Grading can call the AI, so generating and submitting run in the background.
  */
 public class QuizPanel extends FeaturePanel {
@@ -514,7 +514,7 @@ public class QuizPanel extends FeaturePanel {
         return card;
     }
 
-    /** F08: fetches the explanation and shows it inside the question's card. */
+    /** F07: fetches the explanation and shows it inside the question's card. */
     private void explain(JButton button, JPanel holder, long attemptId, long questionId) {
         button.setEnabled(false);
         button.setText("Explaining...");

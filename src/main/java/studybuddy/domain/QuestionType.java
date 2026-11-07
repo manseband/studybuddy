@@ -2,7 +2,7 @@ package studybuddy.domain;
 
 import java.util.Locale;
 
-/** Quiz question types (F06). The code is the short form used on the CLI (--types mcq,tf,short). */
+/** Quiz question types (F05). The code is the short form used on the CLI (--types mcq,tf,short). */
 public enum QuestionType {
     MULTIPLE_CHOICE("mcq"),
     TRUE_FALSE("tf"),
@@ -18,7 +18,7 @@ public enum QuestionType {
         return code;
     }
 
-    /** True for types graded by direct comparison with the answer key (F07). */
+    /** True for types graded by direct comparison with the answer key (F06). */
     public boolean isObjective() {
         return this != SHORT_ANSWER;
     }

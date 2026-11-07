@@ -1,6 +1,6 @@
 -- StudyBuddy SQLite schema (version 1).
 -- Child rows are removed with their course (ON DELETE CASCADE). When a concept is deleted, questions and
--- flashcards that referenced it become untagged (ON DELETE SET NULL), as required by F03.
+-- flashcards that referenced it become untagged (ON DELETE SET NULL), as required by F02.
 -- Lists and small nested structures are stored as JSON text.
 
 CREATE TABLE IF NOT EXISTS courses (
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS flashcards (
 );
 CREATE INDEX IF NOT EXISTS idx_flashcards_course ON flashcards(course_id);
 
--- Flashcard ratings are mastery evidence (F09) and history entries (F13). They outlive a deleted deck,
+-- Flashcard ratings are mastery evidence (F08) and history entries (F10). They outlive a deleted deck,
 -- because they record what the student already studied.
 CREATE TABLE IF NOT EXISTS flashcard_reviews (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS flashcard_reviews (
     reviewed_at TEXT NOT NULL
 );
 
--- Study history (F13): one line per Study Coach conversation, never the full text.
+-- Study history (F10): one line per Study Coach conversation, never the full text.
 -- The rest of the history is read from the dated tables above.
 CREATE TABLE IF NOT EXISTS coach_conversations (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS coach_conversations (
 );
 CREATE INDEX IF NOT EXISTS idx_coach_conversations_course ON coach_conversations(course_id, started_at);
 
--- Study Coach preference profile (F12), kept across sessions.
+-- Study Coach preference profile (F09), kept across sessions.
 CREATE TABLE IF NOT EXISTS agent_preferences (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     preference TEXT NOT NULL UNIQUE,

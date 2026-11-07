@@ -1,6 +1,6 @@
 package studybuddy.domain;
 
-/** Lifecycle of a quiz attempt (F07). */
+/** Lifecycle of a quiz attempt (F06). */
 public enum AttemptStatus {
     /** Answers are still being entered. */
     IN_PROGRESS,

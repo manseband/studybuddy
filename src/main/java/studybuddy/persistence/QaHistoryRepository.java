@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import studybuddy.domain.Answer;
 import studybuddy.domain.QaEntry;
 
-/** SQLite storage for the Q&A history (F04). The answer and its citations are stored as JSON. */
+/** SQLite storage for the Q&A history (F03). The answer and its citations are stored as JSON. */
 public class QaHistoryRepository implements Repository<QaEntry> {
 
     private final Database db;

@@ -34,8 +34,8 @@ import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QaHistoryRepository;
 
 /**
- * AI-generated learning content from the course materials: answers to questions (F04), the course's
- * key concepts (F03) and explanations of quiz answers (F08).
+ * AI-generated learning content from the course materials: answers to questions (F03), the course's
+ * key concepts (F02) and explanations of quiz answers (F07).
  *
  * Retrieval, chunk selection, deduplication and validation are deterministic; the LLM only writes the text.
  */
@@ -43,7 +43,7 @@ public class LearningContentService {
 
     public static final int MAX_QUESTION_LENGTH = 1000;
     static final String NOT_COVERED_TEXT = "Your course materials do not seem to cover this question.";
-    /** F03: "Too many concepts (more than 40 per material): only the most important are kept." */
+    /** F02: "Too many concepts (more than 40 per material): only the most important are kept." */
     public static final int MAX_CONCEPTS_PER_MATERIAL = 40;
 
     private static final String CONCEPTS_SCHEMA = """
@@ -53,7 +53,7 @@ public class LearningContentService {
                            "importance": 4,
                            "prerequisites": ["Interface"]}]}""";
 
-    /** F08: besides a question's source excerpt, at most this many related excerpts are used. */
+    /** F07: besides a question's source excerpt, at most this many related excerpts are used. */
     private static final int MAX_RELATED_EXCERPTS = 2;
 
     private static final String EXPLANATION_SCHEMA = """
@@ -134,9 +134,9 @@ public class LearningContentService {
     }
 
     /**
-     * @param topK       number of excerpts retrieved for a question (F04)
+     * @param topK       number of excerpts retrieved for a question (F03)
      * @param wordBudget most words of material text sent in one prompt; longer materials are processed
-     *                   in several groups of chunks (F03)
+     *                   in several groups of chunks (F02)
      */
     public LearningContentService(LLMClient llm, RetrievalStrategy retriever, ResponseParser responseParser,
                                   MaterialRepository materialRepo, QaHistoryRepository qaRepo,
@@ -159,7 +159,7 @@ public class LearningContentService {
     }
 
     /**
-     * Answers a question from the course's materials, citing the excerpts used (F04).
+     * Answers a question from the course's materials, citing the excerpts used (F03).
      *
      * @param allowGeneralKnowledge if the materials do not cover the question, answer from general
      *                              knowledge (labelled as such) instead of only saying so
@@ -200,7 +200,7 @@ public class LearningContentService {
         return excerptCitations(excerpts, materialTitles(excerpts));
     }
 
-    // ----- F08 explanations -----
+    // ----- F07 explanations -----
 
     /**
      * Explains why the correct answer is correct and, for a wrong answer, the likely misconception, using the
@@ -308,10 +308,10 @@ public class LearningContentService {
         return excerptCitations(excerpts, materialTitles(excerpts)).get(index);
     }
 
-    // ----- F03 concepts -----
+    // ----- F02 concepts -----
 
     /**
-     * Identifies the key concepts of a material (F03). The chunks are sent in groups; candidates are
+     * Identifies the key concepts of a material (F02). The chunks are sent in groups; candidates are
      * deduplicated by normalized name and matched with the course's existing concepts, and only
      * prerequisite links to known concepts are kept. At most {@link #MAX_CONCEPTS_PER_MATERIAL}
      * concepts are returned, most important first. Nothing is saved: call {@link #saveConcepts}

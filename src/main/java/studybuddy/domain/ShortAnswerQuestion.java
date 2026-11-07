@@ -1,6 +1,6 @@
 package studybuddy.domain;
 
-/** Short-answer question, graded by the LLM against the rubric and reference answer (F07). */
+/** Short-answer question, graded by the LLM against the rubric and reference answer (F06). */
 public class ShortAnswerQuestion extends Question {
 
     private final String referenceAnswer;

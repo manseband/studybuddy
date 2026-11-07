@@ -33,13 +33,13 @@ import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QuizRepository;
 
 /**
- * Generates quizzes (F06) and grades attempts (F07).
+ * Generates quizzes (F05) and grades attempts (F06).
  * The LLM writes the questions and grades short answers. Everything around it is deterministic: scope,
  * validation of each question, avoiding repeats, the choice of grader, and the totals.
  */
 public class QuizService {
 
-    /** F06: invalid questions are regenerated up to two times, then dropped. */
+    /** F05: invalid questions are regenerated up to two times, then dropped. */
     static final int MAX_REGENERATIONS = 2;
     /** Below this many words per question there is not enough material for the requested count. */
     static final int WORDS_PER_QUESTION = 20;
@@ -86,7 +86,7 @@ public class QuizService {
         this.eventBus = eventBus;
     }
 
-    // ----- F06 generation -----
+    // ----- F05 generation -----
 
     /**
      * Generates and saves a quiz. The result can be shorter than requested if the material is too short
@@ -242,7 +242,7 @@ public class QuizService {
         return counts;
     }
 
-    // ----- F07 grading -----
+    // ----- F06 grading -----
 
     /** A new, unsaved attempt at the quiz; a quiz can be retaken any number of times. */
     public QuizAttempt startAttempt(long quizId) {

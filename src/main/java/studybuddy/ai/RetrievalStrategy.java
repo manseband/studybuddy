@@ -5,7 +5,7 @@ import java.util.List;
 import studybuddy.domain.Chunk;
 
 /**
- * Strategy for finding the course excerpts most relevant to a query (F04 and every retrieval-based
+ * Strategy for finding the course excerpts most relevant to a query (F03 and every retrieval-based
  * feature). EmbeddingRetriever ranks by vector similarity when an API key is configured;
  * KeywordRetriever ranks by keyword overlap (BM25) otherwise and in tests.
  */

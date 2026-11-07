@@ -17,7 +17,7 @@ import studybuddy.persistence.ConceptRepository;
 import studybuddy.persistence.MaterialRepository;
 
 /**
- * Works out which part of a course a quiz or flashcard deck is written from (F05, F06): the chosen
+ * Works out which part of a course a quiz or flashcard deck is written from (F04, F05): the chosen
  * materials, the excerpts about the chosen concepts, or else the whole course.
  */
 class StudyScope {

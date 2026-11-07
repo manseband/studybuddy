@@ -1,7 +1,7 @@
 package studybuddy.domain;
 
 /**
- * Grade of one answer (F07). score is in [0, 1].
+ * Grade of one answer (F06). score is in [0, 1].
  *
  * @param gradedByAI true when the LLM rubric grader produced the score
  * @param pending    true when the LLM grader failed and the answer waits to be re-graded

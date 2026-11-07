@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Parameters for generating a quiz (F06).
+ * Parameters for generating a quiz (F05).
  * The scope is the given materials and/or concepts; if both are empty the whole course is used.
  */
 public record QuizRequest(long courseId, List<Long> materialIds, List<Long> conceptIds, int questionCount,

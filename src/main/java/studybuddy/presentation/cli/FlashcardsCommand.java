@@ -21,7 +21,7 @@ import studybuddy.domain.Course;
 import studybuddy.domain.Flashcard;
 import studybuddy.domain.Rating;
 
-/** {@code studybuddy flashcards generate|list|show|review|delete} (F05). */
+/** {@code studybuddy flashcards generate|list|show|review|delete} (F04). */
 @Command(name = "flashcards", description = "Generate flashcards and review them with spaced repetition.",
         subcommands = {FlashcardsCommand.Generate.class, FlashcardsCommand.ListDecks.class, FlashcardsCommand.Show.class,
                 FlashcardsCommand.Review.class, FlashcardsCommand.Delete.class})

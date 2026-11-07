@@ -40,7 +40,7 @@ import studybuddy.persistence.QaHistoryRepository;
 import studybuddy.persistence.QuizRepository;
 
 /**
- * F13: a course's progress and study history, calculated from the stored records without any AI.
+ * F10: a course's progress and study history, calculated from the stored records without any AI.
  * Quizzes, flashcards, questions and materials already store their dates, so the history reads those tables.
  * Study Coach conversations are stored nowhere else: as an Observer, this service keeps one line for each.
  */

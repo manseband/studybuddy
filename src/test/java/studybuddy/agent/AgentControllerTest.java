@@ -52,7 +52,7 @@ import studybuddy.persistence.PreferenceRepository;
 import studybuddy.persistence.QaHistoryRepository;
 import studybuddy.persistence.QuizRepository;
 
-/** F12 through the real tools and services with a scripted model. */
+/** F09 through the real tools and services with a scripted model. */
 class AgentControllerTest {
 
     @TempDir

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * A student's attempt at a quiz (F07). Answers are keyed by question id; each graded answer has a
+ * A student's attempt at a quiz (F06). Answers are keyed by question id; each graded answer has a
  * {@link GradeResult}. An attempt can be submitted only once.
  */
 public class QuizAttempt {

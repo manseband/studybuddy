@@ -28,7 +28,7 @@ import studybuddy.persistence.ExplanationRepository;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QaHistoryRepository;
 
-/** F03 concept extraction with a scripted model. Each page is one 10-word chunk; the word budget is 15. */
+/** F02 concept extraction with a scripted model. Each page is one 10-word chunk; the word budget is 15. */
 class ConceptExtractionTest {
 
     @TempDir

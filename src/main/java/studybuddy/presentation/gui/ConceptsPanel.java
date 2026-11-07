@@ -23,7 +23,7 @@ import studybuddy.domain.Concept;
 import studybuddy.domain.Material;
 
 /**
- * F03: extract concepts from a material, review them (edit, remove) and save; manage saved concepts
+ * F02: extract concepts from a material, review them (edit, remove) and save; manage saved concepts
  * (edit, merge, delete). Reviewing unsaved candidates happens in the same table as the saved concepts.
  */
 public class ConceptsPanel extends FeaturePanel {

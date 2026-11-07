@@ -16,7 +16,7 @@ import studybuddy.domain.AttemptStatus;
 import studybuddy.domain.GradeResult;
 import studybuddy.domain.QuizAttempt;
 
-/** SQLite storage for quiz attempts (F07): one row per attempt and one per question of the attempt. */
+/** SQLite storage for quiz attempts (F06): one row per attempt and one per question of the attempt. */
 public class AttemptRepository implements Repository<QuizAttempt> {
 
     private final Database db;

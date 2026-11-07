@@ -36,7 +36,7 @@ import studybuddy.persistence.Database;
 import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.MaterialRepository;
 
-/** F05 with a scripted model and a real in-memory database. */
+/** F04 with a scripted model and a real in-memory database. */
 class FlashcardServiceTest {
 
     @TempDir

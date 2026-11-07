@@ -22,7 +22,7 @@ import studybuddy.domain.Course;
 import studybuddy.domain.TraceStep;
 
 /**
- * F12: a chat with the Study Coach for the selected course, with an activity list showing each step as it
+ * F09: a chat with the Study Coach for the selected course, with an activity list showing each step as it
  * happens. The coach runs in the background.
  */
 public class CoachPanel extends FeaturePanel {

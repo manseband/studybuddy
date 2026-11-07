@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/** A generated quiz (F06). difficulty is the level chosen by the student. */
+/** A generated quiz (F05). difficulty is the level chosen by the student. */
 public class Quiz {
 
     private long id;

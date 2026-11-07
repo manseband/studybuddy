@@ -9,15 +9,15 @@ It runs on your computer as a Java desktop application (Swing GUI) and a command
 | ID | Feature | AI |
 |----|---------|----|
 | F01 | Course and material management (upload PDF, TXT or Markdown) | No; embeddings when a key is set |
-| F03 | Concept extraction | Yes |
-| F04 | Question answering with citations | Hybrid |
-| F05 | Flashcard generation and spaced-repetition review | Hybrid |
-| F06 | Quiz generation | Yes |
-| F07 | Quiz grading | Hybrid |
-| F08 | Answer explanations | Yes |
-| F09 | Weak concepts | Hybrid |
-| F12 | Study Coach agent | Yes |
-| F13 | Progress and study history | No |
+| F02 | Concept extraction | Yes |
+| F03 | Question answering with citations | Hybrid |
+| F04 | Flashcard generation and spaced-repetition review | Hybrid |
+| F05 | Quiz generation | Yes |
+| F06 | Quiz grading | Hybrid |
+| F07 | Answer explanations | Yes |
+| F08 | Weak concepts | Hybrid |
+| F09 | Study Coach agent | Yes |
+| F10 | Progress and study history | No |
 
 ## Prerequisites
 
@@ -86,7 +86,7 @@ The rest of this README writes commands as `studybuddy ...`; type `.\studybuddy 
 
 ### The GUI
 
-The window has a course selector at the top and one tab per area: **Materials** (F01), **Concepts** (F03), **Ask** (F04), **Flashcards** (F05), **Quizzes** (F06, F07, F08), **Progress** (F09, F13) and **Coach** (F12). The GUI and CLI use the same services and the same database, so anything created in one appears in the other.
+The window has a course selector at the top and one tab per area: **Materials** (F01), **Concepts** (F02), **Ask** (F03), **Flashcards** (F04), **Quizzes** (F05, F06, F07), **Progress** (F08, F10) and **Coach** (F09). The GUI and CLI use the same services and the same database, so anything created in one appears in the other.
 
 ### Your data
 
@@ -125,7 +125,7 @@ On Windows Command Prompt: `set GEMINI_API_KEY=YOUR_LOCAL_API_KEY_HERE`. Close t
 | `material remove <id>` | Removes a material and its search index entries. |
 | `material reindex --course <c>` | Retries embeddings for chunks that have none, for example after a rate limit. The GUI does this automatically when a course is opened. |
 
-### Concepts (F03)
+### Concepts (F02)
 
 | Command | What it does |
 |---|---|
@@ -136,15 +136,15 @@ On Windows Command Prompt: `set GEMINI_API_KEY=YOUR_LOCAL_API_KEY_HERE`. Close t
 | `concepts merge <fromId> <intoId>` | Merges the first concept into the second: question and flashcard tags, pages and links move to the second. |
 | `concepts delete <id>` | Deletes a concept. Questions and flashcards tagged with it become untagged. |
 
-Concepts are the topics the rest of the app tracks: questions and flashcards are tagged with them, and mastery (F09) is calculated per concept.
+Concepts are the topics the rest of the app tracks: questions and flashcards are tagged with them, and mastery (F08) is calculated per concept.
 
-### Asking questions (F04)
+### Asking questions (F03)
 
 | Command | What it does |
 |---|---|
 | `ask --course <c> [--general] <question>` | Finds the 6 most relevant excerpts and has the model answer from them only, with numbered citations to material and page. If the materials do not cover the question it says so; with `--general` it then answers from general knowledge, clearly labelled. Questions are kept in the study history. |
 
-### Flashcards (F05)
+### Flashcards (F04)
 
 | Command | What it does |
 |---|---|
@@ -154,7 +154,7 @@ Concepts are the topics the rest of the app tracks: questions and flashcards are
 | `flashcards review --deck <id>` or `--course <c>` | Shows each due card, then asks you to rate your recall: again, hard, good or easy. Cards are scheduled in Leitner boxes 1-5, reviewed every 1, 2, 4, 8 or 16 days: again sends a card back to box 1, hard keeps it, good moves it up one box and easy two. Ratings on tagged cards count towards that concept's mastery. Works without an API key. |
 | `flashcards delete <deckId>` | Deletes a deck. Ratings already given are kept, so mastery and history do not change. |
 
-### Quizzes, grading and explanations (F06, F07, F08)
+### Quizzes, grading and explanations (F05, F06, F07)
 
 | Command | What it does |
 |---|---|
@@ -170,13 +170,13 @@ Concepts are the topics the rest of the app tracks: questions and flashcards are
 
 Grading uses two strategies: multiple-choice and true/false answers are compared with the answer key, and short answers are graded by the model against a rubric and reference answer, with partial credit. If the model is unavailable, short answers are marked pending instead of failing the attempt.
 
-### Weak concepts (F09)
+### Weak concepts (F08)
 
 | Command | What it does |
 |---|---|
 | `weak-concepts --course <c> [--diagnose]` | Ranks the course's concepts by mastery (0-100), calculated from quiz answers and flashcard ratings, with newer evidence counting more. A concept needs at least 3 pieces of evidence; below 60 it is weak, otherwise strong. `--diagnose` also asks the model for patterns across your mistakes on weak concepts and suggests actions. |
 
-### Study Coach (F12)
+### Study Coach (F09)
 
 | Command | What it does |
 |---|---|
@@ -185,7 +185,7 @@ Grading uses two strategies: multiple-choice and true/false answers are compared
 
 The coach takes a goal such as "quiz me on what I keep getting wrong", plans the steps and carries them out with its tools: search materials, get weak concepts, generate a quiz, generate a flashcard deck and save a preference. It shows each step as it runs, uses at most 8 tool calls per message, remembers the conversation, and can only read and create data, never change or delete it. Preferences you state ("I prefer short quizzes") are kept across conversations.
 
-### Progress and history (F13)
+### Progress and history (F10)
 
 | Command | What it does |
 |---|---|
@@ -215,33 +215,33 @@ studybuddy material add --course EECS3311 samples/design-patterns.pdf
 studybuddy material add --course EECS3311 samples/software-testing.pdf
 studybuddy material list --course EECS3311
 
-# F03: the key concepts of each material, merged into one list for the course
+# F02: the key concepts of each material, merged into one list for the course
 studybuddy concepts extract --material 1
 studybuddy concepts extract --material 2
 studybuddy concepts extract --material 3
 studybuddy concepts list --course EECS3311
 
-# F04: questions answered from all three materials, with citations
+# F03: questions answered from all three materials, with citations
 studybuddy ask --course EECS3311 "How do design patterns help a class follow the open-closed principle?"
 studybuddy ask --course EECS3311 "Why is code that depends on abstractions easier to test?"
 
-# F05: a deck from one material, then a review of every due card
+# F04: a deck from one material, then a review of every due card
 studybuddy flashcards generate --course EECS3311 --material 2 --count 10
 studybuddy flashcards review --course EECS3311
 
-# F06, F07, F08: a quiz from two materials, taken, graded and explained
+# F05, F06, F07: a quiz from two materials, taken, graded and explained
 studybuddy quiz generate --course EECS3311 --material 1,3 --count 5 --difficulty easy
 studybuddy quiz take 1
 studybuddy quiz results 1
 studybuddy explain --attempt 1 --question 2
 
-# F09: weak concepts, with an AI diagnosis of the mistakes
+# F08: weak concepts, with an AI diagnosis of the mistakes
 studybuddy weak-concepts --course EECS3311 --diagnose
 
-# F12: the Study Coach plans and runs a multi-step goal
+# F09: the Study Coach plans and runs a multi-step goal
 studybuddy coach --course EECS3311 --once "Find my weakest concept and make me flashcards and a short quiz on it"
 
-# F13: progress, history and an exported report
+# F10: progress, history and an exported report
 studybuddy progress --course EECS3311
 studybuddy history --course EECS3311 --type quiz
 studybuddy progress export --course EECS3311 --format markdown --out progress.md

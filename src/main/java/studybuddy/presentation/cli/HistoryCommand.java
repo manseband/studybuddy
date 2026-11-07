@@ -15,7 +15,7 @@ import studybuddy.domain.ActivityRecord;
 import studybuddy.domain.ActivityType;
 import studybuddy.domain.Course;
 
-/** {@code studybuddy history --course EECS3311 [--since DATE] [--until DATE] [--type TYPE]} (F13). */
+/** {@code studybuddy history --course EECS3311 [--since DATE] [--until DATE] [--type TYPE]} (F10). */
 @Command(name = "history", description = "List a course's study activity, newest first.")
 public class HistoryCommand implements Callable<Integer> {
 

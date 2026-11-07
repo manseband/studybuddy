@@ -16,7 +16,7 @@ import studybuddy.domain.FlashcardReview;
 import studybuddy.domain.Rating;
 
 /**
- * SQLite storage for flashcards and their review history (F05). A deck is the set of cards with the
+ * SQLite storage for flashcards and their review history (F04). A deck is the set of cards with the
  * same deck id; deck ids are unique across courses.
  */
 public class FlashcardRepository implements Repository<Flashcard> {

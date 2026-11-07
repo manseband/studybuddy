@@ -26,7 +26,7 @@ import studybuddy.persistence.FlashcardRepository;
 import studybuddy.persistence.MaterialRepository;
 
 /**
- * Generates flashcards and runs spaced-repetition review (F05). The LLM only writes the cards; validation,
+ * Generates flashcards and runs spaced-repetition review (F04). The LLM only writes the cards; validation,
  * the Leitner schedule (in {@link Flashcard}) and which cards are due are deterministic, so review works
  * without an API key.
  */

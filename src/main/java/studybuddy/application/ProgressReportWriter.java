@@ -8,7 +8,7 @@ import studybuddy.domain.ActivityRecord;
 import studybuddy.domain.ConceptMastery;
 import studybuddy.domain.ProgressReport;
 
-/** Turns a progress report into the text of an exported file (F13). */
+/** Turns a progress report into the text of an exported file (F10). */
 final class ProgressReportWriter {
 
     private static final List<String> MASTERY_HEADER = List.of("Concept", "Mastery", "Evidence", "Trend", "Status");

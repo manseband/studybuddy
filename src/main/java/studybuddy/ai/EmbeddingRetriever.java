@@ -17,7 +17,7 @@ import studybuddy.domain.Chunk;
 
 /**
  * Semantic retrieval: ranks chunks by cosine similarity between the query's embedding and each chunk's
- * cached embedding (F01, F04). Each chunk is embedded once; the vector is stored with the model name, so
+ * cached embedding (F01, F03). Each chunk is embedded once; the vector is stored with the model name, so
  * vectors from another model are ignored and recomputed.
  *
  * If the embedding service fails, or the course has no vectors yet, retrieval falls back to the

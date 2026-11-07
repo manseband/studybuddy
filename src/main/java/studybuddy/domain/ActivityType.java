@@ -2,7 +2,7 @@ package studybuddy.domain;
 
 import java.util.Locale;
 
-/** Kinds of entries in the study history (F13), used by the history filter. */
+/** Kinds of entries in the study history (F10), used by the history filter. */
 public enum ActivityType {
     MATERIAL("Materials"),
     QUESTION("Questions"),

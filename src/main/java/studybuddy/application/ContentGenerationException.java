@@ -6,7 +6,7 @@ import studybuddy.domain.Citation;
 
 /**
  * An AI feature could not produce its result (model unreachable after retries, or still malformed after
- * the repair request). Carries the excerpts that were retrieved, so the student can still read them (F04).
+ * the repair request). Carries the excerpts that were retrieved, so the student can still read them (F03).
  */
 public class ContentGenerationException extends RuntimeException {
 

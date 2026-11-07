@@ -86,14 +86,14 @@ public final class ApplicationFactory {
         }
     }
 
-    /** F07: objective questions are graded by rules, short answers by the model. */
+    /** F06: objective questions are graded by rules, short answers by the model. */
     public static Map<QuestionType, GradingStrategy> createGraders(LLMClient llm, ResponseParser responseParser) {
         GradingStrategy rules = new RuleBasedGrader();
         return Map.of(QuestionType.MULTIPLE_CHOICE, rules, QuestionType.TRUE_FALSE, rules,
                 QuestionType.SHORT_ANSWER, new LLMRubricGrader(llm, responseParser));
     }
 
-    /** F12: the Study Coach and its tools, each of which wraps an existing service. */
+    /** F09: the Study Coach and its tools, each of which wraps an existing service. */
     public static AgentController createAgent(LLMClient llm, MaterialService materialService,
                                               LearningContentService contentService, QuizService quizService,
                                               MasteryService masteryService, FlashcardService flashcardService,

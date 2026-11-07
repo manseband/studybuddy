@@ -49,7 +49,7 @@ import studybuddy.persistence.Database;
 import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QuizRepository;
 
-/** F06 and F07 with a scripted model and a real in-memory database. */
+/** F05 and F06 with a scripted model and a real in-memory database. */
 class QuizServiceTest {
 
     private static final String MCQ = """
@@ -115,7 +115,7 @@ class QuizServiceTest {
         return llm.lastRequest().systemText() + "\n" + llm.lastRequest().messages().get(0).text();
     }
 
-    // ----- F06 generation -----
+    // ----- F05 generation -----
 
     @Test
     void generatesAndSavesAQuizWithEveryType() {
@@ -328,7 +328,7 @@ class QuizServiceTest {
         assertEquals(2, llm.lastRequest().messages().get(0).text().split("\\[\\d\\] \\(page").length - 1);
     }
 
-    // ----- F07 grading -----
+    // ----- F06 grading -----
 
     private Quiz threeQuestionQuiz() {
         llm.enqueueText(reply(MCQ, TF, SHORT));

@@ -12,7 +12,7 @@ import studybuddy.application.ContentGenerationException;
 import studybuddy.domain.ConceptMastery;
 import studybuddy.domain.Course;
 
-/** {@code studybuddy weak-concepts --course EECS3311 [--diagnose]} (F09). */
+/** {@code studybuddy weak-concepts --course EECS3311 [--diagnose]} (F08). */
 @Command(name = "weak-concepts", description = "Rank a course's concepts by mastery; --diagnose adds an AI analysis.")
 public class WeakConceptsCommand implements Callable<Integer> {
 

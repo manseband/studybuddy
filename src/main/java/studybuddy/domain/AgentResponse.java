@@ -3,7 +3,7 @@ package studybuddy.domain;
 import java.util.List;
 
 /**
- * The Study Coach's reply to one message (F12): its final text, every step it took and what it created.
+ * The Study Coach's reply to one message (F09): its final text, every step it took and what it created.
  *
  * @param status COMPLETED, STEP_LIMIT if it had to stop early, or FAILED if the AI service stopped responding
  */

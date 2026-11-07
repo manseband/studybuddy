@@ -1,7 +1,7 @@
 package studybuddy.domain;
 
 /**
- * Explanation of a graded question (F08).
+ * Explanation of a graded question (F07).
  *
  * @param misconception   likely misconception behind a wrong answer; null when the student was correct
  * @param citation        the source excerpt used; null when no source is available

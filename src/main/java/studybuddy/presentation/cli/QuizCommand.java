@@ -30,7 +30,7 @@ import studybuddy.domain.Quiz;
 import studybuddy.domain.QuizAttempt;
 import studybuddy.domain.QuizRequest;
 
-/** {@code studybuddy quiz generate|list|show|take|grade|results|regrade|dispute} (F06, F07). */
+/** {@code studybuddy quiz generate|list|show|take|grade|results|regrade|dispute} (F05, F06). */
 @Command(name = "quiz", description = "Generate, take and grade quizzes.",
         subcommands = {QuizCommand.Generate.class, QuizCommand.ListQuizzes.class, QuizCommand.Show.class,
                 QuizCommand.Take.class, QuizCommand.Grade.class, QuizCommand.Results.class, QuizCommand.Regrade.class,

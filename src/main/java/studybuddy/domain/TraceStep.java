@@ -3,7 +3,7 @@ package studybuddy.domain;
 import java.util.Map;
 
 /**
- * One tool call made by the Study Coach (F12).
+ * One tool call made by the Study Coach (F09).
  *
  * @param number      position in the conversation turn, starting at 1
  * @param description what the step does, for the student, e.g. "Generating 8-question quiz"

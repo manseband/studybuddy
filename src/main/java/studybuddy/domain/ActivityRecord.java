@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * One row of the study history (F13).
+ * One row of the study history (F10).
  *
  * @param activity what happened, e.g. "Quiz taken"
  * @param details  what it was about, e.g. "10 questions, medium"

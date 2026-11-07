@@ -3,7 +3,7 @@ package studybuddy.domain;
 import java.util.List;
 
 /**
- * Result of a question over course materials (F04).
+ * Result of a question over course materials (F03).
  *
  * @param grounded            true if the answer comes from course excerpts
  * @param generalKnowledge    true for an answer from the model's general knowledge, shown with a

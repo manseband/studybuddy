@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/** SQLite storage for Study Coach conversations (F13): one line each for the study history, never the full text. */
+/** SQLite storage for Study Coach conversations (F10): one line each for the study history, never the full text. */
 public class CoachConversationRepository {
 
     /** The start of a conversation's first message, and when it was sent. */

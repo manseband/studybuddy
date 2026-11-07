@@ -98,7 +98,7 @@ public class ResponseParser {
     /**
      * Keeps only citations that refer to an excerpt that was actually provided (numbered from 1) and
      * fills in their chunk, material, page and excerpt text from that chunk. Citations to excerpts that
-     * were not provided are removed and the answer is marked partially unverified (F04 step 6).
+     * were not provided are removed and the answer is marked partially unverified (F03 step 6).
      */
     public Answer validateCitations(Answer answer, List<Chunk> excerpts) {
         List<Citation> valid = new ArrayList<>();

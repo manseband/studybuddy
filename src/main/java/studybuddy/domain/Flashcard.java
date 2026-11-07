@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
- * A flashcard scheduled with Leitner boxes (F05).
+ * A flashcard scheduled with Leitner boxes (F04).
  * Box 1 is reviewed every day; each higher box doubles the interval (1, 2, 4, 8, 16 days).
  * Again sends the card back to box 1, Hard keeps it in its box, Good moves it up one box and Easy two.
  * Cards generated together share a deckId. conceptId is null for an untagged card.
@@ -13,7 +13,7 @@ public class Flashcard {
 
     public static final int MIN_BOX = 1;
     public static final int MAX_BOX = 5;
-    /** How many cards can be requested for one deck (F05). */
+    /** How many cards can be requested for one deck (F04). */
     public static final int MIN_DECK_SIZE = 5;
     public static final int MAX_DECK_SIZE = 20;
     public static final int MAX_FRONT_LENGTH = 300;

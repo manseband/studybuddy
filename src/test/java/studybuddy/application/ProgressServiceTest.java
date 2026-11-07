@@ -45,7 +45,7 @@ import studybuddy.persistence.MaterialRepository;
 import studybuddy.persistence.QaHistoryRepository;
 import studybuddy.persistence.QuizRepository;
 
-/** F13 with real repositories. Records are stored directly, so that their dates can be chosen. */
+/** F10 with real repositories. Records are stored directly, so that their dates can be chosen. */
 class ProgressServiceTest {
 
     private static final LocalDateTime NOV_1 = LocalDateTime.of(2026, 11, 1, 9, 0);

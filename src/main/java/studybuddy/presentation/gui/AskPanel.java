@@ -25,7 +25,7 @@ import studybuddy.application.StudyAgentFacade;
 import studybuddy.domain.Answer;
 import studybuddy.domain.Citation;
 
-/** F04: ask a question about the selected course; double-click a source to read the excerpt. */
+/** F03: ask a question about the selected course; double-click a source to read the excerpt. */
 public class AskPanel extends FeaturePanel {
 
     private final JTextArea question = new JTextArea(3, 60);

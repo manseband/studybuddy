@@ -1,7 +1,7 @@
 package studybuddy.domain;
 
 /**
- * Mastery of one concept (F09): score 0-100 from quiz and flashcard evidence.
+ * Mastery of one concept (F08): score 0-100 from quiz and flashcard evidence.
  * A concept with fewer than {@link #MIN_EVIDENCE} evidence events is "insufficient data", never weak.
  */
 public record ConceptMastery(long conceptId, String conceptName, double score, int evidenceCount, Trend trend,

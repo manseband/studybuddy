@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 import studybuddy.domain.TraceStep;
 
-/** The steps taken for one message (F12). The listener hears each step start and finish, for live display. */
+/** The steps taken for one message (F09). The listener hears each step start and finish, for live display. */
 public class AgentTrace {
 
     private final List<TraceStep> steps = new ArrayList<>();

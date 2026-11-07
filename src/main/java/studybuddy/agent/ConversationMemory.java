@@ -3,7 +3,7 @@ package studybuddy.agent;
 import java.util.ArrayList;
 import java.util.List;
 
-/** What was said in the current session (F12). Only the most recent turns are kept. */
+/** What was said in the current session (F09). Only the most recent turns are kept. */
 public class ConversationMemory {
 
     /** One message of the conversation. */

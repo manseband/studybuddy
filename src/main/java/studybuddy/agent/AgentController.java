@@ -18,7 +18,7 @@ import studybuddy.domain.TraceStep;
 import studybuddy.persistence.PreferenceRepository;
 
 /**
- * The Study Coach's entry point (F12). For each message it gathers the context (courses, materials, concepts,
+ * The Study Coach's entry point (F09). For each message it gathers the context (courses, materials, concepts,
  * preferences), runs the {@link Planner} and remembers the conversation. Messages are handled one at a time.
  */
 public class AgentController {

@@ -81,7 +81,7 @@ public final class AppConfig {
         return getInt("llm.timeout.seconds");
     }
 
-    /** Most words of material text sent to the model in one prompt; longer materials are sent in parts (F03). */
+    /** Most words of material text sent to the model in one prompt; longer materials are sent in parts (F02). */
     public int promptWordBudget() {
         return getInt("llm.prompt.word.budget");
     }

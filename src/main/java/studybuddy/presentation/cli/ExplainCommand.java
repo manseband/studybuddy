@@ -12,7 +12,7 @@ import studybuddy.domain.Explanation;
 import studybuddy.domain.Question;
 import studybuddy.domain.QuizAttempt;
 
-/** {@code studybuddy explain --attempt 15 --question 3} (F08). */
+/** {@code studybuddy explain --attempt 15 --question 3} (F07). */
 @Command(name = "explain", description = "Explain a graded quiz answer, citing your materials.")
 public class ExplainCommand implements Callable<Integer> {
 
@@ -41,7 +41,7 @@ public class ExplainCommand implements Callable<Integer> {
         }
     }
 
-    /** F08: if the explanation fails, the correct answer is still shown. */
+    /** F07: if the explanation fails, the correct answer is still shown. */
     private String correctAnswer() {
         QuizAttempt attempt = root.facade().getAttempt(attemptId);
         return root.facade().getQuiz(attempt.getQuizId()).findQuestion(questionId).map(Question::correctAnswerText)
