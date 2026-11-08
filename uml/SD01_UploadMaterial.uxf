@@ -6,54 +6,10 @@
     <coordinates>
       <x>10</x>
       <y>10</y>
-      <w>1920</w>
-      <h>798</h>
+      <w>2228</w>
+      <h>1126</h>
     </coordinates>
     <panel_attributes>sd SD01: Upload Course Material (UC01)</panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>UMLFrame</id>
-    <coordinates>
-      <x>225</x>
-      <y>294</y>
-      <w>1685</w>
-      <h>346</h>
-    </coordinates>
-    <panel_attributes>alt</panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>215</x>
-      <y>374</y>
-      <w>1705</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;1695.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Text</id>
-    <coordinates>
-      <x>766</x>
-      <y>316</y>
-      <w>265</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>[unsupported file or no readable text]</panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>Text</id>
-    <coordinates>
-      <x>766</x>
-      <y>388</y>
-      <w>57</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>[else]</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
@@ -73,17 +29,18 @@
       <x>65</x>
       <y>110</y>
       <w>20</w>
-      <h>678</h>
+      <h>922</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;668.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;912.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>230</x>
+      <x>280</x>
       <y>60</y>
-      <w>131</w>
+      <w>136</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:MaterialsPanel_</panel_attributes>
@@ -92,20 +49,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>285</x>
+      <x>338</x>
       <y>90</y>
       <w>20</w>
-      <h>698</h>
+      <h>942</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;688.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;932.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>442</x>
+      <x>616</x>
       <y>60</y>
-      <w>160</w>
+      <w>151</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:StudyAgentFacade_</panel_attributes>
@@ -114,20 +72,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>512</x>
+      <x>681</x>
       <y>90</y>
       <w>20</w>
-      <h>698</h>
+      <h>942</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;688.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;932.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>679</x>
+      <x>962</x>
       <y>60</y>
-      <w>137</w>
+      <w>144</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:MaterialService_</panel_attributes>
@@ -136,20 +95,44 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>738</x>
+      <x>1024</x>
       <y>90</y>
       <w>20</w>
-      <h>698</h>
+      <h>942</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;688.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;932.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>967</x>
+      <x>1157</x>
       <y>60</y>
-      <w>145</w>
+      <w>273</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>_materialRepo: MaterialRepository_</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1283</x>
+      <y>90</y>
+      <w>20</w>
+      <h>942</h>
+    </coordinates>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;932.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1459</x>
+      <y>60</y>
+      <w>136</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:DocumentParser_</panel_attributes>
@@ -158,20 +141,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1030</x>
+      <x>1517</x>
       <y>90</y>
       <w>20</w>
-      <h>698</h>
+      <h>942</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;688.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;932.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1142</x>
+      <x>1625</x>
       <y>60</y>
-      <w>216</w>
+      <w>242</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_retriever: RetrievalStrategy_</panel_attributes>
@@ -180,42 +164,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1240</x>
+      <x>1736</x>
       <y>90</y>
       <w>20</w>
-      <h>698</h>
+      <h>942</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;688.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;932.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1387</x>
+      <x>1897</x>
       <y>60</y>
-      <w>201</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>_materialRepo: Repository_</panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1478</x>
-      <y>90</y>
-      <w>20</w>
-      <h>698</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;688.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1619</x>
-      <y>60</y>
-      <w>95</w>
+      <w>90</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:EventBus_</panel_attributes>
@@ -224,20 +187,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1656</x>
+      <x>1932</x>
       <y>90</y>
       <w>20</w>
-      <h>698</h>
+      <h>942</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;688.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;932.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1781</x>
+      <x>2092</x>
       <y>60</y>
-      <w>117</w>
+      <w>106</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:MainWindow_</panel_attributes>
@@ -246,201 +210,330 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1830</x>
+      <x>2135</x>
       <y>90</y>
       <w>20</w>
-      <h>698</h>
+      <h>942</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;688.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;932.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1034</x>
+      <x>1039</x>
       <y>236</y>
-      <w>12</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes></panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>747</x>
-      <y>448</y>
       <w>12</w>
       <h>16</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1244</x>
-      <y>478</y>
+      <x>1287</x>
+      <y>264</y>
       <w>12</w>
-      <h>22</h>
+      <h>40</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1482</x>
-      <y>510</y>
+      <x>1039</x>
+      <y>504</y>
       <w>12</w>
-      <h>22</h>
+      <h>16</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>294</x>
-      <y>606</y>
+      <x>1521</x>
+      <y>544</y>
       <w>12</w>
-      <h>22</h>
+      <h>40</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1834</x>
-      <y>574</y>
+      <x>1039</x>
+      <y>618</y>
       <w>12</w>
-      <h>54</h>
+      <h>16</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1660</x>
-      <y>542</y>
+      <x>1287</x>
+      <y>646</y>
       <w>12</w>
-      <h>86</h>
+      <h>18</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>742</x>
-      <y>204</y>
+      <x>1740</x>
+      <y>754</y>
       <w>12</w>
-      <h>466</h>
+      <h>18</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>516</x>
-      <y>172</y>
+      <x>1287</x>
+      <y>786</y>
       <w>12</w>
-      <h>530</h>
+      <h>18</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>289</x>
-      <y>140</y>
+      <x>347</x>
+      <y>894</y>
       <w>12</w>
-      <h>594</h>
+      <h>18</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2139</x>
+      <y>862</y>
+      <w>12</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1936</x>
+      <y>830</y>
+      <w>12</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1028</x>
+      <y>194</y>
+      <w>12</w>
+      <h>740</h>
+    </coordinates>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>685</x>
+      <y>162</y>
+      <w>12</w>
+      <h>804</h>
+    </coordinates>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>342</x>
+      <y>130</y>
+      <w>12</w>
+      <h>868</h>
+    </coordinates>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>65</x>
-      <y>130</y>
-      <w>234</w>
+      <y>120</y>
+      <w>287</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 upload(file)</panel_attributes>
-    <additional_attributes>10.0;10.0;224.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;277.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>291</x>
-      <y>162</y>
-      <w>235</w>
+      <x>344</x>
+      <y>152</y>
+      <w>351</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
-uploadMaterial(courseId, file)</panel_attributes>
-    <additional_attributes>10.0;10.0;225.0;10.0</additional_attributes>
+uploadMaterial(courseId, file, replace)</panel_attributes>
+    <additional_attributes>10.0;10.0;341.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>518</x>
-      <y>194</y>
-      <w>234</w>
+      <x>687</x>
+      <y>184</y>
+      <w>351</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
-uploadMaterial(courseId, file)</panel_attributes>
-    <additional_attributes>10.0;10.0;224.0;10.0</additional_attributes>
+uploadMaterial(courseId, file, replace)</panel_attributes>
+    <additional_attributes>10.0;10.0;341.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>744</x>
-      <y>226</y>
-      <w>300</w>
+      <x>1030</x>
+      <y>216</y>
+      <w>54</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+validateFile(file)</panel_attributes>
+    <additional_attributes>10.0;10.0;44.0;10.0;44.0;26.0;15.0;26.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1030</x>
+      <y>254</y>
+      <w>267</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+findByHash(courseId, hash)</panel_attributes>
+    <additional_attributes>10.0;10.0;257.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1030</x>
+      <y>286</y>
+      <w>267</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+duplicate</panel_attributes>
+    <additional_attributes>257.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>687</x>
+      <y>394</y>
+      <w>351</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+DuplicateMaterialException</panel_attributes>
+    <additional_attributes>341.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1030</x>
+      <y>484</y>
+      <w>54</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+removeMaterial(duplicateId)</panel_attributes>
+    <additional_attributes>10.0;10.0;44.0;10.0;44.0;26.0;15.0;26.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLFrame</id>
+    <coordinates>
+      <x>591</x>
+      <y>332</y>
+      <w>742</w>
+      <h>188</h>
+    </coordinates>
+    <panel_attributes>alt</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>581</x>
+      <y>422</y>
+      <w>762</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;752.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1030</x>
+      <y>534</y>
+      <w>501</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 extractPages(file)</panel_attributes>
-    <additional_attributes>10.0;10.0;290.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;491.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>744</x>
-      <y>258</y>
-      <w>300</w>
+      <x>1030</x>
+      <y>566</y>
+      <w>501</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 pages</panel_attributes>
-    <additional_attributes>290.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>491.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>518</x>
-      <y>350</y>
-      <w>234</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>lt=.&gt;
-IngestionException</panel_attributes>
-    <additional_attributes>224.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>744</x>
-      <y>428</y>
+      <x>1030</x>
+      <y>598</y>
       <w>54</w>
       <h>36</h>
     </coordinates>
@@ -451,97 +544,165 @@ splitIntoChunks(pages)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>744</x>
-      <y>468</y>
-      <w>510</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;&gt;&gt;
-index(chunks)</panel_attributes>
-    <additional_attributes>10.0;10.0;500.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>744</x>
-      <y>500</y>
-      <w>748</w>
+      <x>1030</x>
+      <y>636</y>
+      <w>267</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 save(material)</panel_attributes>
-    <additional_attributes>10.0;10.0;738.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;257.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>744</x>
-      <y>532</y>
-      <w>926</w>
+      <x>1030</x>
+      <y>744</y>
+      <w>720</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
-publish(MaterialAdded)</panel_attributes>
-    <additional_attributes>10.0;10.0;916.0;10.0</additional_attributes>
+index(chunks)</panel_attributes>
+    <additional_attributes>10.0;10.0;710.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1662</x>
-      <y>564</y>
-      <w>182</w>
+      <x>1030</x>
+      <y>776</y>
+      <w>267</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+updateEmbeddings(embedded)</panel_attributes>
+    <additional_attributes>10.0;10.0;257.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLFrame</id>
+    <coordinates>
+      <x>934</x>
+      <y>682</y>
+      <w>852</w>
+      <h>124</h>
+    </coordinates>
+    <panel_attributes>opt</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1030</x>
+      <y>820</y>
+      <w>916</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+publish(MATERIAL_ADDED)</panel_attributes>
+    <additional_attributes>10.0;10.0;906.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1938</x>
+      <y>852</y>
+      <w>211</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 onStudyEvent(event)</panel_attributes>
-    <additional_attributes>10.0;10.0;172.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;201.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>296</x>
-      <y>596</y>
-      <w>1548</w>
+      <x>349</x>
+      <y>884</y>
+      <w>1800</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 refresh()</panel_attributes>
-    <additional_attributes>1538.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>1790.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>518</x>
-      <y>652</y>
-      <w>234</w>
+      <x>687</x>
+      <y>916</y>
+      <w>351</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 material</panel_attributes>
-    <additional_attributes>224.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>341.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>291</x>
-      <y>684</y>
-      <w>235</w>
+      <x>344</x>
+      <y>948</y>
+      <w>351</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 material</panel_attributes>
-    <additional_attributes>225.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>341.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>65</x>
-      <y>716</y>
-      <w>234</w>
+      <y>980</y>
+      <w>287</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 material listed / error shown</panel_attributes>
-    <additional_attributes>224.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>277.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>701</x>
+      <y>346</y>
+      <w>327</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>[same file in this course, not replacing]</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>701</x>
+      <y>440</y>
+      <w>297</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>[same file in this course, replacing]</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>1044</x>
+      <y>696</y>
+      <w>142</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>[text was found]</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>40</x>
+      <y>1052</y>
+      <w>652</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>A file with no readable text is saved with status No text and is not indexed.
+An unsupported, too large or corrupted file raises an exception and nothing is saved.</panel_attributes>
+    <additional_attributes></additional_attributes>
   </element>
 </diagram>

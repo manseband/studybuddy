@@ -6,76 +6,10 @@
     <coordinates>
       <x>10</x>
       <y>10</y>
-      <w>2308</w>
-      <h>1119</h>
+      <w>3021</w>
+      <h>1283</h>
     </coordinates>
-    <panel_attributes>sd SD04: Submit and Grade a Quiz (UC07, UC08)</panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>UMLFrame</id>
-    <coordinates>
-      <x>550</x>
-      <y>290</y>
-      <w>697</w>
-      <h>306</h>
-    </coordinates>
-    <panel_attributes>alt</panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>UMLFrame</id>
-    <coordinates>
-      <x>536</x>
-      <y>230</y>
-      <w>725</w>
-      <h>390</h>
-    </coordinates>
-    <panel_attributes>loop</panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>540</x>
-      <y>402</y>
-      <w>717</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;707.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Text</id>
-    <coordinates>
-      <x>624</x>
-      <y>312</y>
-      <w>213</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>[multiple choice or true/false]</panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>Text</id>
-    <coordinates>
-      <x>624</x>
-      <y>416</y>
-      <w>115</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>[short answer]</panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>Text</id>
-    <coordinates>
-      <x>624</x>
-      <y>252</y>
-      <w>135</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>[for each answer]</panel_attributes>
+    <panel_attributes>sd SD04: Submit and Grade a Quiz (UC06, UC07)</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
@@ -95,15 +29,16 @@
       <x>65</x>
       <y>110</y>
       <w>20</w>
-      <h>999</h>
+      <h>1096</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;989.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1086.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>189</x>
+      <x>222</x>
       <y>60</y>
       <w>98</w>
       <h>40</h>
@@ -114,20 +49,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>228</x>
+      <x>261</x>
       <y>90</y>
       <w>20</w>
-      <h>1019</h>
+      <h>1116</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>330</x>
+      <x>399</x>
       <y>60</y>
-      <w>160</w>
+      <w>151</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:StudyAgentFacade_</panel_attributes>
@@ -136,20 +72,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>400</x>
+      <x>464</x>
       <y>90</y>
       <w>20</w>
-      <h>1019</h>
+      <h>1116</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>550</x>
+      <x>642</x>
       <y>60</y>
-      <w>112</w>
+      <w>113</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:QuizService_</panel_attributes>
@@ -158,86 +95,44 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>596</x>
+      <x>688</x>
       <y>90</y>
       <w>20</w>
-      <h>1019</h>
+      <h>1116</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>770</x>
+      <x>784</x>
       <y>60</y>
-      <w>151</w>
+      <w>212</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>_:RuleBasedGrader_</panel_attributes>
+    <panel_attributes>_quizRepo: QuizRepository_</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>835</x>
+      <x>880</x>
       <y>90</y>
       <w>20</w>
-      <h>1019</h>
+      <h>1116</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>950</x>
+      <x>1026</x>
       <y>60</y>
-      <w>149</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>_:LLMRubricGrader_</panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1015</x>
-      <y>90</y>
-      <w>20</w>
-      <h>1019</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1130</x>
-      <y>60</y>
-      <w>123</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>_llm: LLMClient_</panel_attributes>
-    <additional_attributes></additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1181</x>
-      <y>90</y>
-      <w>20</w>
-      <h>1019</h>
-    </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1282</x>
-      <y>60</y>
-      <w>177</w>
+      <w>182</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_attempt: QuizAttempt_</panel_attributes>
@@ -246,42 +141,136 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1361</x>
+      <x>1107</x>
       <y>90</y>
       <w>20</w>
-      <h>1019</h>
+      <h>1116</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1489</x>
+      <x>1238</x>
       <y>60</y>
-      <w>172</w>
+      <w>144</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>_quizRepo: Repository_</panel_attributes>
+    <panel_attributes>_:RuleBasedGrader_</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1565</x>
+      <x>1300</x>
       <y>90</y>
       <w>20</w>
-      <h>1019</h>
+      <h>1116</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1691</x>
+      <x>1412</x>
       <y>60</y>
-      <w>95</w>
+      <w>144</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>_:LLMRubricGrader_</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1474</x>
+      <y>90</y>
+      <w>20</w>
+      <h>1116</h>
+    </coordinates>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1738</x>
+      <y>60</y>
+      <w>136</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>_:ResponseParser_</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1796</x>
+      <y>90</y>
+      <w>20</w>
+      <h>1116</h>
+    </coordinates>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1904</x>
+      <y>60</y>
+      <w>136</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>_llm: LLMClient_</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1962</x>
+      <y>90</y>
+      <w>20</w>
+      <h>1116</h>
+    </coordinates>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2070</x>
+      <y>60</y>
+      <w>258</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>_attemptRepo: AttemptRepository_</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2189</x>
+      <y>90</y>
+      <w>20</w>
+      <h>1116</h>
+    </coordinates>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2358</x>
+      <y>60</y>
+      <w>90</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:EventBus_</panel_attributes>
@@ -290,20 +279,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1728</x>
+      <x>2393</x>
       <y>90</y>
       <w>20</w>
-      <h>1019</h>
+      <h>1116</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1854</x>
+      <x>2553</x>
       <y>60</y>
-      <w>117</w>
+      <w>106</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:MainWindow_</panel_attributes>
@@ -312,20 +302,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1903</x>
+      <x>2596</x>
       <y>90</y>
       <w>20</w>
-      <h>1019</h>
+      <h>1116</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2001</x>
+      <x>2689</x>
       <y>60</y>
-      <w>126</w>
+      <w>128</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:ProgressPanel_</panel_attributes>
@@ -334,20 +325,21 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>2054</x>
+      <x>2743</x>
       <y>90</y>
       <w>20</w>
-      <h>1019</h>
+      <h>1116</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2158</x>
+      <x>2847</x>
       <y>60</y>
-      <w>140</w>
+      <w>144</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>_:ProgressService_</panel_attributes>
@@ -356,234 +348,332 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>2218</x>
+      <x>2909</x>
       <y>90</y>
       <w>20</w>
-      <h>1019</h>
+      <h>1116</h>
     </coordinates>
-    <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;1009.0</additional_attributes>
+    <panel_attributes>lt=.
+layer=-1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;1106.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>839</x>
-      <y>356</y>
+      <x>884</x>
+      <y>226</y>
       <w>12</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1185</x>
-      <y>498</y>
+      <x>1111</x>
+      <y>290</y>
       <w>12</w>
-      <h>40</h>
+      <h>18</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1019</x>
-      <y>466</y>
+      <x>1304</x>
+      <y>474</y>
+      <w>12</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1966</x>
+      <y>660</y>
+      <w>12</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1800</x>
+      <y>628</y>
       <w>12</w>
       <h>104</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1365</x>
-      <y>642</y>
+      <x>1478</x>
+      <y>596</y>
       <w>12</w>
-      <h>22</h>
+      <h>168</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1569</x>
-      <y>674</y>
+      <x>1111</x>
+      <y>800</y>
       <w>12</w>
-      <h>22</h>
+      <h>18</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2222</x>
-      <y>834</y>
+      <x>2193</x>
+      <y>844</y>
+      <w>12</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2913</x>
+      <y>1004</y>
       <w>12</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>409</x>
-      <y>802</y>
+      <x>473</x>
+      <y>972</y>
       <w>12</w>
       <h>104</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2058</x>
-      <y>770</y>
+      <x>2747</x>
+      <y>940</y>
       <w>12</w>
-      <h>150</h>
+      <h>152</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1907</x>
-      <y>738</y>
+      <x>2600</x>
+      <y>908</y>
       <w>12</w>
-      <h>182</h>
+      <h>184</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1732</x>
-      <y>706</y>
+      <x>2397</x>
+      <y>876</y>
       <w>12</w>
-      <h>214</h>
+      <h>216</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>600</x>
-      <y>204</y>
+      <x>692</x>
+      <y>194</y>
       <w>12</w>
-      <h>734</h>
+      <h>914</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>404</x>
-      <y>172</y>
+      <x>468</x>
+      <y>162</y>
       <w>12</w>
-      <h>798</h>
+      <h>978</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>232</x>
-      <y>140</y>
+      <x>265</x>
+      <y>130</y>
       <w>12</w>
-      <h>862</h>
+      <h>1042</h>
     </coordinates>
-    <panel_attributes></panel_attributes>
+    <panel_attributes>bg=white
+transparency=0</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>65</x>
-      <y>130</y>
-      <w>177</w>
+      <y>120</y>
+      <w>210</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 submit(answers)</panel_attributes>
-    <additional_attributes>10.0;10.0;167.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;200.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>234</x>
-      <y>162</y>
-      <w>180</w>
+      <x>267</x>
+      <y>152</y>
+      <w>211</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 submitQuiz(attempt)</panel_attributes>
-    <additional_attributes>10.0;10.0;170.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;201.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>406</x>
-      <y>194</y>
-      <w>204</w>
+      <x>470</x>
+      <y>184</y>
+      <w>232</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 submitAttempt(attempt)</panel_attributes>
-    <additional_attributes>10.0;10.0;194.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;222.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>602</x>
-      <y>346</y>
-      <w>247</w>
+      <x>694</x>
+      <y>216</y>
+      <w>200</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
-grade(question, answer)</panel_attributes>
-    <additional_attributes>10.0;10.0;237.0;10.0</additional_attributes>
+findById(quizId)</panel_attributes>
+    <additional_attributes>10.0;10.0;190.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>602</x>
-      <y>378</y>
-      <w>247</w>
+      <x>694</x>
+      <y>248</y>
+      <w>200</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
-result</panel_attributes>
-    <additional_attributes>237.0;10.0;10.0;10.0</additional_attributes>
+quiz</panel_attributes>
+    <additional_attributes>190.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>602</x>
-      <y>456</y>
+      <x>694</x>
+      <y>280</y>
       <w>427</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
-grade(question, answer)</panel_attributes>
+submit()</panel_attributes>
     <additional_attributes>10.0;10.0;417.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1021</x>
-      <y>488</y>
+      <x>694</x>
+      <y>464</y>
+      <w>620</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+grade(question, answer)</panel_attributes>
+    <additional_attributes>10.0;10.0;610.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>694</x>
+      <y>496</y>
+      <w>620</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+result</panel_attributes>
+    <additional_attributes>610.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>694</x>
+      <y>586</y>
+      <w>794</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+grade(question, answer)</panel_attributes>
+    <additional_attributes>10.0;10.0;784.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1480</x>
+      <y>618</y>
+      <w>330</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;
+requestJson(llm, request, GradeJson)</panel_attributes>
+    <additional_attributes>10.0;10.0;320.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1802</x>
+      <y>650</y>
       <w>174</w>
       <h>20</h>
     </coordinates>
@@ -594,8 +684,8 @@ chat(request)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1021</x>
-      <y>520</y>
+      <x>1802</x>
+      <y>682</y>
       <w>174</w>
       <h>20</h>
     </coordinates>
@@ -606,166 +696,244 @@ response</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>602</x>
-      <y>552</y>
-      <w>427</w>
+      <x>1480</x>
+      <y>714</y>
+      <w>330</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+reply</panel_attributes>
+    <additional_attributes>320.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>694</x>
+      <y>746</y>
+      <w>794</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 result</panel_attributes>
-    <additional_attributes>417.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>784.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLFrame</id>
+    <coordinates>
+      <x>612</x>
+      <y>402</y>
+      <w>1386</w>
+      <h>374</h>
+    </coordinates>
+    <panel_attributes>alt</panel_attributes>
+    <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>602</x>
-      <y>632</y>
-      <w>773</w>
+      <y>524</y>
+      <w>1406</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;1396.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>694</x>
+      <y>790</y>
+      <w>427</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
-submit()</panel_attributes>
-    <additional_attributes>10.0;10.0;763.0;10.0</additional_attributes>
+recordResult(result)</panel_attributes>
+    <additional_attributes>10.0;10.0;417.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLFrame</id>
+    <coordinates>
+      <x>598</x>
+      <y>326</y>
+      <w>1414</w>
+      <h>494</h>
+    </coordinates>
+    <panel_attributes>loop</panel_attributes>
+    <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>602</x>
-      <y>664</y>
-      <w>977</w>
+      <x>694</x>
+      <y>834</y>
+      <w>1509</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 save(attempt)</panel_attributes>
-    <additional_attributes>10.0;10.0;967.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;1499.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>602</x>
-      <y>696</y>
-      <w>1140</w>
+      <x>694</x>
+      <y>866</y>
+      <w>1713</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
-publish(QuizGraded)</panel_attributes>
-    <additional_attributes>10.0;10.0;1130.0;10.0</additional_attributes>
+publish(QUIZ_SUBMITTED)</panel_attributes>
+    <additional_attributes>10.0;10.0;1703.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1734</x>
-      <y>728</y>
-      <w>183</w>
+      <x>2399</x>
+      <y>898</y>
+      <w>211</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 onStudyEvent(event)</panel_attributes>
-    <additional_attributes>10.0;10.0;173.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;201.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1909</x>
-      <y>760</y>
-      <w>159</w>
+      <x>2602</x>
+      <y>930</y>
+      <w>155</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 refresh()</panel_attributes>
-    <additional_attributes>10.0;10.0;149.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;145.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>411</x>
-      <y>792</y>
-      <w>1657</w>
+      <x>475</x>
+      <y>962</y>
+      <w>2282</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 getProgress(courseId)</panel_attributes>
-    <additional_attributes>1647.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>2272.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>411</x>
-      <y>824</y>
-      <w>1821</w>
+      <x>475</x>
+      <y>994</y>
+      <w>2448</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=-&gt;&gt;&gt;
 getProgress(courseId)</panel_attributes>
-    <additional_attributes>10.0;10.0;1811.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;2438.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>411</x>
-      <y>856</y>
-      <w>1821</w>
+      <x>475</x>
+      <y>1026</y>
+      <w>2448</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 report</panel_attributes>
-    <additional_attributes>1811.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>2438.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>411</x>
-      <y>888</y>
-      <w>1657</w>
+      <x>475</x>
+      <y>1058</y>
+      <w>2282</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 report</panel_attributes>
-    <additional_attributes>10.0;10.0;1647.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;2272.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>406</x>
-      <y>920</y>
-      <w>204</w>
+      <x>470</x>
+      <y>1090</y>
+      <w>232</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 attempt</panel_attributes>
-    <additional_attributes>194.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>222.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>234</x>
-      <y>952</y>
-      <w>180</w>
+      <x>267</x>
+      <y>1122</y>
+      <w>211</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 attempt</panel_attributes>
-    <additional_attributes>170.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>201.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>65</x>
-      <y>984</y>
-      <w>177</w>
+      <y>1154</y>
+      <w>210</w>
       <h>20</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 score and feedback</panel_attributes>
-    <additional_attributes>167.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>200.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>708</x>
+      <y>340</y>
+      <w>164</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>[for each question]</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>722</x>
+      <y>416</y>
+      <w>253</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>[multiple choice or true/false]</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>722</x>
+      <y>542</y>
+      <w>127</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>[short answer]</panel_attributes>
+    <additional_attributes></additional_attributes>
   </element>
   <element>
     <id>UMLNote</id>
     <coordinates>
       <x>40</x>
-      <y>1032</y>
-      <w>626</w>
-      <h>37</h>
+      <y>1226</y>
+      <w>666</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>If the LLM call fails, the short answer is saved as pending and can be re-graded later.</panel_attributes>
     <additional_attributes></additional_attributes>
