@@ -306,7 +306,7 @@ public class ProgressPanel extends FeaturePanel {
     private void chooseExportFile() {
         FileNameExtensionFilter markdown = new FileNameExtensionFilter("Markdown report (*.md)", "md");
         FileNameExtensionFilter csv = new FileNameExtensionFilter("CSV report (*.csv)", "csv");
-        JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.addChoosableFileFilter(markdown);
         chooser.addChoosableFileFilter(csv);

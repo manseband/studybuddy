@@ -98,7 +98,7 @@ public class MaterialsPanel extends FeaturePanel {
     }
 
     private void chooseFile() {
-        JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
         chooser.setFileFilter(new FileNameExtensionFilter("PDF, TXT or Markdown", "pdf", "txt", "md"));
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             upload(chooser.getSelectedFile(), false);
