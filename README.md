@@ -23,7 +23,7 @@ It runs on your computer as a Java desktop application (Swing GUI) and a command
 
 - **Java 25 (JDK)**. Check with `java -version`. Building needs the JDK; running the jar needs Java 25 or newer.
 - **Git**, to clone the repository.
-- **A Gemini API key** (optional, free from [Google AI Studio](https://aistudio.google.com/apikey)) and an internet connection for the AI features. Without a key the app still runs; see [Running without AI](#running-without-ai).
+- **A Gemini API key** (free from [Google AI Studio](https://aistudio.google.com/apikey)) and an internet connection for the AI features. Without a key the app still runs; see [Running without AI](#running-without-ai).
 
 Maven does not need to be installed: the repository includes the Maven Wrapper (`mvnw`, `mvnw.cmd`), which downloads Maven and all dependencies on the first build.
 
@@ -43,8 +43,6 @@ Copy the example configuration and put your key in the copy:
 ```bash
 cp .env.example .env
 ```
-
-On Windows Command Prompt: `copy .env.example .env`
 
 Then open `.env` and replace the placeholder:
 
