@@ -47,7 +47,7 @@ class StudyAgentFacadeTest {
 
         try (StudyAgentFacade reopened = ApplicationFactory.create(config())) {
             Course course = reopened.findCourse("eecs3311");
-            assertEquals("Software Design", course.getCode());
+            assertEquals("Software Design", course.getName());
             assertEquals("notes.md", reopened.listMaterials(course.getId()).get(0).getTitle());
         }
         assertTrue(Files.exists(dir.resolve("db/test.db")));

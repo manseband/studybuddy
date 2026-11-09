@@ -31,7 +31,7 @@ class DatabaseTest {
     }
 
     private static long insertCourse(Connection c, String name) throws SQLException {
-        try (PreparedStatement ps = c.prepareStatement("INSERT INTO courses(name) VALUES (?)",
+        try (PreparedStatement ps = c.prepareStatement("INSERT INTO courses(code) VALUES (?)",
                 Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, name);
             ps.executeUpdate();
@@ -83,7 +83,7 @@ class DatabaseTest {
     }
 
     @Test
-    void courseNamesAreUniqueIgnoringCase() {
+    void courseCodesAreUniqueIgnoringCase() {
         try (Database db = Database.inMemory()) {
             db.withConnection(c -> insertCourse(c, "EECS3311"));
             assertThrows(PersistenceException.class, () -> db.withConnection(c -> insertCourse(c, "eecs3311")));

@@ -14,7 +14,7 @@ import studybuddy.domain.Course;
 /** SQLite storage for courses. Deleting a course also removes its materials, quizzes and cards. */
 public class CourseRepository implements Repository<Course> {
 
-    private static final String COLUMNS = "id, name, code";
+    private static final String COLUMNS = "id, code, name";
 
     private final Database db;
 
@@ -27,7 +27,7 @@ public class CourseRepository implements Repository<Course> {
         return db.withConnection(c -> {
             if (course.getId() == 0) {
                 try (PreparedStatement ps = c.prepareStatement(
-                        "INSERT INTO courses(name, code) VALUES (?, ?)",
+                        "INSERT INTO courses(code, name) VALUES (?, ?)",
                         Statement.RETURN_GENERATED_KEYS)) {
                     bind(ps, course);
                     ps.executeUpdate();
@@ -35,7 +35,7 @@ public class CourseRepository implements Repository<Course> {
                 }
             } else {
                 try (PreparedStatement ps = c.prepareStatement(
-                        "UPDATE courses SET name = ?, code = ? WHERE id = ?")) {
+                        "UPDATE courses SET code = ?, name = ? WHERE id = ?")) {
                     bind(ps, course);
                     ps.setLong(3, course.getId());
                     ps.executeUpdate();
@@ -60,7 +60,7 @@ public class CourseRepository implements Repository<Course> {
         return db.withConnection(c -> {
             List<Course> courses = new ArrayList<>();
             try (Statement st = c.createStatement();
-                 ResultSet rs = st.executeQuery("SELECT " + COLUMNS + " FROM courses ORDER BY name COLLATE NOCASE")) {
+                 ResultSet rs = st.executeQuery("SELECT " + COLUMNS + " FROM courses ORDER BY code COLLATE NOCASE")) {
                 while (rs.next()) {
                     courses.add(map(rs));
                 }
@@ -69,10 +69,10 @@ public class CourseRepository implements Repository<Course> {
         });
     }
 
-    /** Case-insensitive lookup by name, matching the UNIQUE NOCASE constraint. */
-    public Optional<Course> findByName(String name) {
+    /** Case-insensitive lookup by code, matching the UNIQUE NOCASE constraint. */
+    public Optional<Course> findByCode(String code) {
         return db.withConnection(c -> queryOne(c,
-                "SELECT " + COLUMNS + " FROM courses WHERE name = ? COLLATE NOCASE", name.trim()));
+                "SELECT " + COLUMNS + " FROM courses WHERE code = ? COLLATE NOCASE", code.trim()));
     }
 
     @Override
@@ -95,11 +95,11 @@ public class CourseRepository implements Repository<Course> {
     }
 
     private static void bind(PreparedStatement ps, Course course) throws SQLException {
-        ps.setString(1, course.getName());
-        ps.setString(2, course.getCode());
+        ps.setString(1, course.getCode());
+        ps.setString(2, course.getName());
     }
 
     private static Course map(ResultSet rs) throws SQLException {
-        return new Course(rs.getLong("id"), rs.getString("name"), rs.getString("code"));
+        return new Course(rs.getLong("id"), rs.getString("code"), rs.getString("name"));
     }
 }

@@ -56,14 +56,14 @@ public class MaterialService {
 
     // ----- courses -----
 
-    public Course createCourse(String name, String code) {
-        Course course = Course.create(name, code);
-        if (courseRepo.findByName(course.getName()).isPresent()) {
-            throw new IllegalArgumentException("A course named \"" + course.getName() + "\" already exists");
+    public Course createCourse(String code, String name) {
+        Course course = Course.create(code, name);
+        if (courseRepo.findByCode(course.getCode()).isPresent()) {
+            throw new IllegalArgumentException("A course with code \"" + course.getCode() + "\" already exists");
         }
         courseRepo.save(course);
         eventBus.publish(StudyEvent.of(StudyEvent.Type.COURSE_CHANGED, course.getId(),
-                "Created course " + course.getName()));
+                "Created course " + course.getCode()));
         return course;
     }
 
@@ -76,17 +76,17 @@ public class MaterialService {
                 .orElseThrow(() -> new NoSuchElementException("No course with id " + courseId));
     }
 
-    /** Finds a course by id ("3") or by name ("EECS3311"), as typed on the CLI. */
-    public Course findCourse(String idOrName) {
-        String key = idOrName.trim();
+    /** Finds a course by id ("3") or by code ("EECS3311"), as typed on the CLI. */
+    public Course findCourse(String idOrCode) {
+        String key = idOrCode.trim();
         if (key.matches("\\d+")) {
             var byId = courseRepo.findById(Long.parseLong(key));
             if (byId.isPresent()) {
                 return byId.get();
             }
         }
-        return courseRepo.findByName(key)
-                .orElseThrow(() -> new NoSuchElementException("No course named or numbered \"" + key + "\""));
+        return courseRepo.findByCode(key)
+                .orElseThrow(() -> new NoSuchElementException("No course with code or id \"" + key + "\""));
     }
 
     /** Deletes the course with all of its materials, quizzes and cards. */
@@ -96,7 +96,7 @@ public class MaterialService {
             retriever.removeMaterial(material.getId());
         }
         courseRepo.delete(courseId);
-        eventBus.publish(StudyEvent.of(StudyEvent.Type.COURSE_CHANGED, courseId, "Deleted course " + course.getName()));
+        eventBus.publish(StudyEvent.of(StudyEvent.Type.COURSE_CHANGED, courseId, "Deleted course " + course.getCode()));
     }
 
     // ----- materials -----

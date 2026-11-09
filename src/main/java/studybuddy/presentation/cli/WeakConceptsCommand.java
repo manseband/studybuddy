@@ -19,7 +19,7 @@ public class WeakConceptsCommand implements Callable<Integer> {
     @ParentCommand
     StudyAgentCli root;
 
-    @Option(names = "--course", required = true, description = "Course name or id.")
+    @Option(names = "--course", required = true, description = "Course code or id.")
     String course;
 
     @Option(names = "--diagnose", description = "Ask the AI for patterns across your mistakes on weak concepts.")

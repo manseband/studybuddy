@@ -22,7 +22,7 @@ public class HistoryCommand implements Callable<Integer> {
     @ParentCommand
     StudyAgentCli root;
 
-    @Option(names = "--course", required = true, description = "Course name or id.")
+    @Option(names = "--course", required = true, description = "Course code or id.")
     String course;
 
     @Option(names = "--since", description = "First day to include, as YYYY-MM-DD.")

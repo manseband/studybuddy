@@ -9,18 +9,18 @@ import java.util.Objects;
 public class Course {
 
     private long id;
-    private String name;
     private String code;
+    private String name;
 
-    public Course(long id, String name, String code) {
+    public Course(long id, String code, String name) {
         this.id = id;
+        setCode(code);
         setName(name);
-        this.code = code == null ? "" : code.trim();
     }
 
     /** Creates a course that has not been saved yet (id 0). */
-    public static Course create(String name, String code) {
-        return new Course(0, name, code);
+    public static Course create(String code, String name) {
+        return new Course(0, code, name);
     }
 
     public long getId() {
@@ -36,10 +36,7 @@ public class Course {
     }
 
     public void setName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Course name is required");
-        }
-        this.name = name.trim();
+        this.name = name == null ? "" : name.trim();
     }
 
     public String getCode() {
@@ -47,7 +44,10 @@ public class Course {
     }
 
     public void setCode(String code) {
-        this.code = code == null ? "" : code.trim();
+        if (code == null || code.isBlank()) {
+            throw new IllegalArgumentException("Course code is required");
+        }
+        this.code = code.trim();
     }
 
     @Override
@@ -62,6 +62,6 @@ public class Course {
 
     @Override
     public String toString() {
-        return name + (code.isEmpty() ? "" : " (" + code + ")");
+        return code + (name.isEmpty() ? "" : " - " + name);
     }
 }

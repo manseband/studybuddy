@@ -70,16 +70,16 @@ public class StudyAgentFacade implements AutoCloseable {
 
     // ----- F01 courses and materials -----
 
-    public Course createCourse(String name, String code) {
-        return materialService.createCourse(name, code);
+    public Course createCourse(String code, String name) {
+        return materialService.createCourse(code, name);
     }
 
     public List<Course> listCourses() {
         return materialService.listCourses();
     }
 
-    public Course findCourse(String idOrName) {
-        return materialService.findCourse(idOrName);
+    public Course findCourse(String idOrCode) {
+        return materialService.findCourse(idOrCode);
     }
 
     public void deleteCourse(long courseId) {

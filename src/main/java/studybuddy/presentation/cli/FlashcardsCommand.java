@@ -54,7 +54,7 @@ public class FlashcardsCommand {
         @ParentCommand
         FlashcardsCommand parent;
 
-        @Option(names = "--course", required = true, description = "Course name or id.")
+        @Option(names = "--course", required = true, description = "Course code or id.")
         String course;
 
         @Option(names = "--count", defaultValue = "10", description = "Number of cards, 5-20 (default ${DEFAULT-VALUE}).")
@@ -114,7 +114,7 @@ public class FlashcardsCommand {
         @ParentCommand
         FlashcardsCommand parent;
 
-        @Option(names = "--course", required = true, description = "Course name or id.")
+        @Option(names = "--course", required = true, description = "Course code or id.")
         String course;
 
         @Override
@@ -191,7 +191,7 @@ public class FlashcardsCommand {
         @Option(names = "--deck", description = "Review only this deck.")
         Long deckId;
 
-        @Option(names = "--course", description = "Review all due cards of this course (name or id).")
+        @Option(names = "--course", description = "Review all due cards of this course (code or id).")
         String course;
 
         @Override

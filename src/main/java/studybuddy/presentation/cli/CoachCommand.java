@@ -20,7 +20,7 @@ public class CoachCommand implements Callable<Integer> {
     @ParentCommand
     StudyAgentCli root;
 
-    @Option(names = "--course", description = "Course name or id. Without it, the coach asks if there are several.")
+    @Option(names = "--course", description = "Course code or id. Without it, the coach asks if there are several.")
     String course;
 
     @Option(names = "--once", description = "Send this one message and exit.")

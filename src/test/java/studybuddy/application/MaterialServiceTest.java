@@ -216,7 +216,7 @@ class MaterialServiceTest {
     @Test
     void duplicateCourseNamesAreRejected() {
         assertThrows(IllegalArgumentException.class, () -> service.createCourse("eecs3311", ""));
-        assertEquals("EECS3311", service.findCourse("eecs3311").getName());
+        assertEquals("EECS3311", service.findCourse("eecs3311").getCode());
         assertEquals(courseId, service.findCourse(String.valueOf(courseId)).getId());
     }
 
@@ -246,6 +246,6 @@ class MaterialServiceTest {
 
         assertEquals(1, fresh.retrieve(courseId, "builder", 6).size());
         Course course = restarted.getCourse(courseId);
-        assertEquals("Software Design", course.getCode());
+        assertEquals("Software Design", course.getName());
     }
 }

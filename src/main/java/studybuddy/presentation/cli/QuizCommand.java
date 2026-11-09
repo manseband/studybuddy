@@ -145,7 +145,7 @@ public class QuizCommand {
         @ParentCommand
         QuizCommand parent;
 
-        @Option(names = "--course", required = true, description = "Course name or id.")
+        @Option(names = "--course", required = true, description = "Course code or id.")
         String course;
 
         @Option(names = "--count", defaultValue = "10", description = "Number of questions, 1-30 (default ${DEFAULT-VALUE}).")
@@ -190,7 +190,7 @@ public class QuizCommand {
         @ParentCommand
         QuizCommand parent;
 
-        @Option(names = "--course", required = true, description = "Course name or id.")
+        @Option(names = "--course", required = true, description = "Course code or id.")
         String course;
 
         @Override

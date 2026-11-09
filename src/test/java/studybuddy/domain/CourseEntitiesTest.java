@@ -16,9 +16,10 @@ class CourseEntitiesTest {
     private static final LocalDate TODAY = LocalDate.of(2026, 10, 26);
 
     @Test
-    void courseRequiresAName() {
+    void courseRequiresACode() {
         assertThrows(IllegalArgumentException.class, () -> Course.create("  ", "EECS3311"));
-        assertEquals("Software Design (EECS3311)", Course.create(" Software Design ", "EECS3311").toString());
+        assertEquals("EECS3311 - Software Design", Course.create(" EECS3311 ", " Software Design ").toString());
+        assertEquals("EECS3311", Course.create("EECS3311", null).toString());
     }
 
     @Test

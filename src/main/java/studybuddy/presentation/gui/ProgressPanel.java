@@ -311,7 +311,7 @@ public class ProgressPanel extends FeaturePanel {
         chooser.addChoosableFileFilter(markdown);
         chooser.addChoosableFileFilter(csv);
         chooser.setFileFilter(markdown);
-        chooser.setSelectedFile(new File(course.getName().replaceAll("[^\\w.-]+", "-") + "-progress.md"));
+        chooser.setSelectedFile(new File(course.getCode().replaceAll("[^\\w.-]+", "-") + "-progress.md"));
         if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
             return;
         }

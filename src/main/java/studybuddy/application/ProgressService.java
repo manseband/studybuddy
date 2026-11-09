@@ -88,7 +88,7 @@ public class ProgressService implements StudyEventListener {
         List<QuizAttempt> graded = submittedAttempts(courseId).stream()
                 .filter(a -> a.getStatus() == AttemptStatus.GRADED).toList();
         double average = graded.stream().mapToDouble(QuizAttempt::getPercentage).average().orElse(0);
-        return new ProgressReport(course.getName(), graded.size(), average,
+        return new ProgressReport(course.toString(), graded.size(), average,
                 currentStreak(studyDays(courseId), LocalDate.now()), masteryService.computeMastery(courseId),
                 getHistory(courseId, null, null, null));
     }

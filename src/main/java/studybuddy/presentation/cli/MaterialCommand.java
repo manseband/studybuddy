@@ -42,7 +42,7 @@ public class MaterialCommand {
         @ParentCommand
         MaterialCommand parent;
 
-        @Option(names = "--course", required = true, description = "Course name or id.")
+        @Option(names = "--course", required = true, description = "Course code or id.")
         String course;
 
         @Parameters(index = "0", description = "PDF, TXT or MD file.")
@@ -65,7 +65,7 @@ public class MaterialCommand {
                 root.printResult(json, e.getMessage() + ". Skipped. Run again with --replace to replace it.");
                 return 3;
             }
-            String text = "Added \"" + m.getTitle() + "\" to " + c.getName() + " (material #" + m.getId() + "): "
+            String text = "Added \"" + m.getTitle() + "\" to " + c.getCode() + " (material #" + m.getId() + "): "
                     + m.getPageCount() + " page(s), " + m.getWordCount() + " words, " + m.getChunkCount() + " chunks.";
             if (m.getChunkCount() == 0) {
                 text += "\nNo text was found (scanned PDFs need OCR, which is not supported). The material was saved "
@@ -81,7 +81,7 @@ public class MaterialCommand {
         @ParentCommand
         MaterialCommand parent;
 
-        @Option(names = "--course", required = true, description = "Course name or id.")
+        @Option(names = "--course", required = true, description = "Course code or id.")
         String course;
 
         @Override
@@ -90,9 +90,9 @@ public class MaterialCommand {
             List<Material> materials = parent.root.facade().listMaterials(c.getId());
             StringBuilder text = new StringBuilder();
             if (materials.isEmpty()) {
-                text.append("No materials in ").append(c.getName())
+                text.append("No materials in ").append(c.getCode())
                     .append(" yet. Upload one with: studybuddy material add --course \"")
-                    .append(c.getName()).append("\" FILE");
+                    .append(c.getCode()).append("\" FILE");
             } else {
                 text.append(String.format("%-5s %-30s %-5s %6s %7s %7s  %s%n", "ID", "TITLE", "TYPE", "PAGES", "WORDS",
                         "CHUNKS", "STATUS"));
@@ -150,7 +150,7 @@ public class MaterialCommand {
         @ParentCommand
         MaterialCommand parent;
 
-        @Option(names = "--course", required = true, description = "Course name or id.")
+        @Option(names = "--course", required = true, description = "Course code or id.")
         String course;
 
         @Override
@@ -169,7 +169,7 @@ public class MaterialCommand {
             json.put("created", result.created());
             json.put("stillMissing", result.missingAfter());
             String text = result.missingBefore() == 0
-                    ? "All " + result.chunks() + " chunks of " + c.getName() + " already have embeddings."
+                    ? "All " + result.chunks() + " chunks of " + c.getCode() + " already have embeddings."
                     : "Created embeddings for " + result.created() + " of " + result.missingBefore() + " chunk(s).";
             if (result.missingAfter() > 0) {
                 text += "\n" + result.missingAfter() + " chunk(s) still have none (the embedding quota may be used up). "

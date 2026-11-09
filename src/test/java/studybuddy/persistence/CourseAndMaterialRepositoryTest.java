@@ -47,7 +47,7 @@ class CourseAndMaterialRepositoryTest {
 
     @Test
     void savesUpdatesAndFindsCourses() {
-        Course course = courses.save(Course.create("Software Design", "EECS3311"));
+        Course course = courses.save(Course.create("EECS3311", "Software Design"));
         assertNotEquals(0, course.getId());
 
         course.setName("Software Design F26");
@@ -56,9 +56,9 @@ class CourseAndMaterialRepositoryTest {
         Course loaded = courses.findById(course.getId()).orElseThrow();
         assertEquals("Software Design F26", loaded.getName());
         assertEquals("EECS3311", loaded.getCode());
-        assertTrue(courses.findByName("software design f26").isPresent());
+        assertTrue(courses.findByCode("eecs3311").isPresent());
         assertEquals(1, courses.findAll().size());
-        assertThrows(PersistenceException.class, () -> courses.save(Course.create("SOFTWARE DESIGN F26", "")));
+        assertThrows(PersistenceException.class, () -> courses.save(Course.create("eecs3311", "")));
     }
 
     @Test

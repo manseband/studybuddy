@@ -109,14 +109,14 @@ On Windows Command Prompt: `set GEMINI_API_KEY=YOUR_LOCAL_API_KEY_HERE`. Close t
 `studybuddy --help` lists the commands. Running a command without its required options prints its usage.
 
 - Every command accepts `--json` to print machine-readable JSON instead of text.
-- A course can be given by name or by id; materials, concepts, decks, quizzes and attempts by the id shown in listings.
+- A course can be given by its code or by id; materials, concepts, decks, quizzes and attempts by the id shown in listings.
 - Exit codes: `0` success, `1` error (the message starts with `Error:`), `2` wrong options or an unconfirmed `course delete`.
 
 ### Courses and materials (F01)
 
 | Command | What it does |
 |---|---|
-| `course create <name> [--code <code>]` | Creates a course. Names are unique, ignoring case. |
+| `course create <code> [--name <name>]` | Creates a course, for example `course create EECS3311 --name "Software Design"`. Codes are unique, ignoring case. |
 | `course list` | Lists courses with their ids. |
 | `course delete <course> [--yes]` | Without `--yes`, says what would be deleted. With `--yes`, deletes the course and everything in it. |
 | `material add --course <c> <file> [--replace]` | Uploads a PDF, TXT or MD file of up to 20 MB. The text is extracted page by page (Apache PDFBox for PDFs), split into chunks of about 400 words that overlap by 50 words and keep their page numbers, and indexed for search: with embeddings (`gemini-embedding-001`) when a key is set, otherwise with keyword ranking. A file with the same content as one already in the course is refused unless `--replace` is given. Scanned PDFs without a text layer give no text (no OCR). |
@@ -209,7 +209,7 @@ This walks through every feature in the CLI with the sample PDFs, starting from 
 
 ```bash
 # F01: a course with the three sample materials
-studybuddy course create EECS3311 --code "Software Design"
+studybuddy course create EECS3311 --name "Software Design"
 studybuddy material add --course EECS3311 samples/solid-principles.pdf
 studybuddy material add --course EECS3311 samples/design-patterns.pdf
 studybuddy material add --course EECS3311 samples/software-testing.pdf

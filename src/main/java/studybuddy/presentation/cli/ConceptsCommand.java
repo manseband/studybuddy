@@ -90,7 +90,7 @@ public class ConceptsCommand {
         @ParentCommand
         ConceptsCommand parent;
 
-        @Option(names = "--course", required = true, description = "Course name or id.")
+        @Option(names = "--course", required = true, description = "Course code or id.")
         String course;
 
         @Override

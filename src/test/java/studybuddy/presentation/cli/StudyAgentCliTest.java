@@ -38,8 +38,8 @@ class StudyAgentCliTest {
 
     @Test
     void createListAndAddMaterialAsText() throws IOException {
-        assertEquals(0, run("course", "create", "EECS3311", "--code", "Software Design"));
-        assertTrue(lastOutput.startsWith("Created course #1: EECS3311 (Software Design)"));
+        assertEquals(0, run("course", "create", "EECS3311", "--name", "Software Design"));
+        assertTrue(lastOutput.startsWith("Created course #1: EECS3311 - Software Design"));
 
         Path notes = Files.writeString(dir.resolve("notes.md"), "Observer pattern notes");
         assertEquals(0, run("material", "add", "--course", "eecs3311", notes.toString()));
@@ -55,7 +55,7 @@ class StudyAgentCliTest {
         run("course", "create", "EECS3311");
         assertEquals(0, run("course", "list", "--json"));
         List<Map<String, Object>> courses = new ObjectMapper().readValue(lastOutput, new TypeReference<>() { });
-        assertEquals("EECS3311", courses.get(0).get("name"));
+        assertEquals("EECS3311", courses.get(0).get("code"));
 
         Path notes = Files.writeString(dir.resolve("notes.txt"), "Strategy pattern");
         assertEquals(0, run("--json", "material", "add", "--course", "EECS3311", notes.toString()));

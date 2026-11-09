@@ -198,20 +198,20 @@ public class MainWindow implements StudyEventListener {
     }
 
     private void newCourse() {
-        JTextField name = new JTextField();
         JTextField code = new JTextField();
+        JTextField name = new JTextField();
         JPanel form = new JPanel(new GridLayout(0, 1, 0, 2));
-        form.add(new JLabel("Course name (required):"));
-        form.add(name);
-        form.add(new JLabel("Course code:"));
+        form.add(new JLabel("Course code (required):"));
         form.add(code);
+        form.add(new JLabel("Course name:"));
+        form.add(name);
         int choice = JOptionPane.showConfirmDialog(frame, form, "New Course", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE);
         if (choice != JOptionPane.OK_OPTION) {
             return;
         }
         try {
-            facade.createCourse(name.getText(), code.getText());
+            facade.createCourse(code.getText(), name.getText());
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(frame, e.getMessage());
         }
@@ -223,7 +223,7 @@ public class MainWindow implements StudyEventListener {
             return;
         }
         int materials = facade.listMaterials(selected.getId()).size();
-        int choice = JOptionPane.showConfirmDialog(frame, "Permanently delete " + selected.getName() + " with "
+        int choice = JOptionPane.showConfirmDialog(frame, "Permanently delete " + selected.getCode() + " with "
                 + materials + " material(s) and all its concepts, quizzes, flashcards and history?",
                 "Delete Course", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
         if (choice == JOptionPane.OK_OPTION) {

@@ -21,7 +21,7 @@ public class ProgressCommand implements Callable<Integer> {
     StudyAgentCli root;
 
     /** Not marked required, because picocli would then demand it before the export subcommand too. */
-    @Option(names = "--course", description = "Course name or id.")
+    @Option(names = "--course", description = "Course code or id.")
     String course;
 
     @Override
@@ -50,7 +50,7 @@ public class ProgressCommand implements Callable<Integer> {
         @ParentCommand
         ProgressCommand parent;
 
-        @Option(names = "--course", required = true, description = "Course name or id.")
+        @Option(names = "--course", required = true, description = "Course code or id.")
         String course;
 
         @Option(names = "--format", required = true, description = "markdown or csv.")

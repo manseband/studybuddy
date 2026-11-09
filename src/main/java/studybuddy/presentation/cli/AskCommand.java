@@ -23,7 +23,7 @@ public class AskCommand implements Callable<Integer> {
     @ParentCommand
     StudyAgentCli root;
 
-    @Option(names = "--course", required = true, description = "Course name or id.")
+    @Option(names = "--course", required = true, description = "Course code or id.")
     String course;
 
     @Option(names = "--general", description = "Allow a general-knowledge answer if the materials do not cover it.")

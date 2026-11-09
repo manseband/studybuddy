@@ -27,20 +27,20 @@ public class CourseCommand {
         return json;
     }
 
-    @Command(name = "create", description = "Create a course, e.g. course create \"EECS3311\" --code \"Software Design\"")
+    @Command(name = "create", description = "Create a course, e.g. course create EECS3311 --name \"Software Design\"")
     static class Create implements Callable<Integer> {
         @ParentCommand
         CourseCommand parent;
 
-        @Parameters(index = "0", description = "Course name (unique).")
-        String name;
-
-        @Option(names = "--code", description = "Course code or description.", defaultValue = "")
+        @Parameters(index = "0", description = "Course code (unique), e.g. EECS3311.")
         String code;
+
+        @Option(names = "--name", description = "Full course name, e.g. Software Design.", defaultValue = "")
+        String name;
 
         @Override
         public Integer call() {
-            Course course = parent.root.facade().createCourse(name, code);
+            Course course = parent.root.facade().createCourse(code, name);
             parent.root.printResult(toJson(course), "Created course #" + course.getId() + ": " + course);
             return 0;
         }
@@ -56,10 +56,10 @@ public class CourseCommand {
             List<Course> courses = parent.root.facade().listCourses();
             StringBuilder text = new StringBuilder();
             if (courses.isEmpty()) {
-                text.append("No courses yet. Create one with: studybuddy course create \"NAME\"");
+                text.append("No courses yet. Create one with: studybuddy course create CODE");
             }
             for (Course c : courses) {
-                text.append(String.format("#%-3d %-20s %s%n", c.getId(), c.getName(), c.getCode()));
+                text.append(String.format("#%-3d %-12s %s%n", c.getId(), c.getCode(), c.getName()));
             }
             parent.root.printResult(courses.stream().map(CourseCommand::toJson).toList(), text.toString().stripTrailing());
             return 0;
@@ -71,7 +71,7 @@ public class CourseCommand {
         @ParentCommand
         CourseCommand parent;
 
-        @Parameters(index = "0", description = "Course name or id.")
+        @Parameters(index = "0", description = "Course code or id.")
         String course;
 
         @Option(names = "--yes", description = "Confirm the deletion.")
@@ -85,7 +85,7 @@ public class CourseCommand {
                 Map<String, Object> json = new LinkedHashMap<>(toJson(c));
                 json.put("deleted", false);
                 json.put("materials", materials);
-                parent.root.printResult(json, "This will permanently delete course " + c.getName() + " with "
+                parent.root.printResult(json, "This will permanently delete course " + c.getCode() + " with "
                         + materials + " material(s) and all its quizzes, flashcards and history.\n"
                         + "Run again with --yes to confirm.");
                 return 2;
@@ -93,7 +93,7 @@ public class CourseCommand {
             parent.root.facade().deleteCourse(c.getId());
             Map<String, Object> json = new LinkedHashMap<>(toJson(c));
             json.put("deleted", true);
-            parent.root.printResult(json, "Deleted course " + c.getName());
+            parent.root.printResult(json, "Deleted course " + c.getCode());
             return 0;
         }
     }
