@@ -19,6 +19,8 @@ It runs on your computer as a Java desktop application (Swing GUI) and a command
 | F09 | Study Coach agent |
 | F10 | Progress and study history |
 
+The project reports are in the [`report/`](report/) folder. The Stage 2 report, [`report/stage2-report.pdf`](report/stage2-report.pdf), links a demo video for every feature (see Section 7, Demonstration Index).
+
 ## Prerequisites
 
 - **Java 25 (JDK)**. Check with `java -version`. Building needs the JDK; running the jar needs Java 25 or newer.
